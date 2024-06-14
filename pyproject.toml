@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "postsync"
+version = "1.0.0"
+description = "促进技术文章发展"
+authors = ["XFS-小风 <xiaofengs@yeah.net>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.8,<3.13"
+pytest = "^8.2.2"
+playwright = "^1.44.0"
+faker = "^25.8.0"
+pyyaml = "^6.0.1"
+markdown = "^3.6"
+beautifulsoup4 = "^4.12.3"
+argparse = "^1.4.0"
+nest-asyncio = "^1.6.0"
+pip = "^24.0"
+pyinstaller = "^6.8.0"
+
+
+[[tool.poetry.source]]
+name = "mirrors"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple/"
+priority = "primary"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

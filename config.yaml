@@ -1,0 +1,37 @@
+app:
+  name: PosySync
+  description: 一个开源的跨平台的博客同步工具
+  version: 1.0.0
+  author: 张一风
+  epilog: 请使用 -h 查看帮助信息
+view:
+  width: 1920
+  height: 1080
+
+data:
+  user:
+    dir: C:\Users\xiaof\AppData\Local\Microsoft\Edge\User Data
+
+default:
+  browser: msedge
+  cover: static/imgs/default-cover.png
+  tags: python
+  async: True
+  timeout: 1000
+  category: 后端
+  topic: 知识
+  columns: 题解
+  digest:
+    length: 100
+  community:
+    juejin:
+      category: 后端
+      title: 后端技术博客
+      tag: python
+    csdn:
+      category: 后端
+      tag: python
+      title: 后端技术博客
+#    zhihu:
+#      category: 后端
+#      tag: python
