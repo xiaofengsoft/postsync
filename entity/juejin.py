@@ -32,7 +32,7 @@ class Juejin(Community):
         category = category or config['default']['community']['juejin']['category']
         tags = tags or [config['default']['community']['juejin']['tag']]
         cover = cover or config['default']['cover']
-        columns = columns or []
+        columns = columns or [config['default']['community']['juejin']['column']]
         # 打开发布页面
         await self.page.goto(self.url_post_new)
         # 处理图片路径
@@ -50,14 +50,6 @@ class Juejin(Community):
 
         # 点击发布按钮
         await self.page.locator("button", has_text="发布").first.click()
-        # 输入摘要
-        await self.page.get_by_role("banner").locator("textarea").fill(digest)
-        # 选择封面
-        await choose_cover()
-        # 选择分类
-        first_category = (self.page.locator(".category-list")
-                          .locator("div", has_text=re.compile(category, re.IGNORECASE)).first)
-        await first_category.click()
         # 选择标签
         await self.page.get_by_text("请搜索添加标签").click(),
         tag_selector = self.page.locator('.tag-select-add-margin')
@@ -66,9 +58,18 @@ class Juejin(Community):
         try:
             for tag in tags:
                 await tag_input.fill(tag)
-                await tag_selector.locator("li",has_text=re.compile(tag, re.IGNORECASE)).first.click()
+                await tag_selector.locator("li", has_text=re.compile(tag, re.IGNORECASE)).first.click()
         except Exception as e:
             print(f"添加标签失败，原因：{e}")
+        # 输入摘要
+        await self.page.get_by_role("banner").locator("textarea").fill(digest)
+        # 选择封面
+        await choose_cover()
+        # 选择分类
+        first_category = (self.page.locator(".category-list")
+                          .locator("div", has_text=re.compile(category, re.IGNORECASE)).first)
+        await first_category.click()
+
         # 点击空白处防止遮挡
         # await self.page.locator("//div[@class='title' and text()='发布文章']").click()
         # 选择专栏
@@ -82,7 +83,7 @@ class Juejin(Community):
             topic_selector = self.page.locator(".topic-select-dropdown")
             topic_input = self.page.get_by_role("banner").get_by_role("textbox").nth(3)
             await topic_input.fill(topic)
-            await topic_selector.locator("span",has_text=re.compile(topic, re.IGNORECASE)).first.click()
+            await topic_selector.locator("span", has_text=re.compile(topic, re.IGNORECASE)).first.click()
         # 点击发布按钮
         await self.page.get_by_role("button", name="确定并发布").click()
         await self.page.wait_for_url("**/published")
@@ -113,4 +114,3 @@ class Juejin(Community):
         for img in img_tags:
             img['src'] = await self.async_upload_img(os.path.join(img_dir, img['src']))
         return str(soup)
-

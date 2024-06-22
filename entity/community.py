@@ -1,5 +1,6 @@
 from abc import ABCMeta, abstractmethod
 
+import asyncio
 class Community(metaclass=ABCMeta):
     """
     社区方法接口
@@ -7,8 +8,13 @@ class Community(metaclass=ABCMeta):
 
     site_name = ''
 
-    def __init__(self, page):
-        self.page = page
+    def __init__(self, browser, ap,asp):
+        self.browser = browser
+        self.ap = ap
+        self.asp = asp
+        self.page = asyncio.run(self.browser.new_page())
+
+
 
     async def async_post_new(self,
                  title: str,
