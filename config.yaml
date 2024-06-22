@@ -10,12 +10,12 @@ view:
 
 data:
   user:
-    dir: C:\Users\xiaof\AppData\Local\Google\Chrome\User Data  # Chrome 用户数据目录
+    dir: C:\Users\xiaof\AppData\Local\Google\Chrome\User Data  # 浏览器用户数据目录
 
 default:
   devtools: False  # 是否打开浏览器调试工具
-  headless: False  # 是否以无头模式运行浏览器
-  browser: chrome  # 选择使用的浏览器
+  headless: False  # 是否后台运行浏览器
+  browser: chrome  # 选择使用的浏览器 (msedge,chrome,firefox)
   no_viewport: False  # 是否全屏
   cover: static/imgs/default-cover.png  # 默认封面图片
   tags: python   # 默认标签
