@@ -1,0 +1,8 @@
+// 配置element-plus主题色
+@forward "element-plus/theme-chalk/src/common/var.scss" with ($colors: ("primary": ("base": #0d1c1f),
+    "success": ("base": #4ac248),
+    "warning": ("base": #e6a23c),
+    "danger": ("base": #E34D59),
+    "error": ("base": #E34D59),
+    "info": ("base": #51fd22),
+  ));

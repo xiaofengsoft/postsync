@@ -46,7 +46,6 @@ pyinstaller -D app.py --name=PostSync -i static/imgs/logo.ico
 - 支持自定义默认配置
 - 支持命令行界面
 - 自定义标签、分类、专栏、封面、摘要
--
 
 ### 优化任务
 
@@ -73,3 +72,4 @@ pyinstaller -D app.py --name=PostSync -i static/imgs/logo.ico
 - argparse
 - nest-asyncio
 - pyinstaller
+- customtkinter
