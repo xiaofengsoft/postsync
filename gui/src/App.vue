@@ -22,6 +22,7 @@ import SideBar from './components/SideBar.vue'
 import TitleBar from './components/TitleBar.vue'
 import UploadPost from './views/UploadPost.vue'
 import NewPost from './views/NewPost.vue'
+import LocalConfig from './views/LocalConfig.vue';
 
 export default {
   name: 'App',
@@ -29,7 +30,8 @@ export default {
     UploadPost,
     NewPost,
     SideBar,
-    TitleBar
+    TitleBar,
+    LocalConfig,
   },
   data() {
     return {

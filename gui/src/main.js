@@ -7,9 +7,19 @@ if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
+//控制台快捷键
+app.on('ready', async () => {
+  globalShortcut.register('CommandOrControl+Shift+i', function () {
+    win.webContents.openDevTools()
+  })
+  createWindow();
+})
+
+
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
+    icon: 'assets/imgs/logo.png',
     width: 800,
     height: 600,
     autoHideMenuBar: true, // Hide the menu bar
