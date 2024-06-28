@@ -13,9 +13,8 @@ args = import_commands()
 def main():
     print()
     print('开始同步文件...')
-    result = asyncio.run(async_post_files(args.filepaths, digests=args.digests, sites=args.sites, tags=args.tags,
-                                          categories=args.categories,
-                                          covers=args.covers, topics=args.topics, columns=args.columns))
+    file, title, content,digest,  category, cover, topic,sites, tags, columns = process_args(args)  # 处理参数
+    result = asyncio.run(async_post_file(file, title, content, digest, category, cover, topic,sites, tags, columns))
     print(result.message)
     for one_res in result.data:
         print(one_res[0] + ":" + one_res[1])
