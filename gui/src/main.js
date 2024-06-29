@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
-
+const fs = require('fs');
 const path = require('node:path');
+
 require('@electron/remote/main').initialize();
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -50,8 +51,6 @@ const createWindow = () => {
   ipcMain.on('window-close', function () {
     mainWindow.close();
   })
-
-
   // and load the index.html of the app.
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
@@ -67,8 +66,34 @@ const createWindow = () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  createWindow();
+  // 获取图片的 base64 数据
+  ipcMain.handle('get-image-data-url', async (event, imagePath) => {
+    try {
+      const fullPath = imagePath;
+      const extname = path.extname(fullPath).toLowerCase();
+      let mimeType;
 
+      switch (extname) {
+        case '.png':
+          mimeType = 'image/png';
+          break;
+        case '.jpg':
+        case '.jpeg':
+          mimeType = 'image/jpeg';
+          break;
+        // ... 可以继续添加其他类型的图片
+        default:
+          throw new Error('不支持的文件类型');
+      }
+      const data = await fs.promises.readFile(fullPath);
+      const base64Image = data.toString('base64');
+      return `data:${mimeType};base64,${base64Image}`;
+    } catch (error) {
+      console.error('读取或处理文件时发生错误:', error);
+      return '读取或处理文件时发生错误';
+    }
+  });
+  createWindow();
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   app.on('activate', () => {

@@ -38,6 +38,7 @@
   "dependencies": {
     "@electron/remote": "^2.1.2",
     "@element-plus/icons-vue": "^2.3.1",
+    "@wangeditor/editor-for-vue": "^5.1.12",
     "electron-squirrel-startup": "^1.0.1",
     "element-plus": "^2.7.6"
   }

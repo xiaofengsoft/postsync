@@ -1,14 +1,16 @@
 <template>
   <div style="height: 100vh;background-color: white;">
     <TitleBar class="title-bar" />
-    <el-container style="margin-top: 7%;">
-      <el-aside width="200px">
+    <el-container style="margin-top: 60px;">
+      <el-aside width="30vh">
         <SideBar @changeView="changeView" />
       </el-aside>
       <el-container>
-        <el-main>
-          <component :is="currentView"></component>
-        </el-main>
+        <el-scrollbar style="width: 100%;" max-height="90vh">
+          <el-main>
+            <component :is="currentView"></component>
+          </el-main>
+        </el-scrollbar>
       </el-container>
     </el-container>
 
@@ -48,27 +50,7 @@ export default {
 <style>
 body {
   margin: 0;
-  /* 允许内容在垂直方向上滚动 */
-  overflow-y: auto;
-
-  /* 隐藏滚动条，但保持滚动功能（WebKit 浏览器） */
-  &::-webkit-scrollbar {
-    width: 0;
-    /* 去除垂直滚动条的宽度 */
-    background: transparent;
-    /* 可选：使滚动条透明 */
-  }
-
-  /* 可选：隐藏水平滚动条 */
-  &::-webkit-scrollbar-track {
-    background: transparent;
-    /* 滚动条轨道颜色 */
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: transparent;
-    /* 滚动条颜色 */
-  }
+  overflow: hidden;
 }
 
 .title-bar {

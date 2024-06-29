@@ -8,8 +8,6 @@
     <template #content>
       <span style="color: black;">PostSync</span>
     </template>
-
-
     <template #extra>
       <div class="flex buttons items-center">
         <el-button @click="minimize" color="black" :icon="Minus" circle plain>
@@ -25,7 +23,7 @@
 
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { onMounted, onUnmounted } from 'vue';
 import { Minus, FullScreen, Close } from '@element-plus/icons-vue';
 
 const minimize = () => {
