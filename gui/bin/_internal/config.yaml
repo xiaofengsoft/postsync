@@ -1,0 +1,47 @@
+app:
+  name: PosySync
+  description: 一个开源的跨平台的博客同步工具
+  version: 1.0.0
+  author: 张一风
+  epilog: 请使用 -h 查看帮助信息
+view:
+  width: 1920
+  height: 1080
+
+data:
+  user:
+    dir: C:\Users\xiaof\AppData\Local\Google\Chrome\User Data  # 浏览器用户数据目录
+
+default:
+  devtools: False  # 是否打开浏览器调试工具
+  headless: False  # 是否后台运行浏览器
+  browser: chrome  # 选择使用的浏览器 (msedge,chrome,firefox)
+  no_viewport: False  # 是否全屏
+  cover: static/imgs/default-cover.png  # 默认封面图片
+  tag: python   # 默认标签
+  url:  # 默认博客连接
+  async: True  # 是否异步运行
+  timeout: 1000  # 请求超时时间
+  category: 后端  # 默认分类
+  topic: 知识  # 默认话题
+  column: 解决  # 默认专栏
+  digest:
+    length: 100
+  community:
+    juejin:
+      category: 后端
+      tag: python
+      column: 解决
+      title: Python后端开发
+    csdn:
+      category: 后端
+      title: Python后端开发
+      tag: python
+      column: 解决
+    zhihu:
+      category: 后端
+      tag: python
+      column: 解决
+      title: Python后端开发
+#    hashnode:
+#    cnblog:

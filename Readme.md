@@ -27,7 +27,7 @@
 ### 打包
 
 ``` bash
-pyinstaller -D app.py --name=PostSync -i static/imgs/logo.ico
+pyinstaller PostSync.spec
 ```
 接着拷贝config.yaml到dist/PostSync目录下，命令行运行PostSync.exe即可
 

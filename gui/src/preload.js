@@ -6,5 +6,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   windowMaximize: () => ipcRenderer.send('window-max'),
   windowMinimize: () => ipcRenderer.send('window-min'),
   windowClose: () => ipcRenderer.send('window-close'),
-  getImageDataUrl: (imagePath) => ipcRenderer.invoke('get-image-data-url', imagePath)
+  getImageDataUrl: (imagePath) => ipcRenderer.invoke('get-image-data-url', imagePath),
+  executeCommand: (command) => ipcRenderer.invoke('execute-command', command),
+
 })

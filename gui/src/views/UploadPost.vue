@@ -64,6 +64,8 @@
 <script>
 
 import { Close } from '@element-plus/icons-vue'
+import { joinPostSyncCommands } from '@/utils/command.js'
+import { ElMessage, ElMessageBox } from 'element-plus'
 export default {
   name: 'UploadPost',
   components: {
@@ -85,9 +87,10 @@ export default {
     }
   },
   methods: {
-    initPost(fileName) {
+    initPost(fileName, filePath) {
       this.posts.set(fileName, {
         title: fileName,
+        filePath: filePath,
         digest: '',
         category: '',
         topic: '',
@@ -98,12 +101,30 @@ export default {
         columns: [],
       })
     },
-    onSubmit() {
-
+    async onSubmit() {
+      try {
+        for (const post of this.posts.values()) {
+          ElMessage({
+            type: 'info',
+            message: `正在上传${post.title}...`,
+          })
+          let cmd = joinPostSyncCommands(post.filePath, post.title, post.digest, post.category, post.coverPath, post.topic, post.sites, post.tags, post.columns)
+          console.log(cmd)
+          const result = await window.electronAPI.executeCommand(cmd);
+          ElMessageBox.alert(result, '上传结果', {
+            confirmButtonText: '确认',
+          })
+        }
+      } catch (error) {
+        ElMessageBox.alert(error, '上传出错', {
+          confirmButtonText: '确认',
+        })
+        console.error('执行命令时出错：', error);
+      }
     },
     handleFileChanged(file, fileList) {
       this.fileList.push(file)
-      this.initPost(file.name)
+      this.initPost(file.name, file.raw.path)
     },
     handleCoverChanged(file, fileList) {
       this.posts.get(this.currentCoverPost.name).coverPath = file.raw.path

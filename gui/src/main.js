@@ -1,6 +1,8 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const fs = require('fs');
 const path = require('node:path');
+const { exec } = require('child_process')
+
 
 require('@electron/remote/main').initialize();
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -93,6 +95,25 @@ app.whenReady().then(() => {
       return '读取或处理文件时发生错误';
     }
   });
+  // 执行命令
+  ipcMain.handle('execute-command', async (event, command) => {
+    // 使用 Promise 包装 exec 调用
+    return new Promise((resolve, reject) => {
+      exec(command, { encoding: 'utf8' }, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`exec error: ${error}`);
+          reject(error); // 拒绝 Promise 并传递错误
+        }
+        if (stderr) {
+          console.error(`stderr: ${stderr}`);
+          reject(new Error(stderr)); // 拒绝 Promise 并传递 stderr 作为错误
+        }
+        //TODO  这里控制台返回结果会有乱码
+        resolve(stdout); // 解决 Promise 并传递 stdout
+      });
+    });
+  });
+
   createWindow();
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
