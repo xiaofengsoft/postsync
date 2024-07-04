@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
-import argparse
+from common.argument import PostArgumentParser
 from common.core import config
 
 
 def import_commands():
-    parser = argparse.ArgumentParser(
+    parser = PostArgumentParser(
         prog=config['app']['name'],
         description=config['app']['description'],
-        epilog=config['app']['epilog']
+        epilog=config['app']['epilog'],
+        exit_on_error=True  # 禁止自动捕获异常
     )
     parser.add_argument('-v', '--version',
                         action='version',
