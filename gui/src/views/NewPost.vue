@@ -1,23 +1,19 @@
 <template>
   <el-row>
+    <MyEditor @transferHtmlValue="getPostHtmlValue" />
     <el-form class="post-from">
-      <el-input size="large" v-model="input" placeholder="请输入文章标题"></el-input>
-    </el-form>
-    <MyEditor />
-    <el-button type="primary" style="width:100%;margin-top: 10px;" @click="centerDialogVisible = true">点击上传</el-button>
-    <el-dialog v-model="centerDialogVisible" title="文章表单" width="500" align-center>
-      <el-form>
-        <el-input size="large" v-model="input" placeholder="请输入文章标题"></el-input>
-      </el-form>
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button @click="centerDialogVisible = false">Cancel</el-button>
-          <el-button type="primary" @click="centerDialogVisible = false">
-            Confirm
-          </el-button>
+      <el-input size="large" style="margin-top: 10px;" v-model="input" placeholder="请输入文章标题"></el-input>
+      <el-input v-model="post.digest" style="margin-top: 10px;" rows="6" type="textarea" placeholder="请输入摘要" />
+      <el-upload style="margin-top: 10px;" :on-change="handleCoverChanged" :auto-upload="false" accept=".jpg,.png,.jpeg"
+        :limit="1" drag>
+        <img width="30%" v-if="post" :src="post.cover" class="avatar" />
+        <el-icon v-else class="el-icon--upload"><upload-filled /></el-icon>
+        <div class="el-upload__text">
+          点击选择封面
         </div>
-      </template>
-    </el-dialog>
+      </el-upload>
+    </el-form>
+    <el-button type="primary" style="width:100%;margin-top: 10px;" @click="submitNewPost">点击上传</el-button>
   </el-row>
 </template>
 <script>
@@ -25,7 +21,17 @@ import MyEditor from '../components/MyEditor.vue';
 export default {
   data() {
     return {
-      centerDialogVisible: false
+      centerDialogVisible: false,
+      post: '',
+      htmlValue: '',
+    }
+  },
+  methods: {
+    submitNewPost() {
+      console.log(this.htmlValue)
+    },
+    getPostHtmlValue(html) {
+      this.htmlValue = html
     }
   }
 }
