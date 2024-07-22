@@ -137,7 +137,17 @@ async def async_post_text(browser: object, ap: object, asp: object, file_path: s
     site_cls = import_module('entity.' + site.strip())
     site_instance = getattr(site_cls, site.strip().capitalize())
     site_instance = site_instance(browser=browser, ap=ap, asp=asp)
-    post_new_url = await site_instance.async_post_new(file_path=file_path, title=title, content=content, digest=digest,
-                                                      tags=tags, category=category, cover=cover, topic=topic,
-                                                      columns=columns)
+    post_new_url = None
+    # 发生异常则重试
+    for _ in range(config['default']['times']):
+        try:
+            post_new_url = await site_instance.async_post_new(file_path=file_path, title=title, content=content,
+                                                              digest=digest,
+                                                              tags=tags, category=category, cover=cover, topic=topic,
+                                                              columns=columns)
+        except TimeoutError as e:
+            continue
+        else:
+            break
+
     return site_instance.site_name, post_new_url

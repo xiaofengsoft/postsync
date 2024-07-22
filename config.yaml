@@ -20,7 +20,7 @@ default:
   cover: static/imgs/default-cover.png  # 默认封面图片
   tag: python   # 默认标签
   url:  # 默认博客连接
-  async: True  # 是否异步运行
+  times: 3 # 错误重试次数
   timeout: 1000  # 请求超时时间
   category: 后端  # 默认分类
   topic: 知识  # 默认话题
