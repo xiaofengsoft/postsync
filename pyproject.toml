@@ -18,6 +18,8 @@ nest-asyncio = "^1.6.0"
 pip = "^24.0"
 pyinstaller = "^6.8.0"
 pytest-asyncio = "^0.23.7"
+python-docx = "^1.1.2"
+htmldocx = "^0.0.6"
 
 
 [[tool.poetry.source]]

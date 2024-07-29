@@ -94,7 +94,7 @@ class Zhihu(Community):
         async with self.page.expect_response("https://api.zhihu.com/images") as first:
             async with self.page.expect_file_chooser() as fc_info:
                 if self.pic_nums != 0:
-                    self.page.get_by_role("button", name="本地上传").click()
+                    await self.page.get_by_role("button", name="本地上传").click()
                 else:
                     await self.page.locator(".css-n71hcb").click()
                 file_chooser = await fc_info.value

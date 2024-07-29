@@ -1,6 +1,10 @@
 from abc import ABCMeta, abstractmethod
 
 import asyncio
+
+from playwright.async_api import Page
+
+
 class Community(metaclass=ABCMeta):
     """
     社区方法接口
@@ -12,7 +16,7 @@ class Community(metaclass=ABCMeta):
         self.browser = browser
         self.ap = ap
         self.asp = asp
-        self.page = asyncio.run(self.browser.new_page())
+        self.page:"Page" = asyncio.run(self.browser.new_page())
 
 
 
@@ -42,7 +46,6 @@ class Community(metaclass=ABCMeta):
         """
         ...
 
-    @abstractmethod
     async def async_upload_img(self, img_path: str) -> str:
         """
         上传图片
@@ -51,7 +54,6 @@ class Community(metaclass=ABCMeta):
         """
         ...
 
-    @abstractmethod
     async def async_convert_html_img_path(self, content: str,file_path: str) -> str:
         """
         将HTML中的图片路径转换为社区上传图片的路径

@@ -57,23 +57,6 @@ def get_file_dir(path: str) -> str:
     return os.path.dirname(path)
 
 
-def convert_md_to_html(md_file_path: str, html_file_path: str = None, file_path_without_ext: str = None) -> str:
-    """
-    将Markdown文件转换为HTML
-    :param md_file_path: Markdown文件路径
-    :param html_file_path: HTML文件路径，默认为Markdown文件路径
-    :return: HTML文件路径
-    """
-    from markdown import Markdown
-    md = Markdown()
-    if not html_file_path:
-        html_file_path = md_file_path.replace('.md', '.html')
-    md.convertFile(md_file_path, html_file_path, "utf-8")
-    return html_file_path
-
-
-
-
 def calculate_time(func):
     """
     计算函数执行时间的装饰器
@@ -116,3 +99,62 @@ def get_scale_resolution():
     widthScale = gdi32.GetDeviceCaps(dc, 8)  # 分辨率缩放后的宽度
     heightScale = gdi32.GetDeviceCaps(dc, 10)  # 分辨率缩放后的高度
     return widthScale, heightScale
+
+
+def convert_md_to_html(md_file_path: str, html_file_path: str = None, file_path_without_ext: str = None) -> str:
+    """
+    将Markdown文件转换为HTML
+    :param md_file_path: Markdown文件路径
+    :param html_file_path: HTML文件路径，默认为Markdown文件路径
+    :return: HTML文件路径
+    """
+    from markdown import Markdown
+    md = Markdown()
+    if not html_file_path:
+        html_file_path = md_file_path.replace('.md', '.html')
+    md.convertFile(md_file_path, html_file_path, "utf-8")
+    return html_file_path
+
+
+def convert_html_to_docx(html_file_path: str, docx_file_path: str = None) -> str:
+    """
+    将HTML文件转换为DOCX
+    :param html_file_path: HTML文件路径
+    :param docx_file_path: DOCX文件路径，默认为HTML文件路径
+    :return: DOCX文件路径
+    """
+    from docx import Document
+    from htmldocx import HtmlToDocx
+    with open(html_file_path, 'r', encoding='utf-8') as f:
+        html_content = f.read()
+    if not docx_file_path:
+        docx_file_path = html_file_path.replace('.html', '.docx')
+    # 转换图片路径为绝对路径
+    convert_html_img_path_to_abs_path(html_file_path)
+    document = Document()
+    new_parser = HtmlToDocx()
+    new_parser.add_html_to_document(html_content, document)
+    document.save(docx_file_path)
+    return docx_file_path
+
+
+def convert_html_img_path_to_abs_path(html_file_path: str):
+    """
+    将HTML文件中图片的路径转换为绝对路径
+    :param html_file_path: HTML文件路径
+    """
+    with open(html_file_path, 'r', encoding='utf-8') as f:
+        html_content = f.read()
+    from bs4 import BeautifulSoup
+    soup = BeautifulSoup(html_content, 'html.parser')
+    img_tags = soup.find_all('img')
+    for img_tag in img_tags:
+        img_src = img_tag.get('src')
+        if not img_src.startswith('http'):
+            img_tag['src'] = os.path.join(get_file_dir(html_file_path), img_src)
+    with open(html_file_path, 'w', encoding='utf-8') as f:
+        f.write(str(soup))
+
+
+
+
