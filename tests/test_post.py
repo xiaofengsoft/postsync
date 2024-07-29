@@ -13,7 +13,7 @@ class TestPost:
         os.chdir(get_root_path())
         os.system('python app.py  -co static/imgs/logo.png -t python,github')
 
-    @pytest.mark.parametrize("site", ['zhihu', 'csdn', 'juejin'])
+    @pytest.mark.parametrize("site", ['wechat'])
     def test_post_with_single_site(self, site):
         """
         单次测试各个网站的

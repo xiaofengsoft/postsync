@@ -3,6 +3,7 @@ from common.func import (load_yaml)
 from common.func import get_root_path
 from common.func import get_abs_path
 from common.func import get_file_name_ext
+from common.func import convert_html_to_docx
 from os.path import join
 from common.result import Result
 from common.func import convert_md_to_html
@@ -33,6 +34,8 @@ def process_args(args) -> tuple[str, str, str, str, str, str, str, list, list, l
     if ext == '.md' or ext == '.markdown' or ext == '.mdown' or ext == '':
         # 如果是markdown文件，则转换为html
         file = convert_md_to_html(file)
+    # 生成docx文件
+    docx_file = convert_html_to_docx(file)
     stream_file = open(file, 'r', encoding='utf-8')
     content = stream_file.read()
     stream_file.close()
