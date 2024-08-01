@@ -21,7 +21,11 @@ def main():
             print(one_res[0] + ":" + one_res[1])
         print('同步完成！')
     except BaseException as e:
-        handle_global_exception(e)
+        # TODO: 开启Debug模式
+        if config['app']['debug'] == 'True':
+            raise e
+        else:
+            handle_global_exception(e)
 
 
 if __name__ == '__main__':
