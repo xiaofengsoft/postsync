@@ -7,6 +7,7 @@ from common.core import config
 import re
 
 
+#TODO 需要优化
 class Csdn(Community):
     site_name = 'CSDN'
     url_post_new = 'https://editor.csdn.net/md/'
@@ -71,9 +72,8 @@ class Csdn(Community):
     async def async_convert_html_img_path(self, content: str, file_path: str) -> str:
         soup = BeautifulSoup(content, 'html.parser')
         img_tags = soup.find_all('img')
-        img_dir = get_file_dir(file_path)
         for img in img_tags:
-            img['src'] = await self.async_upload_img(os.path.join(img_dir, img['src']))
+            img['src'] = await self.async_upload_img(img['src'])
         return str(soup)
 
     async def async_upload_img(self, img_path: str) -> str:

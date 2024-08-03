@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 import json
 import re
 
-
+#TODO 需要优化
 class Juejin(Community):
     """
     Juejin Community
@@ -110,7 +110,6 @@ class Juejin(Community):
     async def async_convert_html_img_path(self, content: str, file_path: str) -> str:
         soup = BeautifulSoup(content, 'html.parser')
         img_tags = soup.find_all('img')
-        img_dir = get_file_dir(file_path)
         for img in img_tags:
-            img['src'] = await self.async_upload_img(os.path.join(img_dir, img['src']))
+            img['src'] = await self.async_upload_img(img['src'])
         return str(soup)

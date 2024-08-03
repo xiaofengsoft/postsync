@@ -36,7 +36,6 @@ class Cnblog(Community):
         await self.page.locator("div").filter(has_text=re.compile(r"^添加到合集$")).click()
         column_selector = self.page.locator(
             "body > cnb-root > cnb-app-layout > div.main > as-split > as-split-area:nth-child(2) > div > div > cnb-spinner > div > cnb-posts-entry > cnb-post-editing-v2 > cnb-post-editor > div.panel.panel--main > cnb-collection-selector > cnb-collapse-panel > div.panel-content.ng-tns-c31-16.ng-trigger.ng-trigger-openClosePanel.cnb-panel-body")
-        await self.page.pause()
         for column in columns:
             await column_selector.locator("span", has_text=re.compile(column, re.IGNORECASE)).first.click()
         # 处理封面
@@ -50,7 +49,6 @@ class Cnblog(Community):
         # 处理摘要
         await self.page.locator("#summary").fill(digest)
         # 处理分类
-        await self.page.pause()
         await self.page.locator("body > cnb-root > cnb-app-layout > div.main > as-split > as-split-area:nth-child(2) > div > div > cnb-spinner > div > cnb-posts-entry > cnb-post-editing-v2 > cnb-post-editor > div.panel.panel--main > cnb-category-select-panel > cnb-collapse-panel > div.panel-content.ng-tns-c31-9.ng-trigger.ng-trigger-openClosePanel.cnb-panel-body > div > div > cnb-post-category-select > cnb-tree-category-select > div > nz-tree-select > div").click()
         await self.page.locator("body > cnb-root > cnb-app-layout > div.main > as-split > as-split-area:nth-child(2) > div > div > cnb-spinner > div > cnb-posts-entry > cnb-post-editing-v2 > cnb-post-editor > div.panel.panel--main > cnb-category-select-panel > cnb-collapse-panel > div.panel-content.ng-tns-c31-9.ng-trigger.ng-trigger-openClosePanel.cnb-panel-body > div > div > cnb-post-category-select > cnb-tree-category-select > div > nz-tree-select > div > nz-select-search > input").fill(category)
         await self.page.locator(".cdk-overlay-connected-position-bounding-box").locator("nz-tree-node").first.click()
