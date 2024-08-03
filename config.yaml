@@ -24,7 +24,7 @@ default:
   url:  # 默认博客连接
   times: 3 # 错误重试次数
   timeout: 1000  # 请求超时时间
-  category: 后端  # 默认分类
+  category: Python  # 默认分类
   topic: 知识  # 默认话题
   column: 解决  # 默认专栏
   digest:
@@ -46,5 +46,6 @@ default:
       column: 解决
       title: Python后端开发
     wechat:
+    cnblog:
 #    hashnode:
 #    cnblog:
