@@ -1,10 +1,10 @@
-from abc import ABCMeta, abstractmethod
-
+from common.core import config
 import asyncio
-
 from playwright.async_api import Page
+import typing as t
 
 
+# TODO 将社区方法接口定义为抽象类，支持自定义每个默认信息
 class Community(object):
     """
     社区方法接口
@@ -13,25 +13,35 @@ class Community(object):
     site_name = '未命名社区'
     site_alias = 'none'
 
-    def __init__(self, browser, ap,asp):
+    def __init__(self, browser, ap, asp):
         self.browser = browser
         self.ap = ap
         self.asp = asp
-        self.page:"Page" = asyncio.run(self.browser.new_page())
+        self.page: "Page" = asyncio.run(self.browser.new_page())
 
-
+    def process_args(self, columns: list = None, tags: list = None, category: str = None, cover: str = None) \
+            -> t.Tuple[list, list, str, str]:
+        """
+        处理参数
+        """
+        return (
+            columns or config['default'][self.site_alias]['columns'] or config['default']['columns'] or [],
+            tags or config['default'][self.site_alias]['tags'] or config['default']['tags'] or [],
+            category or config['default'][self.site_alias]['category'] or config['default']['category'],
+            cover or config['default'][self.site_alias]['cover'] or config['default']['cover']
+        )
 
     async def async_post_new(self,
-                 title: str,
-                 digest: str,
-                 content: str,
-                 file_path: str = None,
-                 tags: list = None,
-                 category: str = None,
-                 cover: str = None,
-                 columns: list = None,
-                 topic: str = None,
-                 ) -> str:
+                             title: str,
+                             digest: str,
+                             content: str,
+                             file_path: str = None,
+                             tags: list = None,
+                             category: str = None,
+                             cover: str = None,
+                             columns: list = None,
+                             topic: str = None,
+                             ) -> t.AnyStr:
         """
         异步上传新文章
         :param title: 标题
@@ -55,7 +65,7 @@ class Community(object):
         """
         ...
 
-    async def async_convert_html_img_path(self, content: str,file_path: str) -> str:
+    async def async_convert_html_img_path(self, content: str, file_path: str) -> str:
         """
         将HTML中的图片路径转换为社区上传图片的路径
         :param file_path: 文件路径
@@ -63,5 +73,3 @@ class Community(object):
         :return: 转换后的HTML内容
         """
         ...
-
-

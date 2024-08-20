@@ -44,12 +44,6 @@ def process_args(args) -> tuple[str, str, str, str, str, str, str, list, list, l
     digest = args.digest
     if digest is None:
         digest = content[:config['default']['digest']['length']]
-    cover = args.cover
-    if cover is None:
-        cover = get_abs_path(config['default']['cover'])
-    category = args.category
-    if category is None:
-        category = config['default']['category']
     topic = args.topic
     if topic is None:
         topic = config['default']['topic']
@@ -59,13 +53,7 @@ def process_args(args) -> tuple[str, str, str, str, str, str, str, list, list, l
     for site in sites:
         if site not in config['default']['community'].keys():
             raise CommunityNotExistError('社区 {} 不存在'.format(site))
-    tags = args.tag
-    if tags is None or tags == [] or len(tags) == 0:
-        tags = [config['default']['tag']]
-    columns = args.column
-    if columns is None or columns == [] or len(columns) == 0:
-        columns = [config['default']['column']]
-    return file, title, content, digest, category, cover, topic, sites, tags, columns
+    return file, title, content, digest, args.category, args.cover, topic, sites, args.tags, args.columns
 
 
 async def async_post_file(file: str, title: str, content: str, digest: str, category: str, cover: str, topic: str,

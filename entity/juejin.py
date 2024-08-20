@@ -14,6 +14,7 @@ class Juejin(Community):
     """
 
     site_name = "稀土掘金"
+    site_alias = "juejin"
     url_post_new = "https://juejin.cn/editor/drafts/new"
     url = "https://juejin.cn"
 
@@ -30,10 +31,7 @@ class Juejin(Community):
                              ) -> str:
 
         # 处理参数
-        category = category or config['default']['community']['juejin']['category']
-        tags = tags or [config['default']['community']['juejin']['tag']]
-        cover = cover or config['default']['cover']
-        columns = columns or [config['default']['community']['juejin']['column']]
+        columns, tags, category, cover = super().process_args(columns, tags, category, cover)
         # 打开发布页面
         await self.page.goto(self.url_post_new)
         # 处理图片路径

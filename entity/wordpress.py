@@ -10,6 +10,7 @@ from bs4 import BeautifulSoup
 
 class Wordpress(Community):
     site_name = "Wordpress"
+    site_alias = "wordpress"
 
     def __init__(self, browser, ap, asp):
         super().__init__(browser, ap, asp)
@@ -20,6 +21,8 @@ class Wordpress(Community):
 
     async def async_post_new(self, title: str, digest: str, content: str, file_path: str = None, tags: list = None,
                              category: str = None, cover: str = None, columns: list = None, topic: str = None) -> str:
+        # 处理参数
+        columns, tags, category, cover = super().process_args(columns, tags, category, cover)
         await self.page.goto(self.url, wait_until='load', timeout=10000)
         # 处理参数
         md_file_path = file_path.replace('.html', '.md')

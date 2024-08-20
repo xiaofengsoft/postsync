@@ -12,6 +12,7 @@ import json
 class Zhihu(Community):
     url_post_new = "https://zhuanlan.zhihu.com/write"
     site_name = "知乎"
+    site_alias = "zhihu"
 
     def __init__(self, browser, ap, asp):
         super().__init__(browser, ap, asp)

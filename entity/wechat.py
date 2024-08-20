@@ -15,6 +15,7 @@ import json
 class Wechat(Community):
     url_post_new = "https://mp.weixin.qq.com/"
     site_name = "公众号"
+    site_alias = "wechat"
 
     def __init__(self, browser, ap, asp):
 
@@ -23,7 +24,8 @@ class Wechat(Community):
 
     async def async_post_new(self, title: str, digest: str, content: str, file_path: str = None, tags: list = None,
                              category: str = None, cover: str = None, columns: list = None, topic: str = None) -> str:
-
+        # 处理参数
+        columns, tags, category, cover = super().process_args(columns, tags, category, cover)
         await self.page.goto(Wechat.url_post_new)
         async with self.browser.expect_page() as new_page:
             await self.page.locator("#app > div.main_bd_new > div:nth-child(3) > div.weui-desktop-panel__bd > div > div:nth-child(2)").click()

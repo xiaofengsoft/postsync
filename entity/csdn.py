@@ -9,6 +9,7 @@ import re
 class Csdn(Community):
     site_name = 'CSDN'
     url_post_new = 'https://editor.csdn.net/md/'
+    site_alias = 'csdn'
 
     async def async_post_new(self,
                              title: str,
@@ -22,10 +23,7 @@ class Csdn(Community):
                              topic: str = None,
                              ) -> str:
         # 处理参数
-        tags = tags or [config['default']['community']['csdn']['tag']]
-        title = title if len(title) >= 5 else config['default']['community']['csdn']['title']
-        cover = cover or config['default']['cover']
-        columns = columns or [config['default']['community']['csdn']['column']]
+        columns, tags, category, cover = super().process_args(columns, tags, category, cover)
         # 打开发布页面
         await self.page.goto(self.url_post_new)
         # 处理内容

@@ -24,45 +24,47 @@ default:
   browser: chrome  # 选择使用的浏览器 (msedge,chrome,firefox)
   no_viewport: False  # 是否全屏
   cover: static/imgs/default-cover.png  # 默认封面图片
-  tag: python   # 默认标签
+  tags:
+    - python
   url:  # 默认博客连接
   times: 3 # 错误重试次数
   timeout: 1000  # 请求超时时间
   category: 后端  # 默认分类
   topic: 知识  # 默认话题
-  column: 解决  # 默认专栏
+  columns:
+    - 解决
   digest:
     length: 100
   community:
     juejin:
       category: 后端
-      tag: python
-      column: 解决
-      title: Python后端开发
+      tags: python
+      columns: 解决
+      cover:
     csdn:
       category: 后端
-      title: Python后端开发
-      tag: python
-      column: 解决
+      cover:
+      tags: python
+      columns: 解决
     zhihu:
       category: 后端
-      tag: python
-      column: 解决
-      title: Python后端开发
+      tags: python
+      columns: 解决
+      cover:
     wechat:
       category: 后端
-      tag: python
-      column: 解决
-      title: Python后端开发
+      tags: python
+      columns: 解决
+      cover:
     cnblog:
       category: 后端
-      tag:
+      tags:
         - python
         - test
-      column: 解决
-      title: Python后端开发
+      columns: 解决
+      cover:
     wordpress:
       category: 后端
-      tag: python
-      column: 解决
-      title: Python后端开发
+      tags: python
+      columns: 解决
+      cover:

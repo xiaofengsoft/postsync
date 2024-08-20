@@ -11,6 +11,7 @@ import re
 class Cnblog(Community):
     site_name = '博客园'
     url_post_new = 'https://i.cnblogs.com/posts/edit'
+    site_alias = 'cnblog'
 
     async def async_post_new(self,
                              title: str,
@@ -23,6 +24,8 @@ class Cnblog(Community):
                              columns: list = None,
                              topic: str = None,
                              ) -> str:
+        # 处理参数
+        columns, tags, category, cover = super().process_args(columns, tags, category, cover)
         # 打开发布页面
         await self.page.goto(self.url_post_new)
         # 处理内容
