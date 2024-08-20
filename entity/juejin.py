@@ -1,4 +1,6 @@
 import os.path
+import time
+
 from entity.community import Community
 from common.func import get_file_dir
 from common.core import config
@@ -6,7 +8,6 @@ from bs4 import BeautifulSoup
 import json
 import re
 
-#TODO 需要优化
 class Juejin(Community):
     """
     Juejin Community
@@ -50,11 +51,16 @@ class Juejin(Community):
 
         # 点击发布按钮
         await self.page.locator("button", has_text="发布").first.click()
+        # 选择分类
+        first_category = (self.page.locator(".category-list")
+                          .locator("div", has_text=re.compile(category, re.IGNORECASE)).first)
+        await first_category.click()
         # 选择标签
         await self.page.get_by_text("请搜索添加标签").click(),
         tag_selector = self.page.locator('.tag-select-add-margin')
         tag_input = self.page.get_by_role("banner").get_by_role("textbox").nth(1)
         # 逐个搜索添加标签
+        time.sleep(0.1)
         try:
             for tag in tags:
                 await tag_input.fill(tag)
@@ -63,13 +69,9 @@ class Juejin(Community):
             print(f"添加标签失败，原因：{e}")
         # 输入摘要
         await self.page.get_by_role("banner").locator("textarea").fill(digest)
+        time.sleep(0.1)
         # 选择封面
         await choose_cover()
-        # 选择分类
-        first_category = (self.page.locator(".category-list")
-                          .locator("div", has_text=re.compile(category, re.IGNORECASE)).first)
-        await first_category.click()
-
         # 点击空白处防止遮挡
         # await self.page.locator("//div[@class='title' and text()='发布文章']").click()
         # 选择专栏

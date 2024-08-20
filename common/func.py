@@ -2,8 +2,7 @@ import os
 import time
 from functools import wraps
 import ctypes
-
-
+import typing as t
 
 
 def get_abs_path(path: str) -> str:
@@ -50,6 +49,7 @@ def get_file_name_ext(path: str) -> (str, str):
     """
     return os.path.splitext(os.path.basename(path))
 
+
 def get_file_dir(path: str) -> str:
     """
     获取文件所在目录
@@ -71,6 +71,7 @@ def calculate_time(func):
         execution_time = end_time - start_time  # 计算执行时间
         print(f"Function {func.__name__} took {execution_time} seconds to execute")
         return result
+
     return wrapper
 
 
@@ -138,6 +139,17 @@ def convert_html_to_docx(html_file_path: str, docx_file_path: str = None) -> str
     return docx_file_path
 
 
+def convert_html_content_to_md(html_content: str) -> str:
+    """
+    将HTML内容转换为Markdown
+    :param html_content:
+    :return:
+    """
+    from tomd import Tomd
+    markdown_content = Tomd(html_content).markdown
+    return markdown_content
+
+
 def convert_html_img_path_to_abs_path(html_file_path: str):
     """
     将HTML文件中图片的路径转换为绝对路径
@@ -156,5 +168,22 @@ def convert_html_img_path_to_abs_path(html_file_path: str):
         f.write(str(soup))
 
 
-
-
+def analyse_var(var: t.Any, retract: t.Optional[int] = 0):
+    """
+    解析变量
+    :param var:
+    :param retract:
+    :return:
+    """
+    print(f"{' ' * retract}type: {type(var)}")
+    print(f"{' ' * retract}var: {var}")
+    if isinstance(var, (int, float, str, bool)):
+        print(f"{' ' * retract}length: {len(str(var))}")
+    elif isinstance(var, (list, tuple)):
+        for i, item in enumerate(var):
+            print(f"{' ' * retract}[{i}]")
+            analyse_var(item, retract + 2)
+    elif isinstance(var, dict):
+        for key, value in var.items():
+            print(f"{' ' * retract}{key}:")
+            analyse_var(value, retract + 2)

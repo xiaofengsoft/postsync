@@ -883,6 +883,21 @@ url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 reference = "mirrors"
 
 [[package]]
+name = "tomd"
+version = "0.1.3"
+description = "Convert HTML to Markdown."
+optional = false
+python-versions = "*"
+files = [
+    {file = "tomd-0.1.3.tar.gz", hash = "sha256:23f21ae853157be49d163159bc7c6bc007dd5e87b69769ec5ba3e17f5de7a6d4"},
+]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+reference = "mirrors"
+
+[[package]]
 name = "tomli"
 version = "2.0.1"
 description = "A lil' TOML parser"
@@ -937,4 +952,4 @@ reference = "mirrors"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.13"
-content-hash = "6ad70b4301fa9bbbff65c878fe0a754fdc75d34223e54633cb2520c0def2ce50"
+content-hash = "ee7b2b360c62d4652cfade41520f63f190e2d6db82d837585a9cd0bb24dce71a"

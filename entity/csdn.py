@@ -6,8 +6,6 @@ from common.func import get_file_dir
 from common.core import config
 import re
 
-
-#TODO 需要优化
 class Csdn(Community):
     site_name = 'CSDN'
     url_post_new = 'https://editor.csdn.net/md/'
@@ -77,7 +75,8 @@ class Csdn(Community):
         return str(soup)
 
     async def async_upload_img(self, img_path: str) -> str:
-        async with self.page.expect_response("https://csdn-img-blog.oss-cn-beijing.aliyuncs.com/") as first:
+        await self.page.pause()
+        async with self.page.expect_response("https://csdn-img-blog.obs.cn-north-4.myhuaweicloud.com/") as first:
             async with self.page.expect_file_chooser() as fc_info:
                 await self.page.get_by_role("button", name="图片 图片").click()
                 await self.page.locator(".uploadPicture > input").click()

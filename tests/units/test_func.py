@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from common.func import *
 
+
 def test_convert_html_to_docx():
     abs_path = get_abs_path("tests/assets/test.html")
 

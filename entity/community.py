@@ -5,12 +5,13 @@ import asyncio
 from playwright.async_api import Page
 
 
-class Community(metaclass=ABCMeta):
+class Community(object):
     """
     社区方法接口
     """
 
-    site_name = ''
+    site_name = '未命名社区'
+    site_alias = 'none'
 
     def __init__(self, browser, ap,asp):
         self.browser = browser
