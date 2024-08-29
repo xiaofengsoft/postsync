@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 import asyncio
 import re
+import time
 
 from playwright._impl._async_base import AsyncEventContextManager
 from playwright.async_api import FileChooser
 import pyperclip
+
+import common.func
 from common.core import config
 from common.func import get_file_dir
 from entity.community import Community
@@ -41,7 +44,9 @@ class Wechat(Community):
         await self.page.locator("#author").fill(config['default']['author'])
         # 上传封面
         async with self.page.expect_file_chooser() as fc_info:
+            time.sleep(0.5)
             await self.page.locator("#js_cover_area").scroll_into_view_if_needed()
+            time.sleep(0.5)
             await self.page.locator("#js_cover_area").hover()
             await self.page.locator("#js_cover_null > ul > li:nth-child(2) > a").click()
             await self.page.locator("#vue_app label").nth(1).click()

@@ -2,7 +2,6 @@ from common.core import *
 from common.start import *
 from common.handler import handle_global_exception
 import nest_asyncio
-import sys
 
 
 # 同步文件

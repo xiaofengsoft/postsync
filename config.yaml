@@ -39,13 +39,15 @@ default:
     juejin:
       category: 后端
       tags: python
-      columns: 解决
+      columns:
+        - PHP文章
       cover:
     csdn:
       category: 后端
       cover:
       tags: python
-      columns: 解决
+      columns:
+        - PHP文章
     zhihu:
       category: 后端
       tags: python

@@ -40,3 +40,18 @@ class TestPost:
         :return:
         """
         os.system(f'python app.py -f {self.test_file} -co static/imgs/logo.png -s juejin csdn -t {tags}')
+
+    @pytest.mark.parametrize(
+        'file,title,category,columns,tags,sites,cover_img',
+        [
+            # ('tests/assets/posts/WordPress加载流程的解读分析.md', 'title', 'PHP', 'PHP文章', 'php github', 'csdn juejin wordpress zhihu cnblog wechat','tests/assets/imgs/wp.png'),
+            # ('tests/assets/posts/WordPress加载流程的解读分析.md', 'title', 'PHP', 'PHP文章', 'php github', 'zhihu cnblog wechat','tests/assets/imgs/wp.png'),
+            ('tests/assets/posts/WordPress加载流程的解读分析.md', 'title', 'PHP', 'PHP文章', 'php github', 'wechat','tests/assets/imgs/wp.png'),
+        ]
+    )
+    def test_post_all_args(self,file,title, category, columns, tags, sites, cover_img):
+        """
+        单次测试所有参数的发布
+        :return:
+        """
+        os.system(f'python app.py -f {file} -t {tags} -s {sites} -ca {category} -co {cover_img} -cl {columns}')

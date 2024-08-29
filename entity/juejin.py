@@ -1,6 +1,7 @@
 import os.path
 import time
 
+import common.func
 from entity.community import Community
 from common.func import get_file_dir
 from common.core import config
@@ -50,9 +51,11 @@ class Juejin(Community):
         # 点击发布按钮
         await self.page.locator("button", has_text="发布").first.click()
         # 选择分类
-        first_category = (self.page.locator(".category-list")
-                          .locator("div", has_text=re.compile(category, re.IGNORECASE)).first)
-        await first_category.click()
+        try:
+            await self.page.locator(".category-list").locator("div", has_text=re.compile(category, re.IGNORECASE)).click(timeout=5000)
+        except Exception as e:
+            await (self.page.locator(".category-list")
+                   .locator("div", has_text=re.compile(config['default']['community']['juejin']['category'], re.IGNORECASE)).click(timeout=5000))
         # 选择标签
         await self.page.get_by_text("请搜索添加标签").click(),
         tag_selector = self.page.locator('.tag-select-add-margin')
@@ -64,7 +67,10 @@ class Juejin(Community):
                 await tag_input.fill(tag)
                 await tag_selector.locator("li", has_text=re.compile(tag, re.IGNORECASE)).first.click()
         except Exception as e:
-            print(f"添加标签失败，原因：{e}")
+            tags = config['default']['community']['juejin']['tags']
+            for tag in tags:
+                await tag_input.fill(tag)
+                await tag_selector.locator("li", has_text=re.compile(tag, re.IGNORECASE)).first.click()
         # 输入摘要
         await self.page.get_by_role("banner").locator("textarea").fill(digest)
         time.sleep(0.1)
@@ -75,9 +81,15 @@ class Juejin(Community):
         # 选择专栏
         column_selector = self.page.locator(".byte-select-dropdown").last
         column_input = self.page.get_by_role("banner").get_by_role("textbox").nth(2)
-        for column in columns:
-            await column_input.fill(column)
-            await column_selector.locator("li", has_text=re.compile(column, re.IGNORECASE)).first.click()
+        try:
+            for column in columns:
+                await column_input.fill(column)
+                await column_selector.locator("li", has_text=re.compile(column, re.IGNORECASE)).first.click()
+        except Exception as e:
+            columns = config['default']['community']['juejin']['columns']
+            for column in columns:
+                await column_input.fill(column)
+                await column_selector.locator("li", has_text=re.compile(column, re.IGNORECASE)).first.click()
         # 选择话题
         if topic:
             topic_selector = self.page.locator(".topic-select-dropdown")

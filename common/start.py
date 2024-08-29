@@ -23,12 +23,12 @@ def import_commands():
     parser.add_argument('-ti', '--title',
                         help='文档标题',
                         type=str,
-                        nargs='+'
+                        nargs='?'
                         )
     parser.add_argument('-d', '--digest',
                         help='文档的摘要',
                         type=str,
-                        nargs='+'
+                        nargs='?'
                         )
     parser.add_argument('-s', '--site',
                         help='要上传的网站列表，必须从给定的网站列表中选择 %(choices)s，默认全部上传',
@@ -39,17 +39,17 @@ def import_commands():
     parser.add_argument('-ca', '--category',
                         help='文档的分类',
                         type=str,
-                        nargs='+'
+                        nargs='?'
                         )
     parser.add_argument('-co', '--cover',
                         help='文档的封面',
                         type=str,
-                        nargs='+'
+                        nargs='?'
                         )
     parser.add_argument('-to', '--topic',
                         help='文档的话题',
                         type=str,
-                        nargs='+'
+                        nargs='?'
                         )
     parser.add_argument('-t', '--tag',
                         help='文档的标签',

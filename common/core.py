@@ -1,7 +1,8 @@
 from playwright.async_api import async_playwright
+
+import common.func
 from common.func import (load_yaml)
 from common.func import get_root_path
-from common.func import get_abs_path
 from common.func import get_file_name_ext
 from common.func import convert_html_to_docx
 from os.path import join
@@ -53,7 +54,7 @@ def process_args(args) -> tuple[str, str, str, str, str, str, str, list, list, l
     for site in sites:
         if site not in config['default']['community'].keys():
             raise CommunityNotExistError('社区 {} 不存在'.format(site))
-    return file, title, content, digest, args.category, args.cover, topic, sites, args.tags, args.columns
+    return file, title, content, digest, args.category, args.cover, topic, sites, args.tag, args.column
 
 
 async def async_post_file(file: str, title: str, content: str, digest: str, category: str, cover: str, topic: str,

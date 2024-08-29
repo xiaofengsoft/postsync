@@ -26,6 +26,7 @@ class Csdn(Community):
         columns, tags, category, cover = super().process_args(columns, tags, category, cover)
         # 打开发布页面
         await self.page.goto(self.url_post_new)
+        # TODO 换成MD输入 或者 优化md转html
         # 处理内容
         content = await self.async_convert_html_img_path(content, file_path)
         # 输入标题
@@ -50,9 +51,15 @@ class Csdn(Community):
         await self.page.locator(".mark_selection_box_body > button").click()
         # 专栏处理
         column_selector = self.page.locator(".tag__options-list")
-        for column in columns:
-            await self.page.locator(".tag__item-list > .tag__btn-tag").click()
-            await column_selector.locator("span", has_text=re.compile(column, re.IGNORECASE)).first.click()
+        try:
+            for column in columns:
+                await self.page.locator(".tag__item-list > .tag__btn-tag").click()
+                await column_selector.locator("span", has_text=re.compile(column, re.IGNORECASE)).first.click()
+        except Exception as e:
+            columns = config['default']['community']['csdn']['columns']
+            for column in columns:
+                await self.page.locator(".tag__item-list > .tag__btn-tag").click()
+                await column_selector.locator("span", has_text=re.compile(column, re.IGNORECASE)).first.click()
         await self.page.locator("      .tag__options-txt > .modal__close-button").click()
         # 点击发布按钮
         await self.page.get_by_label("Insert publishArticle").get_by_role("button", name="发布文章").click()
@@ -73,7 +80,6 @@ class Csdn(Community):
         return str(soup)
 
     async def async_upload_img(self, img_path: str) -> str:
-        await self.page.pause()
         async with self.page.expect_response("https://csdn-img-blog.obs.cn-north-4.myhuaweicloud.com/") as first:
             async with self.page.expect_file_chooser() as fc_info:
                 await self.page.get_by_role("button", name="图片 图片").click()

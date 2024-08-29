@@ -187,3 +187,17 @@ def analyse_var(var: t.Any, retract: t.Optional[int] = 0):
         for key, value in var.items():
             print(f"{' ' * retract}{key}:")
             analyse_var(value, retract + 2)
+
+
+async def scroll_to_element(page, selector):
+    while True:
+        # 检查元素是否在视口中可见
+        is_visible = await page.is_visible(selector)
+        if is_visible:
+            break
+
+        # 如果不可见，执行滚动操作
+        await page.evaluate('window.scrollBy(0, window.innerHeight / 2);')
+
+        # 添加一个小的延迟，防止滚动速度过快
+        time.sleep(0.1)
