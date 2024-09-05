@@ -59,7 +59,6 @@ class Zhihu(Community):
             await self.page.locator("label").filter(has_text="添加文章封面").click()
             file_chooser = await fc_info.value
             await file_chooser.set_files(cover)
-
         # 这里的分类当作问题投稿
         await self.page.locator(".ddLajxN_Q0AuobBZjX9m > button").first.click()
         await self.page.get_by_placeholder("请输入关键词查找问题").click()
@@ -75,7 +74,12 @@ class Zhihu(Community):
             await self.page.locator(".css-ogem9c > button").first.click()
         # 选择专栏
         await self.page.locator("label").filter(has_text=re.compile(r"^发布到专栏$")).click()
-        for column in columns:
+        try:
+            column = columns[0]
+            await self.page.locator("#Popover22-toggle").click()
+            await self.page.locator(f"//button[contains(text(),'{column}')]").first.click()
+        except Exception as e:
+            column = config['default']['community'][self.site_alias]['columns'][0]
             await self.page.locator("#Popover22-toggle").click()
             await self.page.locator(f"//button[contains(text(),'{column}')]").first.click()
         # 发布文章

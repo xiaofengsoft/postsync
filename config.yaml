@@ -28,7 +28,7 @@ default:
     - python
   url:  # 默认博客连接
   times: 3 # 错误重试次数
-  timeout: 3000  # 请求超时时间
+  timeout: 5000  # 请求超时时间
   category: 后端  # 默认分类
   topic: 知识  # 默认话题
   columns:
@@ -38,44 +38,52 @@ default:
   community:
     juejin:
       category: 后端
-      tags: python
+      tags:
+        - Python
       columns:
-        - PHP文章
+        - Python文章
       cover:
+      topic: 知识
     csdn:
-      category: 后端
-      cover:
-      tags: python
+      category:
+      tags:
+        - Python
       columns:
-        - PHP文章
+        - Python文章
+      cover:
+      topic: 知识
     zhihu:
-      category: 后端
-      tags: python
+      category: Python
+      tags: Python
       columns:
-        - PHP文章
+        - Python
       cover:
+      topic:
     wechat:
       category: 后端
       tags: python
       columns:
         - PHP文章
       cover:
+      topic:
     cnblog:
-      category: 后端
+      category: Python
       tags:
-        - python
-        - test
+        - Python
       columns:
-        - PHP文章
+        - Python文章
       cover:
+      topic:
     wordpress:
-      category: 后端
-      tags: python
+      category:
+      tags:
+        - Python
       columns:
-        - PHP文章
       cover:
+      topic:
     bilibili:
       category: 科技
-      tags: python
+      tags: Python
       columns:
-        - PHP文章
+        - Python文章
+      topic: 编程

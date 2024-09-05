@@ -71,6 +71,25 @@ class Bilibili(Community):
         file_chooser = await select_file.value
         await file_chooser.set_files(cover)
         await self.page.locator("body > div.bre-modal.bre-img-corpper-modal > div > div.bre-modal__content > div.bre-img-corpper-modal__footer > button.bre-btn.primary").click()
+        # 处理话题
+        if topic:
+            await self.page.locator("#app > div > div.web-editor__wrap > div.b-read-editor > div.b-read-editor__settings.mt-m > div > div:nth-child(3) > div.bre-settings__sec__ctn > div > div > div.bili-topic-selector__search > div > div > div.bili-topic-search__input > span"
+                                        ).click()
+            try:
+                await self.page.locator("#app > div > div.web-editor__wrap > div.b-read-editor > div.b-read-editor__settings.mt-m > div > div:nth-child(3) > div.bre-settings__sec__ctn > div > div > div.bili-topic-selector__search > div > div > div.bili-topic-search__input > input"
+                                            ).fill(topic)
+                wait_random_time()
+                await self.page.locator("#app > div > div.web-editor__wrap > div.b-read-editor > div.b-read-editor__settings.mt-m > div > div:nth-child(3) > div.bre-settings__sec__ctn > div > div > div.bili-topic-selector__search > div > div > div.bili-topic-search__result > div.bili-topic-search__list > div:nth-child(1)"
+                                            ).click()
+            except Exception as e:
+                await self.page.locator(
+                    "#app > div > div.web-editor__wrap > div.b-read-editor > div.b-read-editor__settings.mt-m > div > div:nth-child(3) > div.bre-settings__sec__ctn > div > div > div.bili-topic-selector__search > div > div > div.bili-topic-search__input > input"
+                    ).fill(config['default']['community'][self.site_alias]['topic'])
+                wait_random_time()
+                await self.page.locator(
+                    "#app > div > div.web-editor__wrap > div.b-read-editor > div.b-read-editor__settings.mt-m > div > div:nth-child(3) > div.bre-settings__sec__ctn > div > div > div.bili-topic-selector__search > div > div > div.bili-topic-search__result > div.bili-topic-search__list > div:nth-child(1)"
+                    ).click()
+
         # 处理标签
         tag_input = self.page.locator(
             "#app > div > div.web-editor__wrap > div.b-read-editor > div.b-read-editor__settings.mt-m > div > div:nth-child(6) > div.bre-settings__sec__ctn > div > form > div.bre-input.medium > input"
