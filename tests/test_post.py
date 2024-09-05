@@ -46,7 +46,7 @@ class TestPost:
         [
             # ('tests/assets/posts/WordPress加载流程的解读分析.md', 'title', 'PHP', 'PHP文章', 'php github', 'csdn juejin wordpress zhihu cnblog wechat','tests/assets/imgs/wp.png'),
             # ('tests/assets/posts/WordPress加载流程的解读分析.md', 'title', 'PHP', 'PHP文章', 'php github', 'zhihu cnblog wechat','tests/assets/imgs/wp.png'),
-            ('tests/assets/posts/WordPress加载流程的解读分析.md', 'title', 'PHP', 'PHP文章', 'php github', 'wechat','tests/assets/imgs/wp.png'),
+            ('tests/assets/posts/WordPress加载流程的解读分析.md', 'title', 'PHP', 'PHP文章', 'php github', 'bilibili','tests/assets/imgs/wp.png'),
         ]
     )
     def test_post_all_args(self,file,title, category, columns, tags, sites, cover_img):

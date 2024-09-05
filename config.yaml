@@ -1,6 +1,6 @@
 app:
   name: PosySync
-  description: 一个开源的跨平台的博客同步工具
+  description: 一个开源且跨平台的博客同步工具
   version: 1.0.0
   author: 张一风
   epilog: 请使用 -h 查看帮助信息
@@ -28,7 +28,7 @@ default:
     - python
   url:  # 默认博客连接
   times: 3 # 错误重试次数
-  timeout: 1000  # 请求超时时间
+  timeout: 3000  # 请求超时时间
   category: 后端  # 默认分类
   topic: 知识  # 默认话题
   columns:
@@ -51,22 +51,31 @@ default:
     zhihu:
       category: 后端
       tags: python
-      columns: 解决
+      columns:
+        - PHP文章
       cover:
     wechat:
       category: 后端
       tags: python
-      columns: 解决
+      columns:
+        - PHP文章
       cover:
     cnblog:
       category: 后端
       tags:
         - python
         - test
-      columns: 解决
+      columns:
+        - PHP文章
       cover:
     wordpress:
       category: 后端
       tags: python
-      columns: 解决
+      columns:
+        - PHP文章
       cover:
+    bilibili:
+      category: 科技
+      tags: python
+      columns:
+        - PHP文章

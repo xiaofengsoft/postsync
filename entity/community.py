@@ -1,6 +1,7 @@
 from common.core import config
 import asyncio
 from playwright.async_api import Page
+from playwright.async_api import BrowserContext
 import typing as t
 
 
@@ -14,7 +15,7 @@ class Community(object):
     site_alias = 'none'
 
     def __init__(self, browser, ap, asp):
-        self.browser = browser
+        self.browser: "BrowserContext" = browser
         self.ap = ap
         self.asp = asp
         self.page: "Page" = asyncio.run(self.browser.new_page())
@@ -24,6 +25,7 @@ class Community(object):
         """
         处理参数
         """
+        self.page.set_default_timeout(config['default']['timeout'])
         return (
             columns or config['default'][self.site_alias]['columns'] or config['default']['columns'] or [],
             tags or config['default'][self.site_alias]['tags'] or config['default']['tags'] or [],

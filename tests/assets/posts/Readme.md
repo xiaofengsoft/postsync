@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="static/imgs/logo.png" width="200" height="200">
+  <img src="./../imgs/logo.png" width="200" height="200">
     <h3 align="center">
     PostSync
     </h3>
@@ -14,7 +14,7 @@
 
 ### 使用
 
-1. 打开浏览器，登录各个平台的账号，掘金、CSDN、知乎、公众号、哔哩哔哩、博客园、个人WordPress
+1. 打开浏览器，登录各个平台的账号，掘金，CSDN，知乎
 2. 打开config.yaml文件，配置你的浏览器信息以及浏览器用户数据目录
 3. 运行命令行：
     ``` bash
@@ -24,13 +24,7 @@
 
 
 
-### 开发
-
-#### 配置debug
-
-打开`config.yaml`文件,将`app/debug`设置为`True`
-
-#### 打包
+### 打包
 
 ``` bash
 pyinstaller PostSync.spec
@@ -46,7 +40,7 @@ pyinstaller PostSync.spec
 
 ### 功能
 
-- 自动同步文章到掘金、CSDN、知乎、公众号、哔哩哔哩、博客园、个人WordPress平台并返回生成文章链接
+- 自动同步文章到掘金、CSDN、知乎、公众号平台并返回生成文章链接
 - 支持多协程，异步上传文章
 - 支持包含查找，大小写模糊匹配
 - 支持md,html文件

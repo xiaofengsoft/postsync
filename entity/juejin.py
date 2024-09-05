@@ -1,13 +1,11 @@
 import os.path
 import time
-
-import common.func
 from entity.community import Community
-from common.func import get_file_dir
 from common.core import config
 from bs4 import BeautifulSoup
 import json
 import re
+
 
 class Juejin(Community):
     """

@@ -1,4 +1,5 @@
 import os
+import random
 import time
 from functools import wraps
 import ctypes
@@ -63,6 +64,7 @@ def calculate_time(func):
     :param func:
     :return:
     """
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         start_time = time.time()  # 记录函数开始执行的时间
@@ -201,3 +203,25 @@ async def scroll_to_element(page, selector):
 
         # 添加一个小的延迟，防止滚动速度过快
         time.sleep(0.1)
+
+
+def wait_random_time(begin_time: float = 0.2, end_time: float = 0.5):
+    """
+    等待随机时间
+    :param begin_time: 开始时间
+    :param end_time: 结束时间
+    """
+    wait_time = random.uniform(begin_time, end_time)
+    time.sleep(wait_time)
+
+
+async def insert_html_to_website(page, tag_id: str, html_content: str):
+    await page.evaluate("""
+    ([tag_id,html_content]) => 
+    {
+        console.log(tag_id,html_content);
+        document.querySelector(tag_id).innerHTML = html_content;    
+    }
+    
+    """,
+                        [tag_id, html_content])
