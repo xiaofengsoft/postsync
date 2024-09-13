@@ -10,9 +10,9 @@ from common.result import Result
 from common.func import convert_md_to_html
 import asyncio
 from importlib import import_module
-from common.error import FileNotReferencedError
+from common.error import FileNotReferencedError, BrowserError
 from common.error import CommunityNotExistError
-
+from playwright.async_api import Error as PlaywrightError
 
 def get_config() -> dict:
     return load_yaml(join(get_root_path(), 'config.yaml'))
@@ -129,17 +129,18 @@ async def async_post_text(browser: object, ap: object, asp: object, file_path: s
     site_cls = import_module('entity.' + site.strip())
     site_instance = getattr(site_cls, site.strip().capitalize())
     site_instance = site_instance(browser=browser, ap=ap, asp=asp)
-    post_new_url = None
-    # 发生异常则重试
-    for _ in range(config['default']['times']):
-        try:
-            post_new_url = await site_instance.async_post_new(file_path=file_path, title=title, content=content,
-                                                              digest=digest,
-                                                              tags=tags, category=category, cover=cover, topic=topic,
-                                                              columns=columns)
-        except TimeoutError as e:
-            continue
+    try:
+        post_new_url = await site_instance.async_post_new(file_path=file_path, title=title, content=content,
+                                                          digest=digest,
+                                                          tags=tags, category=category, cover=cover, topic=topic,
+                                                          columns=columns)
+    except PlaywrightError:
+        if config['app']['debug']:
+            raise
         else:
-            break
+            return site_instance.site_name, "发生错误"
+    else:
+        return site_instance.site_name, post_new_url
 
-    return site_instance.site_name, post_new_url
+
+

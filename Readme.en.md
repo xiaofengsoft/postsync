@@ -54,6 +54,9 @@ Then copy config.yaml to the dist/PostSync directory, and run PostSync.exe from 
 
 ### Optimization Tasks
 
+- [ ] Record the logs of the process.
+- [ ] Specially handle the case of the specific exception.
+- [ ] Specially handle the case of the specific column argument.
 - [ ] Optimize the code typing structure.
 - [ ] Optimize code document read and output.
 - [ ] Not input if the arguments are not provided.

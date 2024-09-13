@@ -3,10 +3,12 @@
 
 a = Analysis(
     ['app.py'],
-    pathex=[],
+    pathex=[
+        '.'
+    ],
     binaries=[],
     datas=[('config.yaml', '.'), ('entity', 'entity'), ('common', 'common'), ('static', 'static')],
-    hiddenimports=['bs4'],
+    hiddenimports=['bs4','pyperclip'],  # 遇到No module named xxx 等问题，添加依赖库到这里
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],

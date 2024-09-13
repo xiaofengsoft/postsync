@@ -15,3 +15,9 @@ class CommunityNotExistError(Exception):
     Exception raised when a community does not exist
     """
     pass
+
+
+class BrowserError(Exception):
+    def add_note(self, __note):
+        super().add_note(__note)
+        super().add_note("浏览器发生错误")

@@ -50,7 +50,7 @@ def test_persisted_cookies():
             channel=config['default']['browser'],
             headless=False,
             user_data_dir=config['data']['user']['dir'],
-            no_viewport=True,  # TODO 这里默认全屏模式，需要改成可配置
+            no_viewport=True,
             args=['--start-maximized'],
             devtools=True
         )
@@ -112,7 +112,7 @@ async def test_persisted_much_async():
         channel=config['default']['browser'],
         headless=False,
         user_data_dir=config['data']['user']['dir'],
-        no_viewport=True,  # TODO 这里默认全屏模式，需要改成可配置
+        no_viewport=True,
         args=['--start-maximized'],
         devtools=True
     )

@@ -5,7 +5,6 @@ from playwright.async_api import BrowserContext
 import typing as t
 
 
-# TODO 将社区方法接口定义为抽象类，支持自定义每个默认信息
 class Community(object):
     """
     社区方法接口
@@ -27,10 +26,10 @@ class Community(object):
         """
         self.page.set_default_timeout(config['default']['timeout'])
         return (
-            columns or config['default'][self.site_alias]['columns'] or config['default']['columns'] or [],
-            tags or config['default'][self.site_alias]['tags'] or config['default']['tags'] or [],
-            category or config['default'][self.site_alias]['category'] or config['default']['category'],
-            cover or config['default'][self.site_alias]['cover'] or config['default']['cover']
+            columns or config['default']["community"][self.site_alias]['columns'] or config['default']['columns'] or [],
+            tags or config['default']["community"][self.site_alias]['tags'] or config['default']['tags'] or [],
+            category or config['default']["community"][self.site_alias]['category'] or config['default']['category'],
+            cover or config['default']["community"][self.site_alias]['cover'] or config['default']['cover']
         )
 
     async def async_post_new(self,

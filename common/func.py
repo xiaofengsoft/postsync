@@ -5,6 +5,9 @@ from functools import wraps
 import ctypes
 import typing as t
 
+from playwright.async_api import Page
+from playwright.async_api import Frame
+
 
 def get_abs_path(path: str) -> str:
     """
@@ -215,13 +218,18 @@ def wait_random_time(begin_time: float = 0.2, end_time: float = 0.5):
     time.sleep(wait_time)
 
 
-async def insert_html_to_website(page, tag_id: str, html_content: str):
+async def insert_html_content_to_frame(page: Page, frame_selector: str, content_selector: str, html_content: str):
+    """
+    将HTML内容插入到Frame中
+    :param page:  Page对象
+    :param frame_selector:  Frame选择器
+    :param content_selector:  内容选择器
+    :param html_content:  HTML内容
+    :return:
+    """
     await page.evaluate("""
-    ([tag_id,html_content]) => 
-    {
-        console.log(tag_id,html_content);
-        document.querySelector(tag_id).innerHTML = html_content;    
+    ([frame_selector,content_selector,html_content]) => {
+    const frameElement = document.querySelector(frame_selector);
+    frameElement.contentDocument.querySelector(content_selector).innerHTML = html_content;
     }
-    
-    """,
-                        [tag_id, html_content])
+    """, [frame_selector, content_selector, html_content])

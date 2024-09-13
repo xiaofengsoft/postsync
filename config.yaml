@@ -25,14 +25,13 @@ default:
   no_viewport: False  # 是否全屏
   cover: static/imgs/default-cover.png  # 默认封面图片
   tags:
-    - python
+    - Python
   url:  # 默认博客连接
-  times: 3 # 错误重试次数
-  timeout: 5000  # 请求超时时间
+  timeout: 20000  # 请求超时时间
   category: 后端  # 默认分类
   topic: 知识  # 默认话题
   columns:
-    - 解决
+    - Python文章
   digest:
     length: 100
   community:
@@ -86,4 +85,5 @@ default:
       tags: Python
       columns:
         - Python文章
+      cover:
       topic: 编程
