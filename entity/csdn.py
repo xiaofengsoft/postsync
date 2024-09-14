@@ -84,6 +84,7 @@ class Csdn(Community):
         wait_random_time()
         async with self.page.expect_response("**/saveArticle") as response_info:
             pass
+        wait_random_time()
         data = await response_info.value
         data_body = await data.body()
         data = json.loads(data_body.decode('utf-8'))

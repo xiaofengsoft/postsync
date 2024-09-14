@@ -45,7 +45,7 @@ class Wordpress(Community):
             await element.click()
         # 设置封面
         await self.page.locator(
-            "#tabs-0-edit-post\/document-view > div.components-flex.components-h-stack.components-v-stack.editor-post-panel__section.editor-post-summary.css-1i2unhf.e19lxcc00 > div > div.editor-post-featured-image > div > button").click()
+            r"#tabs-0-edit-post\/document-view > div.components-flex.components-h-stack.components-v-stack.editor-post-panel__section.editor-post-summary.css-1i2unhf.e19lxcc00 > div > div.editor-post-featured-image > div > button").click()
         await self.page.locator("#menu-item-upload").click()
         async with self.page.expect_file_chooser() as response_info:
             await self.page.locator("#__wp-uploader-id-1").click()
@@ -55,7 +55,7 @@ class Wordpress(Community):
             "#__wp-uploader-id-0 > div.media-frame-toolbar > div > div.media-toolbar-primary.search-form > button").click()
         # 添加摘要
         await self.page.locator(
-            "#tabs-0-edit-post\/document-view > div.components-flex.components-h-stack.components-v-stack.editor-post-panel__section.editor-post-summary.css-1i2unhf.e19lxcc00 > div > div:nth-child(3) > div > button").click()
+            r"#tabs-0-edit-post\/document-view > div.components-flex.components-h-stack.components-v-stack.editor-post-panel__section.editor-post-summary.css-1i2unhf.e19lxcc00 > div > div:nth-child(3) > div > button").click()
         await self.page.locator("#inspector-textarea-control-1").fill(digest)
         # 处理标签
         tag_input = self.page.locator("#components-form-token-input-0")

@@ -15,7 +15,16 @@
 ### 使用
 
 1. 打开浏览器，登录各个平台的账号，掘金、CSDN、知乎、公众号、哔哩哔哩、博客园、个人WordPress
-2. 打开config.yaml文件，配置你的浏览器信息以及浏览器用户数据目录
+2. 打开config.yaml文件，配置你的浏览器信息、浏览器用户数据目录、可执行浏览器路径
+   ```yaml
+   user:
+     dir: C:\Users\xiaof\AppData\Local\Microsoft\Edge\User Data  # 浏览器用户数据目录
+   executable:
+     path: C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe # 浏览器可执行文件路径
+   default:
+     browser: msedge # 选择使用的浏览器 (msedge,chrome,firefox)
+   ```
+   > 可以联网查找浏览器数据目录所在位置
 3. 运行命令行：
     ``` bash
     .\PostSync.exe -h
@@ -42,6 +51,7 @@ pyinstaller PostSync.spec
 - 在使用前请确保已经登录各个平台的账号
 - 使用标签分类等功能请确保您在相关平台上已经创建相应的标签分类
 - 使用前请退出浏览器
+- 使用该软件可能会导致浏览器用户数据被清空
 
 
 ### 功能
@@ -56,6 +66,7 @@ pyinstaller PostSync.spec
 
 ### 优化任务
 
+- [ ] 初次使用时数据目录被清空
 - [ ] 记录失败日志
 - [ ] 具体异常具体处理
 - [ ] 具体栏目参数具体处理
@@ -85,3 +96,25 @@ pyinstaller PostSync.spec
 - nest-asyncio
 - pyinstaller
 - customtkinter
+
+### 关于作者
+
+作者本人目前就读于中原工学院，是一名超级热爱编程的本科生
+喜欢各种运动和各种音乐
+- 邮箱：<xiaofengs@yeah.net>
+- 网站: <https://yunyicloud.cn>
+
+公众号: 
+
+<img src="static/imgs/official-account.jpg" width="200" height="200" alt="云奕科软公众号二维码">
+
+### 打赏
+
+> 如果觉得本软件对您有帮助，不如请我喝杯☕！
+
+<img src="static/imgs/reward-wechat.jpg" width="200" height="200" alt="微信打赏">
+
+
+### 鸣谢
+- 感谢JetBrains公司提供的免费学生许可证
+- 感谢FittenCode AI智能代码辅助助手的大力相助

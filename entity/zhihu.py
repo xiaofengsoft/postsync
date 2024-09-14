@@ -29,10 +29,7 @@ class Zhihu(Community):
         但是这里不知道为什么不能，可能是异步的原因
         """
         # 处理参数
-        category = category or config['default']['community']['zhihu']['category']
-        tags = tags or [config['default']['community']['zhihu']['tag']]
-        cover = cover or config['default']['cover']
-        columns = columns or [config['default']['community']['zhihu']['column']]
+        columns, tags, category, cover = super().process_args(columns, tags, category, cover)
         await self.page.goto(self.url_post_new)
         # 上传图片
         await self.page.get_by_label("图片").click()

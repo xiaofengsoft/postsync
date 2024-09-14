@@ -13,7 +13,7 @@ class TestPost:
         os.chdir(get_root_path())
         os.system('python app.py  -co static/imgs/logo.png -t python,github')
 
-    @pytest.mark.parametrize("site", ['wordpress'])
+    @pytest.mark.parametrize("site", ['csdn'])
     def test_post_with_single_site(self, site):
         """
         单次测试各个网站的
@@ -21,7 +21,7 @@ class TestPost:
         :return:
         """
         print(site)
-        os.system(f'python app.py -f {self.test_file} -co static/imgs/logo.png -s {site}')
+        os.system(f'python app.py -f {self.test_file} -s {site}')
 
     @pytest.mark.parametrize("sites", ['csdn juejin zhihu wechat cnblog wordpress'])
     def test_post_with_sites(self, sites):
@@ -47,7 +47,7 @@ class TestPost:
 #            ('tests/assets/posts/WordPress加载流程的解读分析.md', 'PHP', 'PHP文章', 'php github',
 #             'csdn juejin wordpress zhihu cnblog wechat bilibili', 'tests/assets/imgs/wp.png'),
             ('tests/assets/posts/PostSync介绍.md','Python','Python文章','python blog 同步 自动化',
-             'csdn ','tests/assets/imgs/logo.png')
+             'wordpress','tests/assets/imgs/logo.png')
         ]
     )
     def test_post_all_args(self,file, category, columns, tags, sites, cover_img):

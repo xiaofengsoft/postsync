@@ -81,6 +81,7 @@ async def async_post_file(file: str, title: str, content: str, digest: str, cate
         channel=config['default']['browser'],
         headless=config['default']['headless'],
         user_data_dir=config['data']['user']['dir'],
+        executable_path=config['data']['executable']['path'],
         no_viewport=viewport,
         args=['--start-maximized'],
         devtools=bool(config['default']['devtools'])
