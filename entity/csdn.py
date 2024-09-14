@@ -4,6 +4,7 @@ import json
 from common.core import config
 import re
 from common.func import wait_random_time
+from common.error import BrowserTimeoutError
 
 
 class Csdn(Community):
@@ -26,6 +27,8 @@ class Csdn(Community):
         columns, tags, category, cover = super().process_args(columns, tags, category, cover)
         # 打开发布页面
         await self.page.goto(self.url_post_new)
+        await self.page.locator(".editor__inner").fill("")
+        wait_random_time()
         # TODO 换成MD输入 或者 优化md转html
         # 处理内容
         content = await self.async_convert_html_img_path(content, file_path)
@@ -56,7 +59,10 @@ class Csdn(Community):
         column_selector = self.page.locator(".el-autocomplete-suggestion__list")
         for tag in tags:
             await tag_input.fill(tag)
-            await column_selector.locator("li", has_text=re.compile(tag, re.IGNORECASE)).first.click()
+            try:
+                await column_selector.locator("li", has_text=re.compile(tag, re.IGNORECASE)).first.click()
+            except BrowserTimeoutError:
+                await column_selector.locator("li").first.click()
         await self.page.locator(".mark_selection_box_body > button").click()
         wait_random_time()
         # 专栏处理

@@ -1,10 +1,11 @@
-import os.path
+from common.func import wait_random_time
 import time
 from entity.community import Community
 from common.core import config
 from bs4 import BeautifulSoup
 import json
 import re
+from common.error import BrowserTimeoutError
 
 
 class Juejin(Community):
@@ -59,16 +60,15 @@ class Juejin(Community):
         tag_selector = self.page.locator('.tag-select-add-margin')
         tag_input = self.page.get_by_role("banner").get_by_role("textbox").nth(1)
         # 逐个搜索添加标签
-        time.sleep(0.1)
-        try:
-            for tag in tags:
-                await tag_input.fill(tag)
-                await tag_selector.locator("li", has_text=re.compile(tag, re.IGNORECASE)).first.click()
-        except Exception as e:
-            tags = config['default']['community']['juejin']['tags']
-            for tag in tags:
-                await tag_input.fill(tag)
-                await tag_selector.locator("li", has_text=re.compile(tag, re.IGNORECASE)).first.click()
+        wait_random_time()
+        for tag in tags:
+            await tag_input.fill(tag)
+            await tag_input.press('Enter')
+            try:
+                await tag_selector.locator("li", has_text=re.compile(tag, re.IGNORECASE)
+                                       ).first.click(timeout=config['default']['timeout'])
+            except BrowserTimeoutError:
+                continue
         # 输入摘要
         await self.page.get_by_role("banner").locator("textarea").fill(digest)
         time.sleep(0.1)

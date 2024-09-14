@@ -6,7 +6,7 @@ import pytest
 
 class TestPost:
     def setup_class(self):
-        self.test_file = 'tests/assets/test.md'
+        self.test_file = 'tests/assets/posts/PostSync介绍.md'
         os.chdir(get_root_path())
 
     def test_post(self):
@@ -42,14 +42,15 @@ class TestPost:
         os.system(f'python app.py -f {self.test_file} -co static/imgs/logo.png -s juejin csdn -t {tags}')
 
     @pytest.mark.parametrize(
-        'file,title,category,columns,tags,sites,cover_img',
+        'file,category,columns,tags,sites,cover_img',
         [
-            # ('tests/assets/posts/WordPress加载流程的解读分析.md', 'title', 'PHP', 'PHP文章', 'php github', 'csdn juejin wordpress zhihu cnblog wechat bilibili','tests/assets/imgs/wp.png'),
-            # ('tests/assets/posts/WordPress加载流程的解读分析.md', 'title', 'PHP', 'PHP文章', 'php github', 'zhihu cnblog wechat','tests/assets/imgs/wp.png'),
-            ('tests/assets/posts/WordPress加载流程的解读分析.md', 'title', 'PHP', 'PHP文章', 'php github', 'csdn','tests/assets/imgs/wp.png'),
+#            ('tests/assets/posts/WordPress加载流程的解读分析.md', 'PHP', 'PHP文章', 'php github',
+#             'csdn juejin wordpress zhihu cnblog wechat bilibili', 'tests/assets/imgs/wp.png'),
+            ('tests/assets/posts/PostSync介绍.md','Python','Python文章','python blog 同步 自动化',
+             'csdn ','tests/assets/imgs/logo.png')
         ]
     )
-    def test_post_all_args(self,file,title, category, columns, tags, sites, cover_img):
+    def test_post_all_args(self,file, category, columns, tags, sites, cover_img):
         """
         单次测试所有参数的发布
         :return:

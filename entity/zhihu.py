@@ -2,10 +2,10 @@ import asyncio
 import re
 
 from common.core import config
-from common.func import get_file_dir
+from common.func import wait_random_time
 from entity.community import Community
 from bs4 import BeautifulSoup
-import os
+from common.error import BrowserTimeoutError
 import json
 
 
@@ -63,10 +63,16 @@ class Zhihu(Community):
         await self.page.locator(".ddLajxN_Q0AuobBZjX9m > button").first.click()
         await self.page.get_by_placeholder("请输入关键词查找问题").click()
         await self.page.get_by_placeholder("请输入关键词查找问题").fill(category)
-        await asyncio.sleep(0.2)
-        await self.page.locator(".Creator-SearchBar-searchIcon").click()
-        await self.page.locator(".css-1335jw2 > div > .Button").first.click()
-        await self.page.get_by_role("button", name="确定").click()
+        wait_random_time(1,2)
+        try:
+            await self.page.locator(".Creator-SearchBar-searchIcon").dblclick()
+            await self.page.locator(".css-1335jw2 > div > .Button").first.click()
+            await self.page.get_by_role("button", name="确定").click()
+        except BrowserTimeoutError:
+            await self.page.locator(".Creator-SearchBar-searchIcon").dblclick()
+            await self.page.locator(".css-1335jw2 > div > .Button").first.click()
+            await self.page.get_by_role("button", name="确定").click()
+
         # 标签当作文章话题
         for tag in tags:
             await self.page.get_by_role("button", name="添加话题").click()

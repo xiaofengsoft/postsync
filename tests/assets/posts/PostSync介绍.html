@@ -11,14 +11,17 @@
 <p>这是一个开源的同步文章的软件，你可以使用它来同步你的文章到多个平台。</p>
 <h3>使用</h3>
 <ol>
-<li>打开浏览器，登录各个平台的账号，掘金，CSDN，知乎</li>
+<li>打开浏览器，登录各个平台的账号，掘金、CSDN、知乎、公众号、哔哩哔哩、博客园、个人WordPress</li>
 <li>打开config.yaml文件，配置你的浏览器信息以及浏览器用户数据目录</li>
 <li>运行命令行：
     <code>bash
     .\PostSync.exe -h</code></li>
 <li>输入命令即可使用</li>
 </ol>
-<h3>打包</h3>
+<h3>开发</h3>
+<h4>配置debug</h4>
+<p>打开<code>config.yaml</code>文件,将<code>app/debug</code>设置为<code>True</code></p>
+<h4>打包</h4>
 <p><code>bash
 pyinstaller PostSync.spec</code>
 接着拷贝config.yaml到dist/PostSync目录下，命令行运行PostSync.exe即可</p>
@@ -30,7 +33,7 @@ pyinstaller PostSync.spec</code>
 </ul>
 <h3>功能</h3>
 <ul>
-<li>自动同步文章到掘金、CSDN、知乎、公众号平台并返回生成文章链接</li>
+<li>自动同步文章到掘金、CSDN、知乎、公众号、哔哩哔哩、博客园、个人WordPress平台并返回生成文章链接</li>
 <li>支持多协程，异步上传文章</li>
 <li>支持包含查找，大小写模糊匹配</li>
 <li>支持md,html文件</li>
@@ -40,11 +43,15 @@ pyinstaller PostSync.spec</code>
 </ul>
 <h3>优化任务</h3>
 <ul>
+<li>[ ] 记录失败日志</li>
+<li>[ ] 具体异常具体处理</li>
+<li>[ ] 具体栏目参数具体处理</li>
+<li>[ ] 优化代码类型结构</li>
+<li>[ ] 优化代码文档读取生成</li>
+<li>[ ] 未填写参数不输入网站处理</li>
 <li>[ ] 公众号直接发布</li>
-<li>[ ] 未匹配到元素异常捕获处理</li>
-<li>[ ] 包含查找优化为近似查找</li>
-<li>[ ] 增加图形化界面</li>
 <li>[ ] 连接已经打开的浏览器实例</li>
+<li>[ ] 包含查找优化为近似查找</li>
 </ul>
 <h3>开发规范</h3>
 <ul>

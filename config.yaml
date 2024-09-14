@@ -27,7 +27,7 @@ default:
   tags:
     - Python
   url:  # 默认博客连接
-  timeout: 20000  # 请求超时时间
+  timeout: 10000  # 请求超时时间
   category: 后端  # 默认分类
   topic: 知识  # 默认话题
   columns:
