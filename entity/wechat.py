@@ -65,7 +65,6 @@ class Wechat(Community):
             response = await response_info.value
         data_body = await response.body()
         data = json.loads(data_body.decode('utf-8'))
-        print(data['base_resp']['ret'])
         if data['base_resp']['ret'] == 0:
             await self.page.locator("#js_preview > button").click()
             await self.page.wait_for_load_state()

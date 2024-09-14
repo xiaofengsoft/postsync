@@ -1,10 +1,10 @@
 from entity.community import Community
 from bs4 import BeautifulSoup
 import json
-import os
-from common.func import get_file_dir
 from common.core import config
 import re
+from common.func import wait_random_time
+
 
 class Csdn(Community):
     site_name = 'CSDN'
@@ -34,14 +34,23 @@ class Csdn(Community):
         # 输入内容
         await self.page.locator(".editor__inner").fill(content)
         await self.page.get_by_role("button", name="发布文章").click()
+        cover_img = self.page.locator(
+            "body > div.app.app--light > div.modal > div > div.modal__inner-2 > div.modal__content > div:nth-child(3) > div > div.preview-box > img"
+            )
+        cover_attr = await cover_img.get_attribute("src")
+        if cover_attr.strip() != "":
+            await cover_img.hover()
+            await self.page.locator("body > div.app.app--light > div.modal > div > div.modal__inner-2 > div.modal__content > div:nth-child(3) > div > div.preview-box > a > i").click()
         # 封面处理
         async with self.page.expect_file_chooser() as fc_info:
             await self.page.locator(".upload-img-box").click()
             file_chooser = await fc_info.value
             await file_chooser.set_files(cover)
         # 输入摘要
+        wait_random_time()
         await self.page.locator(".el-textarea__inner").fill(digest)
         # 标签处理
+        wait_random_time()
         await self.page.locator(".mark_selection_title_el_tag > .tag__btn-tag").click()
         tag_input = self.page.locator(".el-input--suffix > .el-input__inner")
         column_selector = self.page.locator(".el-autocomplete-suggestion__list")
@@ -49,6 +58,7 @@ class Csdn(Community):
             await tag_input.fill(tag)
             await column_selector.locator("li", has_text=re.compile(tag, re.IGNORECASE)).first.click()
         await self.page.locator(".mark_selection_box_body > button").click()
+        wait_random_time()
         # 专栏处理
         column_selector = self.page.locator(".tag__options-list")
         try:
@@ -62,8 +72,10 @@ class Csdn(Community):
                 await column_selector.locator("span", has_text=re.compile(column, re.IGNORECASE)).first.click()
         await self.page.locator("      .tag__options-txt > .modal__close-button").click()
         # 点击发布按钮
+        wait_random_time()
         await self.page.get_by_label("Insert publishArticle").get_by_role("button", name="发布文章").click()
         # 文章链接
+        wait_random_time()
         async with self.page.expect_response("**/saveArticle") as response_info:
             pass
         data = await response_info.value

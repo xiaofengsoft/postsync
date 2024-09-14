@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from playwright.async_api import Error as BrowserError
 from playwright.async_api import TimeoutError as BrowserTimeoutError
+import traceback
 
 
 class FileNotReferencedError(Exception):
@@ -18,4 +19,23 @@ class CommunityNotExistError(Exception):
     Exception raised when a community does not exist
     """
     pass
+
+
+def format_exception(exception):
+    """
+    Format exception traceback
+    :param exception:
+    :return:
+    """
+    tb = traceback.format_exception(type(exception), exception, exception.__traceback__)
+    return ''.join(tb)
+
+
+class BrowserExceptionGroup(Exception):
+    def __init__(self, exceptions):
+        self.exceptions = exceptions
+        super().__init__(f"Multiple exceptions occurred: {len(exceptions)}")
+
+    def __str__(self):
+        return '\n'.join([f"Exception {i + 1}:\n{format_exception(e)}" for i, e in enumerate(self.exceptions)])
 

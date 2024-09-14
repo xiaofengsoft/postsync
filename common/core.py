@@ -8,7 +8,8 @@ from common.result import Result
 from common.func import convert_md_to_html
 import asyncio
 from importlib import import_module
-from common.error import FileNotReferencedError, BrowserError, CommunityNotExistError
+from common.error import FileNotReferencedError, BrowserError, CommunityNotExistError, BrowserExceptionGroup
+
 
 def get_config() -> dict:
     return load_yaml(join(get_root_path(), 'config.yaml'))
@@ -90,10 +91,13 @@ async def async_post_file(file: str, title: str, content: str, digest: str, cate
                                columns
                                )
         tasks.append(task)
-    result = await asyncio.gather(*tasks)
+    results = await asyncio.gather(*tasks,return_exceptions=config['app']['debug'])
+    exceptions = [result for result in results if isinstance(result, Exception)]
+    if exceptions:
+        raise BrowserExceptionGroup(exceptions)
     await browser.close()
     await asp.__aexit__()
-    return Result(code=1, message='上传成功！！！', data=result)
+    return Result(code=1, message='上传成功！！！', data=results)
 
 
 async def async_post_text(browser: object, ap: object, asp: object, file_path: str, title: str, content: str,
