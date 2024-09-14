@@ -1,6 +1,4 @@
 from playwright.async_api import async_playwright
-
-import common.func
 from common.func import (load_yaml)
 from common.func import get_root_path
 from common.func import get_file_name_ext
@@ -10,9 +8,7 @@ from common.result import Result
 from common.func import convert_md_to_html
 import asyncio
 from importlib import import_module
-from common.error import FileNotReferencedError, BrowserError
-from common.error import CommunityNotExistError
-from playwright.async_api import Error as PlaywrightError
+from common.error import FileNotReferencedError, BrowserError, CommunityNotExistError
 
 def get_config() -> dict:
     return load_yaml(join(get_root_path(), 'config.yaml'))
@@ -134,7 +130,7 @@ async def async_post_text(browser: object, ap: object, asp: object, file_path: s
                                                           digest=digest,
                                                           tags=tags, category=category, cover=cover, topic=topic,
                                                           columns=columns)
-    except PlaywrightError:
+    except BrowserError:
         if config['app']['debug']:
             raise
         else:

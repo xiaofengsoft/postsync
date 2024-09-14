@@ -233,3 +233,18 @@ async def insert_html_content_to_frame(page: Page, frame_selector: str, content_
     frameElement.contentDocument.querySelector(content_selector).innerHTML = html_content;
     }
     """, [frame_selector, content_selector, html_content])
+
+async def insert_html_to_element(page: Page,element_selector:str ,html_content: str):
+    """
+    将HTML内容插入到元素中
+    :param page:
+    :param element_selector:
+    :param html_content:
+    :return:
+    """
+    await page.evaluate("""
+    ([element_selector,html_content]) => {
+    const element = document.querySelector(element_selector);
+    element.innerHTML = html_content;
+    }
+    """, [element_selector, html_content])

@@ -82,7 +82,7 @@ class Wordpress(Community):
         data = json.loads(data.decode('utf-8'))
         try:
             res = str(data['data']['url'])
-        except Exception as e:
+        except Exception:
             res = str(data['data'][0]['url'])
         return res
 

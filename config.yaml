@@ -4,7 +4,7 @@ app:
   version: 1.0.0
   author: 张一风
   epilog: 请使用 -h 查看帮助信息
-  debug: True  # 是否开启调试模式
+  debug: False  # 是否开启调试模式
 view:
   width: 1920
   height: 1080

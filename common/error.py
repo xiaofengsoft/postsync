@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+from playwright.async_api import Error as BrowserError
+from playwright.async_api import TimeoutError as BrowserTimeoutError
+
 
 class FileNotReferencedError(Exception):
     """
@@ -16,8 +19,3 @@ class CommunityNotExistError(Exception):
     """
     pass
 
-
-class BrowserError(Exception):
-    def add_note(self, __note):
-        super().add_note(__note)
-        super().add_note("浏览器发生错误")

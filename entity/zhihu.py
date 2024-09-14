@@ -89,7 +89,7 @@ class Zhihu(Community):
 
     async def check_response(self,response):
         if response.url.startswith("https://api.zhihu.com/images/"):
-            resp_body =  await response.body()
+            resp_body = await response.body()
             data = json.loads(resp_body.decode('utf-8'))
             if data['status'] == 'success':
                 self.origin_src = data['original_src']

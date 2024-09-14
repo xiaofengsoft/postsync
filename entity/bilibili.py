@@ -45,7 +45,7 @@ class Bilibili(Community):
         # 处理内容
         content = await self.async_convert_html_img_path(content, file_path)
         wait_random_time()
-        await insert_html_to_website(self.page,
+        await insert_html_to_element(self.page,
                                      "#app > div > div.web-editor__wrap > div.b-read-editor > div.b-read-editor__content.mt-m > div.b-read-editor__input.mb-l > div.b-read-editor__field > div > div.ql-editor",
                                      content)
         await self.page.locator(

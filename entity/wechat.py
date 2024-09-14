@@ -1,19 +1,9 @@
 # -*- coding: utf-8 -*-
-import asyncio
-import re
-import time
-
-from playwright._impl._async_base import AsyncEventContextManager
-from playwright.async_api import FileChooser
-import pyperclip
-
-import common.func
+from common.func import wait_random_time
 from common.core import config
-from common.func import get_file_dir
 from entity.community import Community
-from bs4 import BeautifulSoup
-import os
 import json
+
 
 class Wechat(Community):
     url_post_new = "https://mp.weixin.qq.com/"
@@ -31,7 +21,8 @@ class Wechat(Community):
         columns, tags, category, cover = super().process_args(columns, tags, category, cover)
         await self.page.goto(Wechat.url_post_new)
         async with self.browser.expect_page() as new_page:
-            await self.page.locator("#app > div.main_bd_new > div:nth-child(3) > div.weui-desktop-panel__bd > div > div:nth-child(2)").click()
+            await self.page.locator("#app > div.main_bd_new > div:nth-child(3) > div.weui-desktop-panel__bd > div > div:nth-child(3) > div").click()
+        await self.page.close()
         self.page = await new_page.value
         await self.page.get_by_role("listitem", name="文档导入").click()
         async with self.page.expect_file_chooser() as fc_info:
@@ -44,9 +35,9 @@ class Wechat(Community):
         await self.page.locator("#author").fill(config['default']['author'])
         # 上传封面
         async with self.page.expect_file_chooser() as fc_info:
-            time.sleep(0.5)
+            wait_random_time()
             await self.page.locator("#js_cover_area").scroll_into_view_if_needed()
-            time.sleep(0.5)
+            wait_random_time()
             await self.page.locator("#js_cover_area").hover()
             await self.page.locator("#js_cover_null > ul > li:nth-child(2) > a").click()
             await self.page.locator("#vue_app label").nth(1).click()
@@ -56,7 +47,9 @@ class Wechat(Community):
         if await self.page.locator("#js_image_dialog_list_wrp > div > div:nth-child(2) > i > .image_dialog__checkbox").is_enabled():
             await self.page.locator("#js_image_dialog_list_wrp > div > div:nth-child(2)").click()
         await self.page.locator("#vue_app > div:nth-child(3) > div.weui-desktop-dialog__wrp.weui-desktop-dialog_img-picker.weui-desktop-dialog_img-picker-with-crop > div > div.weui-desktop-dialog__ft > div:nth-child(1) > button").click()
+        wait_random_time()
         await self.page.locator("#vue_app > div:nth-child(3) > div.weui-desktop-dialog__wrp.weui-desktop-dialog_img-picker.weui-desktop-dialog_img-picker-with-crop > div > div.weui-desktop-dialog__ft > div:nth-child(2) > button").click()
+        wait_random_time()
         # 填写摘要
         await self.page.locator("#js_description").fill(digest)
         # 填写合集（标签）
