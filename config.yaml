@@ -11,9 +11,9 @@ view:
 
 data:
   user:
-    dir: C:\Users\xiaof\AppData\Local\Microsoft\Edge\User Data  # 浏览器用户数据目录
+    dir: C:\Users\xiaof\AppData\Local\Google\Chrome\User Data  # 浏览器用户数据目录
   executable:
-    path: C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe  # 浏览器可执行文件路径
+    path: C:\Program Files\Google\Chrome\Application\chrome.exe  # 浏览器可执行文件路径
 
 wordpress:
   enable: True  # 是否启用WordPress同步

@@ -2,9 +2,9 @@
 from entity.community import Community
 from bs4 import BeautifulSoup
 import json
-import os
-from common.func import get_file_dir, insert_html_content_to_frame, wait_random_time
 from common.core import config
+from common.func import insert_html_content_to_frame, wait_random_time
+from common.error import BrowserTimeoutError
 import re
 
 
@@ -65,9 +65,17 @@ class Cnblog(Community):
         await self.page.locator(".cdk-overlay-connected-position-bounding-box").locator("nz-tree-node").first.click()
         await self.page.locator(
             "body > cnb-root > cnb-app-layout > div.main > as-split > as-split-area:nth-child(2) > div > div > cnb-spinner > div > cnb-posts-entry > cnb-post-editing-v2 > cnb-post-editor > div.panel.panel--main > cnb-site-category-selector > cnb-collapse-panel > div.cnb-panel-header.ng-tns-c31-11.cnb-panel-header-clickable > span:nth-child(2)").click()
-        await self.page.locator(
-            "body > cnb-root > cnb-app-layout > div.main > as-split > as-split-area:nth-child(2) > div > div > cnb-spinner > div > cnb-posts-entry > cnb-post-editing-v2 > cnb-post-editor > div.panel.panel--main > cnb-site-category-selector > cnb-collapse-panel > div.panel-content.ng-tns-c31-11.ng-trigger.ng-trigger-openClosePanel.cnb-panel-body > div").locator(
-            "div", has_text=re.compile(category, re.IGNORECASE)).first.click()
+        try:
+            try:
+                await self.page.locator(
+                    "body > cnb-root > cnb-app-layout > div.main > as-split > as-split-area:nth-child(2) > div > div > cnb-spinner > div > cnb-posts-entry > cnb-post-editing-v2 > cnb-post-editor > div.panel.panel--main > cnb-site-category-selector > cnb-collapse-panel > div.panel-content.ng-tns-c31-11.ng-trigger.ng-trigger-openClosePanel.cnb-panel-body > div").locator(
+                    "div", has_text=re.compile(category, re.IGNORECASE)).first.click()
+            except BrowserTimeoutError:
+                await self.page.locator(
+                    "body > cnb-root > cnb-app-layout > div.main > as-split > as-split-area:nth-child(2) > div > div > cnb-spinner > div > cnb-posts-entry > cnb-post-editing-v2 > cnb-post-editor > div.panel.panel--main > cnb-site-category-selector > cnb-collapse-panel > div.panel-content.ng-tns-c31-11.ng-trigger.ng-trigger-openClosePanel.cnb-panel-body > div").locator(
+                    "div", has_text=re.compile(config['default']['community']['cnblog']['category'], re.IGNORECASE)).first.click()
+        except BrowserTimeoutError:
+            pass
         await self.page.locator(
             "#tags > div > div > nz-select > nz-select-top-control > nz-select-search > input").click()
         tag_selector = self.page.locator(".cdk-virtual-scroll-content-wrapper")
