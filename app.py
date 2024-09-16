@@ -1,7 +1,8 @@
-from common.core import *
-from common.start import *
+from common.core import async_post_file,process_args
+from common.start import import_commands, config
 from common.handler import handle_global_exception
 import nest_asyncio
+import asyncio
 
 
 # 同步文件

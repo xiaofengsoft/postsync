@@ -4,7 +4,7 @@ import pytest
 import requests
 from playwright.sync_api import sync_playwright
 from playwright.async_api import async_playwright
-from common.core import config
+from common.config import config
 import asyncio
 
 @pytest.mark.parametrize("url", ["https://zhuanlan.zhihu.com/api/articles/drafts"])

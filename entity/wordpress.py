@@ -1,19 +1,24 @@
 # -*- coding: utf-8 -*-
 import time
 
-from common.core import config
+from common.config import config
 from entity.community import Community
 import json
 import re
 from bs4 import BeautifulSoup
+from utils.domain import get_domain, join_url_paths
 
 
 class Wordpress(Community):
     site_name = "Wordpress"
     site_alias = "wordpress"
+    site_storage_mark = (
+        get_domain(config['wordpress']['url']),
+    )
+    login_url = config['wordpress']['url'] + "/wp-login.php"
 
-    def __init__(self, browser, ap, asp):
-        super().__init__(browser, ap, asp)
+    def __init__(self, context, ap, asp):
+        super().__init__(context, ap, asp)
         if not bool(config['wordpress']['enable']):
             return
         self.url = config['wordpress']['url'] + "/wp-admin/post-new.php"
@@ -23,6 +28,12 @@ class Wordpress(Community):
                              category: str = None, cover: str = None, columns: list = None, topic: str = None) -> str:
         # 处理参数
         columns, tags, category, cover = super().process_args(columns, tags, category, cover)
+        if not self.is_login:
+            await self.login(
+                self.login_url,
+                join_url_paths(config['wordpress']['url'], ["wp-admin", "admin-ajax.php"])+"$",
+                lambda login_data: 0 == 0,
+            )
         await self.page.goto(self.url, wait_until='load', timeout=10000)
         # 处理参数
         md_file_path = file_path.replace('.html', '.md')

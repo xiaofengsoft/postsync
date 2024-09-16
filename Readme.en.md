@@ -45,8 +45,6 @@ Then copy config.yaml to the dist/PostSync directory, and run PostSync.exe from 
 - Ensure you have logged in to your accounts on all platforms before using the software.
 - Ensure you have created the corresponding tags and categories on the relevant platforms if you plan to use tagging and
   categorization features.
-- Please exit the browser before using the software.
-- Use the software may cause the browser data cleared.
 
 ### Features
 
@@ -61,7 +59,9 @@ Then copy config.yaml to the dist/PostSync directory, and run PostSync.exe from 
 
 ### Optimization Tasks
 
-- [ ] Data directory will be cleaned up if users use the software for the first time.
+- [x] New context
+- [x] Data directory will be cleaned up if users use the software for the first time.
+- [ ] Materialize the timeout
 - [ ] Record the logs of the process.
 - [ ] Specially handle the case of the specific exception.
 - [ ] Specially handle the case of the specific column argument.

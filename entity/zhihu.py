@@ -1,35 +1,40 @@
 import asyncio
 import re
 
-from common.core import config
+from common.config import config
 from common.func import wait_random_time
 from entity.community import Community
 from bs4 import BeautifulSoup
 from common.error import BrowserTimeoutError
 import json
 
+from utils.file import get_path
+
 
 class Zhihu(Community):
     url_post_new = "https://zhuanlan.zhihu.com/write"
+    login_url = "https://www.zhihu.com/signin"
     site_name = "知乎"
     site_alias = "zhihu"
+    site_storage_mark = (
+        "zhihu.com",
+    )
 
-    def __init__(self, browser, ap, asp):
-        super().__init__(browser, ap, asp)
+    def __init__(self, context, ap, asp):
+        super().__init__(context, ap, asp)
         self.pic_nums = 0  # 正在处理的图片数量
         self.origin_src = None
 
     async def async_post_new(self, title: str, digest: str, content: str, file_path: str = None, tags: list = None,
                              category: str = None, cover: str = None, columns: list = None, topic: str = None) -> str:
-        """
-        先保存到草稿，借助Patch请求，借助草稿发布文章，在这之前需要先上传图片
-        有个post请求 drafts
-        还有个patch请求 draft
-        同步的请求可以成功post drafts
-        但是这里不知道为什么不能，可能是异步的原因
-        """
         # 处理参数
         columns, tags, category, cover = super().process_args(columns, tags, category, cover)
+        if not self.is_login:
+            await self.login(
+                self.login_url,
+                "https://www.zhihu.com/sc-profiler",
+                lambda login_data: 0 == 0
+            )
         await self.page.goto(self.url_post_new)
         # 上传图片
         await self.page.get_by_label("图片").click()

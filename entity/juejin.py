@@ -1,11 +1,14 @@
-from common.func import wait_random_time
-import time
-from entity.community import Community
-from common.core import config
-from bs4 import BeautifulSoup
 import json
 import re
+import time
+from bs4 import BeautifulSoup
+from common.config import config
 from common.error import BrowserTimeoutError
+from common.func import wait_random_time
+from common import constant
+from entity.community import Community
+from utils.data import format_json_file
+from utils.file import get_path
 
 
 class Juejin(Community):
@@ -15,8 +18,11 @@ class Juejin(Community):
 
     site_name = "稀土掘金"
     site_alias = "juejin"
+    site_storage_mark = (
+        'api.juejin.cn'
+    )
     url_post_new = "https://juejin.cn/editor/drafts/new"
-    url = "https://juejin.cn"
+    url = "https://www.juejin.cn"
 
     async def async_post_new(self,
                              title: str,
@@ -29,9 +35,12 @@ class Juejin(Community):
                              columns: list = None,
                              topic: str = None,
                              ) -> str:
-
         # 处理参数
         columns, tags, category, cover = super().process_args(columns, tags, category, cover)
+        if not self.is_login:
+            await self.login(self.url,
+                             "https://api.juejin.cn/user_api/v1/user/profile_id",
+                             lambda login_data: login_data['err_no'] == 0)
         # 打开发布页面
         await self.page.goto(self.url_post_new)
         # 处理图片路径
