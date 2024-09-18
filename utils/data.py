@@ -33,7 +33,7 @@ def format_json_file(path: str = config['data']['storage']['path']) -> str:
         return json_str
 
 
-def retrieve_storage_data(marks: tuple | str, path: str = config['data']['storage']['path']) -> bool:
+def retrieve_storage_data(marks: tuple | str, path: str = get_path(config['data']['storage']['path'])) -> bool:
     """
     检索存储数据是否存在含有标志
     检索的JSON数据必须格式化

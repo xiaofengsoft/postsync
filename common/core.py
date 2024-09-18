@@ -7,6 +7,7 @@ import asyncio
 from importlib import import_module
 from common.error import FileNotReferencedError, BrowserError, CommunityNotExistError, BrowserExceptionGroup
 from common.config import config
+from utils.file import get_path
 
 
 def process_args(args) -> tuple[str, str, str, str, str, str, str, list, list, list]:
@@ -73,7 +74,7 @@ async def async_post_file(file: str, title: str, content: str, digest: str, cate
     viewport = config['default']['no_viewport'] if config['default']['no_viewport'] else {
         'width': config['view']['width'], 'height': config['view']['height']}
     context = await browser.new_context(
-        storage_state=config['data']['storage']['path'],
+        storage_state=get_path(config['data']['storage']['path']),
         no_viewport=viewport,
         user_agent=config['default']['user_agent']
     )
