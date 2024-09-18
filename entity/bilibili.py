@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-from common.func import *
 from entity.community import Community
-from common.result import Result
-from common.core import config
+from common.config import config
 from bs4 import BeautifulSoup
 import json
 import re
+from common.func import wait_random_time
+from common.func import insert_html_to_element
 
 
 class Bilibili(Community):
@@ -17,9 +17,10 @@ class Bilibili(Community):
     site_alias = "bilibili"
     url_post_new = "https://member.bilibili.com/read/editor/#/web"
     url_post_manager = "https://member.bilibili.com/platform/upload-manager/opus"
-
-    def __init__(self, browser, ap, asp):
-        super().__init__(browser, ap, asp)
+    url = "https://www.bilibili.com/"
+    site_storage_mark = (
+        "bilibili.com",
+    )
 
     async def async_post_new(self,
                              title: str,
@@ -34,6 +35,10 @@ class Bilibili(Community):
                              ) -> str:
         # 处理参数
         columns, tags, category, cover = super().process_args(columns, tags, category, cover)
+        if not self.is_login:
+            await self.login(self.url,
+                             "https://passport.bilibili.com/x/passport-login/web/login",
+                             lambda login_data: login_data['code'] == 0)
         # 打开发布页面
         await self.page.goto(self.url_post_new, wait_until='load')
         wait_random_time()
@@ -56,11 +61,12 @@ class Bilibili(Community):
             "#app > div > div.web-editor__wrap > div.b-read-editor > div.b-read-editor__settings.mt-m > div > div:nth-child(1) > div.bre-settings__sec__ctn > div.bre-settings__categories"
         )
         try:
-            button =  category_zone.locator("div",has_text=re.compile(category))
+            button = category_zone.locator("div", has_text=re.compile(category))
             await button.click()
             await category_zone.locator("li:nth-child(1)").click()
         except Exception as e:
-            button = category_zone.locator("div", has_text=re.compile(config['default']['community'][self.site_alias]['category']))
+            button = category_zone.locator("div", has_text=re.compile(
+                config['default']['community'][self.site_alias]['category']))
             await button.click()
             await category_zone.locator("li:nth-child(1)").click()
         # 处理封面
@@ -70,25 +76,29 @@ class Bilibili(Community):
             ).click()
         file_chooser = await select_file.value
         await file_chooser.set_files(cover)
-        await self.page.locator("body > div.bre-modal.bre-img-corpper-modal > div > div.bre-modal__content > div.bre-img-corpper-modal__footer > button.bre-btn.primary").click()
+        await self.page.locator(
+            "body > div.bre-modal.bre-img-corpper-modal > div > div.bre-modal__content > div.bre-img-corpper-modal__footer > button.bre-btn.primary").click()
         # 处理话题
         if topic:
-            await self.page.locator("#app > div > div.web-editor__wrap > div.b-read-editor > div.b-read-editor__settings.mt-m > div > div:nth-child(3) > div.bre-settings__sec__ctn > div > div > div.bili-topic-selector__search > div > div > div.bili-topic-search__input > span"
-                                        ).click()
+            await self.page.locator(
+                "#app > div > div.web-editor__wrap > div.b-read-editor > div.b-read-editor__settings.mt-m > div > div:nth-child(3) > div.bre-settings__sec__ctn > div > div > div.bili-topic-selector__search > div > div > div.bili-topic-search__input > span"
+                ).click()
             try:
-                await self.page.locator("#app > div > div.web-editor__wrap > div.b-read-editor > div.b-read-editor__settings.mt-m > div > div:nth-child(3) > div.bre-settings__sec__ctn > div > div > div.bili-topic-selector__search > div > div > div.bili-topic-search__input > input"
-                                            ).fill(topic)
-                wait_random_time()
-                await self.page.locator("#app > div > div.web-editor__wrap > div.b-read-editor > div.b-read-editor__settings.mt-m > div > div:nth-child(3) > div.bre-settings__sec__ctn > div > div > div.bili-topic-selector__search > div > div > div.bili-topic-search__result > div.bili-topic-search__list > div:nth-child(1)"
-                                            ).click()
-            except Exception as e:
                 await self.page.locator(
                     "#app > div > div.web-editor__wrap > div.b-read-editor > div.b-read-editor__settings.mt-m > div > div:nth-child(3) > div.bre-settings__sec__ctn > div > div > div.bili-topic-selector__search > div > div > div.bili-topic-search__input > input"
-                    ).fill(config['default']['community'][self.site_alias]['topic'])
+                    ).fill(topic)
                 wait_random_time()
                 await self.page.locator(
                     "#app > div > div.web-editor__wrap > div.b-read-editor > div.b-read-editor__settings.mt-m > div > div:nth-child(3) > div.bre-settings__sec__ctn > div > div > div.bili-topic-selector__search > div > div > div.bili-topic-search__result > div.bili-topic-search__list > div:nth-child(1)"
                     ).click()
+            except Exception as e:
+                await self.page.locator(
+                    "#app > div > div.web-editor__wrap > div.b-read-editor > div.b-read-editor__settings.mt-m > div > div:nth-child(3) > div.bre-settings__sec__ctn > div > div > div.bili-topic-selector__search > div > div > div.bili-topic-search__input > input"
+                ).fill(config['default']['community'][self.site_alias]['topic'])
+                wait_random_time()
+                await self.page.locator(
+                    "#app > div > div.web-editor__wrap > div.b-read-editor > div.b-read-editor__settings.mt-m > div > div:nth-child(3) > div.bre-settings__sec__ctn > div > div > div.bili-topic-selector__search > div > div > div.bili-topic-search__result > div.bili-topic-search__list > div:nth-child(1)"
+                ).click()
 
         # 处理标签
         tag_input = self.page.locator(
@@ -105,21 +115,25 @@ class Bilibili(Community):
         )
         try:
             column = columns[0]
-            await column_zone.locator("div",has_text=re.compile(column)).click()
+            await column_zone.locator("div", has_text=re.compile(column)).click()
         except Exception as e:
             column = config['default']['community'][self.site_alias]['columns'][0]
-            await column_zone.locator("div",has_text=re.compile(column)).first.click()
-        await self.page.locator("body > div.bre-modal.bre-list-modal > div > div.bre-modal__content > div.bre-list-modal__footer > button").click()
+            await column_zone.locator("div", has_text=re.compile(column)).first.click()
+        await self.page.locator(
+            "body > div.bre-modal.bre-list-modal > div > div.bre-modal__content > div.bre-list-modal__footer > button").click()
         # 发布文章
         async with self.page.expect_response(re.compile("https://data.bilibili.com/v2/log/web")) as resp:
-            await self.page.locator("#app > div > div.web-editor__wrap > div.b-read-editor > div.b-read-editor__btns.mt-m.mb-m > button.bre-btn.primary.size--large").click()
+            await self.page.locator(
+                "#app > div > div.web-editor__wrap > div.b-read-editor > div.b-read-editor__btns.mt-m.mb-m > button.bre-btn.primary.size--large").click()
         data = await resp.value
         data_body = await data.body()
         if data_body.decode('utf-8') != 'ok':
             raise Exception("发布失败")
         await self.page.goto(self.url_post_manager, wait_until='load')
         async with self.browser.expect_page() as page_info:
-            await self.page.frame_locator("#cc-body > div.cc-content-body.upload-manage > div.opus.content > div > div > iframe").locator("#app > div.opus-list > div.opus-list-cards > div:nth-child(1) > div.opus-card-meta > div.opus-card-meta__title > div").click()
+            await self.page.frame_locator(
+                "#cc-body > div.cc-content-body.upload-manage > div.opus.content > div > div > iframe").locator(
+                "#app > div.opus-list > div.opus-list-cards > div:nth-child(1) > div.opus-card-meta > div.opus-card-meta__title > div").click()
         page_value = await page_info.value
         return page_value.url
 

@@ -1,22 +1,12 @@
 from playwright.async_api import async_playwright
-from common.func import (load_yaml)
-from common.func import get_root_path
-from common.func import get_file_name_ext
-from common.func import convert_html_to_docx
-from os.path import join
+from utils.file import get_file_name_ext
+from utils.file import convert_html_to_docx
 from common.result import Result
-from common.func import convert_md_to_html
+from utils.file import convert_md_to_html
 import asyncio
 from importlib import import_module
 from common.error import FileNotReferencedError, BrowserError, CommunityNotExistError, BrowserExceptionGroup
-
-
-def get_config() -> dict:
-    return load_yaml(join(get_root_path(), 'config.yaml'))
-
-
-config = get_config()
-config['default']['cover'] = join(get_root_path(), config['default']['cover'])
+from common.config import config
 
 
 def process_args(args) -> tuple[str, str, str, str, str, str, str, list, list, list]:
@@ -33,7 +23,7 @@ def process_args(args) -> tuple[str, str, str, str, str, str, str, list, list, l
         # 如果是markdown文件，则转换为html
         file = convert_md_to_html(file)
     # 生成docx文件
-    docx_file = convert_html_to_docx(file)
+    convert_html_to_docx(file)
     stream_file = open(file, 'r', encoding='utf-8')
     content = stream_file.read()
     stream_file.close()
@@ -74,29 +64,32 @@ async def async_post_file(file: str, title: str, content: str, digest: str, cate
     """
     asp = async_playwright()
     ap = await asp.start()
-    viewport = config['default']['no_viewport'] if config['default']['no_viewport'] else {
-        'width': config['view']['width'], 'height': config['view']['height']}
-    browser = await ap.chromium.launch_persistent_context(
-        base_url=config['default']['url'],
+    browser = await ap.chromium.launch(
         channel=config['default']['browser'],
         headless=config['default']['headless'],
-        user_data_dir=config['data']['user']['dir'],
-        executable_path=config['data']['executable']['path'],
-        no_viewport=viewport,
-        args=['--start-maximized'],
+        args=['--start-maximized --disable-blink-features=AutomationControlled'],
         devtools=bool(config['default']['devtools'])
     )
+    viewport = config['default']['no_viewport'] if config['default']['no_viewport'] else {
+        'width': config['view']['width'], 'height': config['view']['height']}
+    context = await browser.new_context(
+        storage_state=config['data']['storage']['path'],
+        no_viewport=viewport,
+        user_agent=config['default']['user_agent']
+    )
+    # 读取存储文件 TODO 采用playwright已解析的数据
+
     tasks = []
     for site in sites:
-        task = async_post_text(browser, ap, asp, file, title, content, digest, site, category, cover, topic, tags,
+        task = async_post_text(context, ap, asp, file, title, content, digest, site, category, cover, topic, tags,
                                columns
                                )
         tasks.append(task)
-    results = await asyncio.gather(*tasks,return_exceptions=config['app']['debug'])
+    results = await asyncio.gather(*tasks, return_exceptions=config['app']['debug'])
     exceptions = [result for result in results if isinstance(result, Exception)]
     if exceptions:
         raise BrowserExceptionGroup(exceptions)
-    await browser.close()
+    await context.close()
     await asp.__aexit__()
     return Result(code=1, message='上传成功！！！', data=results)
 
@@ -129,7 +122,7 @@ async def async_post_text(browser: object, ap: object, asp: object, file_path: s
     """
     site_cls = import_module('entity.' + site.strip())
     site_instance = getattr(site_cls, site.strip().capitalize())
-    site_instance = site_instance(browser=browser, ap=ap, asp=asp)
+    site_instance = site_instance(context=browser, ap=ap, asp=asp)
     try:
         post_new_url = await site_instance.async_post_new(file_path=file_path, title=title, content=content,
                                                           digest=digest,
@@ -142,6 +135,4 @@ async def async_post_text(browser: object, ap: object, asp: object, file_path: s
             return site_instance.site_name, "发生错误"
     else:
         return site_instance.site_name, post_new_url
-
-
 

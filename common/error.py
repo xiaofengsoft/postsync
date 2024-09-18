@@ -21,6 +21,13 @@ class CommunityNotExistError(Exception):
     pass
 
 
+class ConfigNotConfiguredError(Exception):
+    """
+    Exception raised when config is not configured
+    """
+    pass
+
+
 def format_exception(exception):
     """
     Format exception traceback
@@ -37,5 +44,5 @@ class BrowserExceptionGroup(Exception):
         super().__init__(f"Multiple exceptions occurred: {len(exceptions)}")
 
     def __str__(self):
-        return '\n'.join([f"Exception {i + 1}:\n{format_exception(e)}" for i, e in enumerate(self.exceptions)])
+        return '\n'.join([f"\nException {i + 1}:\n{format_exception(e)}" for i, e in enumerate(self.exceptions)])
 

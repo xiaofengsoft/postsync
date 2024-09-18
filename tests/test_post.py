@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
-from common.func import get_root_path
+from utils.file import get_root_path
 import pytest
 
 
@@ -13,7 +13,7 @@ class TestPost:
         os.chdir(get_root_path())
         os.system('python app.py  -co static/imgs/logo.png -t python,github')
 
-    @pytest.mark.parametrize("site", ['csdn'])
+    @pytest.mark.parametrize("site", ['zhihu'])
     def test_post_with_single_site(self, site):
         """
         单次测试各个网站的

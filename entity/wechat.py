@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from common.func import wait_random_time
-from common.core import config
+from common.config import config
 from entity.community import Community
 import json
 
@@ -9,19 +9,29 @@ class Wechat(Community):
     url_post_new = "https://mp.weixin.qq.com/"
     site_name = "公众号"
     site_alias = "wechat"
+    site_storage_mark = (
+        "mp.weixin.qq.com",
+    )
+    login_url = "https://mp.weixin.qq.com/"
 
-    def __init__(self, browser, ap, asp):
-
-        super().__init__(browser, ap, asp)
+    def __init__(self, context, ap, asp):
+        super().__init__(context, ap, asp)
         self.origin_src = None
 
     async def async_post_new(self, title: str, digest: str, content: str, file_path: str = None, tags: list = None,
                              category: str = None, cover: str = None, columns: list = None, topic: str = None) -> str:
         # 处理参数
         columns, tags, category, cover = super().process_args(columns, tags, category, cover)
+        if not self.is_login:
+            await self.login(
+                self.login_url,
+                "mp.weixin.qq.com/cgi-bin/bizlogin",
+                lambda login_data: 0 == 0,
+            )
         await self.page.goto(Wechat.url_post_new)
         async with self.browser.expect_page() as new_page:
-            await self.page.locator("#app > div.main_bd_new > div:nth-child(3) > div.weui-desktop-panel__bd > div > div:nth-child(3) > div").click()
+            await self.page.locator("#app > div.main_bd_new > div:nth-child(3) > div.weui-desktop-panel__bd > div > "
+                                    "div:nth-child(3) > div").click()
         await self.page.close()
         self.page = await new_page.value
         await self.page.get_by_role("listitem", name="文档导入").click()

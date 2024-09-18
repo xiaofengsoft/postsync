@@ -1,16 +1,24 @@
+from common import constant
 from entity.community import Community
 from bs4 import BeautifulSoup
 import json
-from common.core import config
+from common.config import config
 import re
 from common.func import wait_random_time
 from common.error import BrowserTimeoutError
+from utils.data import format_json_file
+from utils.file import get_path
 
 
 class Csdn(Community):
     site_name = 'CSDN'
     url_post_new = 'https://editor.csdn.net/md/'
     site_alias = 'csdn'
+    site_storage_mark = (
+        'passport.csdn.net',
+    )
+    url = "https://www.csdn.net/"
+    login_url = "https://passport.csdn.net/login?code=applets"
 
     async def async_post_new(self,
                              title: str,
@@ -25,6 +33,10 @@ class Csdn(Community):
                              ) -> str:
         # 处理参数
         columns, tags, category, cover = super().process_args(columns, tags, category, cover)
+        if not self.is_login:
+            await self.login(self.login_url,
+                             "https://g-api.csdn.net/community/toolbar-api/v1/get-user-info",
+                             lambda login_data: login_data['code'] == 200)
         # 打开发布页面
         await self.page.goto(self.url_post_new)
         await self.page.locator(".editor__inner").fill("")
@@ -38,12 +50,14 @@ class Csdn(Community):
         await self.page.locator(".editor__inner").fill(content)
         await self.page.get_by_role("button", name="发布文章").click()
         cover_img = self.page.locator(
-            "body > div.app.app--light > div.modal > div > div.modal__inner-2 > div.modal__content > div:nth-child(3) > div > div.preview-box > img"
+            "body > div.app.app--light > div.modal > div > div.modal__inner-2 > div.modal__content > div:nth-child(3) "
+            "> div > div.preview-box > img"
             )
         cover_attr = await cover_img.get_attribute("src")
         if cover_attr.strip() != "":
             await cover_img.hover()
-            await self.page.locator("body > div.app.app--light > div.modal > div > div.modal__inner-2 > div.modal__content > div:nth-child(3) > div > div.preview-box > a > i").click()
+            await self.page.locator("body > div.app.app--light > div.modal > div > div.modal__inner-2 > "
+                                    "div.modal__content > div:nth-child(3) > div > div.preview-box > a > i").click()
         # 封面处理
         async with self.page.expect_file_chooser() as fc_info:
             await self.page.locator(".upload-img-box").click()

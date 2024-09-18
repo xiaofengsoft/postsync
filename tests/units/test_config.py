@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from common.core import config
+from common.config import config
 from common.func import analyse_var
 
 def test_config():

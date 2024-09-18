@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from common.argument import PostArgumentParser
-from common.core import config
+from common.config import config
 
 
 def import_commands():
