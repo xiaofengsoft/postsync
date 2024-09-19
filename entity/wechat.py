@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
+from common.error import BrowserTimeoutError
+import typing as t
 from common.func import wait_random_time
 from common.config import config
 from entity.community import Community
 import json
+from playwright.async_api import Browser, BrowserContext
+from common.apis import Post
 
 
 class Wechat(Community):
@@ -14,22 +18,19 @@ class Wechat(Community):
     )
     login_url = "https://mp.weixin.qq.com/"
 
-    def __init__(self, context, ap, asp):
-        super().__init__(context, ap, asp)
+    def __init__(self, browser: "Browser", context: "BrowserContext", post: Post):
+        super().__init__(browser, context, post)
         self.origin_src = None
 
-    async def async_post_new(self, title: str, digest: str, content: str, file_path: str = None, tags: list = None,
-                             category: str = None, cover: str = None, columns: list = None, topic: str = None) -> str:
-        # 处理参数
-        columns, tags, category, cover = super().process_args(columns, tags, category, cover)
+    async def upload(self) -> t.AnyStr:
         if not self.is_login:
             await self.login(
                 self.login_url,
-                "mp.weixin.qq.com/cgi-bin/bizlogin",
+                "mp.weixin.qq.com/cgi-bin/bizlogin?action=login",
                 lambda login_data: 0 == 0,
             )
         await self.page.goto(Wechat.url_post_new)
-        async with self.browser.expect_page() as new_page:
+        async with self.context.expect_page() as new_page:
             await self.page.locator("#app > div.main_bd_new > div:nth-child(3) > div.weui-desktop-panel__bd > div > "
                                     "div:nth-child(3) > div").click()
         await self.page.close()
@@ -39,8 +40,8 @@ class Wechat(Community):
             await self.page.locator('#js_import_file_container label').click()
         file_chooser = await fc_info.value
         async with self.page.expect_response("https://mp.weixin.qq.com/advanced/mplog?action**") as response_info:
-            await file_chooser.set_files(file_path.replace('.html','.docx'))
-        response = await response_info.value
+            await file_chooser.set_files(self.post['paths']['html'].replace('.html', '.docx'))
+            await response_info.value
         # 填写作者
         await self.page.locator("#author").fill(config['default']['author'])
         # 上传封面
@@ -52,23 +53,40 @@ class Wechat(Community):
             await self.page.locator("#js_cover_null > ul > li:nth-child(2) > a").click()
             await self.page.locator("#vue_app label").nth(1).click()
         file_chooser = await fc_info.value
-        async with self.page.expect_response("https://mp.weixin.qq.com/cgi-bin/filetransfer?action=upload**") as response_info:
-            await file_chooser.set_files(cover)
-        if await self.page.locator("#js_image_dialog_list_wrp > div > div:nth-child(2) > i > .image_dialog__checkbox").is_enabled():
+        async with self.page.expect_response(
+                "https://mp.weixin.qq.com/cgi-bin/filetransfer?action=upload**"):
+            await file_chooser.set_files(self.post['cover'])
+        if await self.page.locator(
+                "#js_image_dialog_list_wrp > div > div:nth-child(2) > i > .image_dialog__checkbox").is_enabled():
             await self.page.locator("#js_image_dialog_list_wrp > div > div:nth-child(2)").click()
-        await self.page.locator("#vue_app > div:nth-child(3) > div.weui-desktop-dialog__wrp.weui-desktop-dialog_img-picker.weui-desktop-dialog_img-picker-with-crop > div > div.weui-desktop-dialog__ft > div:nth-child(1) > button").click()
+        await self.page.locator(
+            "#vue_app > div:nth-child(3) > div.weui-desktop-dialog__wrp.weui-desktop-dialog_img"
+            "-picker.weui-desktop-dialog_img-picker-with-crop > div > div.weui-desktop-dialog__ft "
+            "> div:nth-child(1) > button").click()
         wait_random_time()
-        await self.page.locator("#vue_app > div:nth-child(3) > div.weui-desktop-dialog__wrp.weui-desktop-dialog_img-picker.weui-desktop-dialog_img-picker-with-crop > div > div.weui-desktop-dialog__ft > div:nth-child(2) > button").click()
+        await self.page.locator(
+            "#vue_app > div:nth-child(3) > div.weui-desktop-dialog__wrp.weui-desktop-dialog_img-picker.weui-desktop"
+            "-dialog_img-picker-with-crop > div > div.weui-desktop-dialog__ft > div:nth-child(2) > button").click()
         wait_random_time()
         # 填写摘要
-        await self.page.locator("#js_description").fill(digest)
+        await self.page.locator("#js_description").fill(self.post['digest'])
         # 填写合集（标签）
         await self.page.locator("#js_article_tags_area > label > div > span").click()
-        tags_input = self.page.locator("#vue_app > div:nth-child(3) > div.weui-desktop-dialog__wrp.article_tags_dialog.js_article_tags_dialog > div > div.weui-desktop-dialog__bd > div > form > div.weui-desktop-form__control-group > div > div.tags_input_wrap.js_not_hide_similar_tags > div:nth-child(1) > div > span > span.weui-desktop-form-tag__wrp > div > span > input")
-        for tag in tags:
+        tags_input = self.page.locator(
+            "#vue_app > div:nth-child(3) > div.weui-desktop-dialog__wrp.article_tags_dialog.js_article_tags_dialog > "
+            "div > div.weui-desktop-dialog__bd > div > form > div.weui-desktop-form__control-group > div > "
+            "div.tags_input_wrap.js_not_hide_similar_tags > div:nth-child(1) > div > span > "
+            "span.weui-desktop-form-tag__wrp > div > span > input")
+        for tag in self.post['tags']:
             await tags_input.fill(tag)
-            await self.page.locator("#vue_app > div:nth-child(3) > div.weui-desktop-dialog__wrp.article_tags_dialog.js_article_tags_dialog > div > div.weui-desktop-dialog__bd > div > form > div.weui-desktop-form__control-group > div > div.tags_input_wrap.js_not_hide_similar_tags > div.weui-desktop-dropdown-menu.article_tags_sug > ul > li > div").click()
-        await self.page.locator("#vue_app > div:nth-child(3) > div.weui-desktop-dialog__wrp.article_tags_dialog.js_article_tags_dialog > div > div.weui-desktop-dialog__ft > div:nth-child(1) > button").click()
+            await self.page.locator(
+                "#vue_app > div:nth-child(3) > div.weui-desktop-dialog__wrp.article_tags_dialog"
+                ".js_article_tags_dialog > div > div.weui-desktop-dialog__bd > div > form > "
+                "div.weui-desktop-form__control-group > div > div.tags_input_wrap.js_not_hide_similar_tags > "
+                "div.weui-desktop-dropdown-menu.article_tags_sug > ul > li > div").click()
+        await self.page.locator(
+            "#vue_app > div:nth-child(3) > div.weui-desktop-dialog__wrp.article_tags_dialog.js_article_tags_dialog > "
+            "div > div.weui-desktop-dialog__ft > div:nth-child(1) > button").click()
         # 保存草稿
         await self.page.locator("#js_submit > button").click()
         async with self.page.expect_response("https://mp.weixin.qq.com/cgi-bin/masssend?**") as response_info:
@@ -82,4 +100,10 @@ class Wechat(Community):
         # 获取链接
         return "上传失败"
 
-
+    async def check_login_state(self) -> bool:
+        # TODO 这个判断错误
+        try:
+            await self.page.wait_for_selector(".weui-desktop-regist-access",timeout=config['default']['timeout'])
+        except BrowserTimeoutError:
+            return True
+        return False

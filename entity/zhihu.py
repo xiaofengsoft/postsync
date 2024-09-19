@@ -1,34 +1,33 @@
 import asyncio
 import re
+import typing as t
 
+from common.apis import Post
 from common.config import config
 from common.func import wait_random_time
 from entity.community import Community
 from bs4 import BeautifulSoup
 from common.error import BrowserTimeoutError
 import json
-
-from utils.file import get_path
+from playwright.async_api import Browser, BrowserContext
 
 
 class Zhihu(Community):
     url_post_new = "https://zhuanlan.zhihu.com/write"
     login_url = "https://www.zhihu.com/signin"
+    url_redirect_login = "https://www.zhihu.com/signin"
     site_name = "知乎"
     site_alias = "zhihu"
     site_storage_mark = (
         "zhihu.com",
     )
 
-    def __init__(self, context, ap, asp):
-        super().__init__(context, ap, asp)
+    def __init__(self, browser: "Browser", context: "BrowserContext", post: Post):
+        super().__init__(browser, context, post)
         self.pic_nums = 0  # 正在处理的图片数量
         self.origin_src = None
 
-    async def async_post_new(self, title: str, digest: str, content: str, file_path: str = None, tags: list = None,
-                             category: str = None, cover: str = None, columns: list = None, topic: str = None) -> str:
-        # 处理参数
-        columns, tags, category, cover = super().process_args(columns, tags, category, cover)
+    async def upload(self) -> t.AnyStr:
         if not self.is_login:
             await self.login(
                 self.login_url,
@@ -38,7 +37,7 @@ class Zhihu(Community):
         await self.page.goto(self.url_post_new)
         # 上传图片
         await self.page.get_by_label("图片").click()
-        content = await self.async_convert_html_img_path(content, file_path)
+        content = await self.convert_html_path(self.post['contents']['html'])
         await self.page.get_by_label("关闭").click()
         # 上传内容
         resp = await self.page.request.fetch(
@@ -53,19 +52,19 @@ class Zhihu(Community):
         )
         resp_body = await resp.body()
         data = json.loads(resp_body.decode('utf-8'))
-        await self.page.goto("https://zhuanlan.zhihu.com/p/"+str(data['id'])+"/edit")
+        await self.page.goto("https://zhuanlan.zhihu.com/p/" + str(data['id']) + "/edit")
         # 输入标题
-        await self.page.get_by_placeholder("请输入标题（最多 100 个字）").fill(title)
+        await self.page.get_by_placeholder("请输入标题（最多 100 个字）").fill(self.post['title'])
         # 上传封面
         async with self.page.expect_file_chooser() as fc_info:
             await self.page.locator("label").filter(has_text="添加文章封面").click()
             file_chooser = await fc_info.value
-            await file_chooser.set_files(cover)
+            await file_chooser.set_files(self.post['cover'])
         # 这里的分类当作问题投稿
         await self.page.locator(".ddLajxN_Q0AuobBZjX9m > button").first.click()
         await self.page.get_by_placeholder("请输入关键词查找问题").click()
-        await self.page.get_by_placeholder("请输入关键词查找问题").fill(category)
-        wait_random_time(1,2)
+        await self.page.get_by_placeholder("请输入关键词查找问题").fill(self.post['category'])
+        wait_random_time(1, 2)
         try:
             await self.page.locator(".Creator-SearchBar-searchIcon").dblclick()
             await self.page.locator(".css-1335jw2 > div > .Button").first.click()
@@ -76,35 +75,35 @@ class Zhihu(Community):
             await self.page.get_by_role("button", name="确定").click()
 
         # 标签当作文章话题
-        for tag in tags:
+        for tag in self.post['tags']:
             await self.page.get_by_role("button", name="添加话题").click()
             await self.page.get_by_placeholder("搜索话题").fill(tag)
             await self.page.locator(".css-ogem9c > button").first.click()
         # 选择专栏
         await self.page.locator("label").filter(has_text=re.compile(r"^发布到专栏$")).click()
         try:
-            column = columns[0]
+            column = self.post['columns'][0]
             await self.page.locator("#Popover22-toggle").click()
             await self.page.locator(f"//button[contains(text(),'{column}')]").first.click()
-        except Exception as e:
+        except BrowserTimeoutError:
             column = config['default']['community'][self.site_alias]['columns'][0]
             await self.page.locator("#Popover22-toggle").click()
             await self.page.locator(f"//button[contains(text(),'{column}')]").first.click()
         # 发布文章
-        await self.page.get_by_role("button", name="发布",exact=True).click()
+        await self.page.get_by_role("button", name="发布", exact=True).click()
         await self.page.wait_for_url("https://zhuanlan.zhihu.com/p/*")
         return self.page.url
 
-    async def check_response(self,response):
+    async def check_response(self, response):
         if response.url.startswith("https://api.zhihu.com/images/"):
             resp_body = await response.body()
             data = json.loads(resp_body.decode('utf-8'))
             if data['status'] == 'success':
                 self.origin_src = data['original_src']
 
-    async def async_upload_img(self, img_path: str) -> str:
+    async def upload_img(self, img_path: str) -> str:
         self.page.on("response", self.check_response)
-        async with self.page.expect_response("https://api.zhihu.com/images") as first:
+        async with self.page.expect_response("https://api.zhihu.com/images"):
             async with self.page.expect_file_chooser() as fc_info:
                 if self.pic_nums != 0:
                     await self.page.get_by_role("button", name="本地上传").click()
@@ -117,9 +116,20 @@ class Zhihu(Community):
             origin_src = self.origin_src
             return origin_src
 
-    async def async_convert_html_img_path(self, content: str, file_path: str) -> str:
+    async def convert_html_path(self, content: str) -> str:
         soup = BeautifulSoup(content, 'html.parser')
         img_tags = soup.find_all('img')
         for img in img_tags:
-            img['src'] = await self.async_upload_img(img['src'])
+            img['src'] = await self.upload_img(img['src'])
         return str(soup)
+
+    async def check_login_state(self) -> bool:
+        try:
+            await self.page.goto(self.url_post_new)
+            await self.page.wait_for_url(
+                url=re.compile(self.url_redirect_login),
+                timeout=config['default']['login_timeout'])
+            print(f"{self.site_name} 未登录")
+            return False
+        except BrowserTimeoutError:
+            return True

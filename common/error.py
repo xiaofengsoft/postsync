@@ -14,9 +14,26 @@ class FileNotReferencedError(Exception):
         super().add_note("没有指定文件")
 
 
+class FileNotSupportedError(Exception):
+    """
+    Exception raised when a file is not supported
+    """
+
+    def add_note(self, __note):
+        super().add_note(__note)
+        super().add_note("不支持的文件类型")
+
+
 class CommunityNotExistError(Exception):
     """
     Exception raised when a community does not exist
+    """
+    pass
+
+
+class ConfigurationLackError(Exception):
+    """
+    Exception raised when configuration lacks
     """
     pass
 
@@ -45,4 +62,3 @@ class BrowserExceptionGroup(Exception):
 
     def __str__(self):
         return '\n'.join([f"\nException {i + 1}:\n{format_exception(e)}" for i, e in enumerate(self.exceptions)])
-

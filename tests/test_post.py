@@ -1,58 +1,51 @@
 # -*- coding: utf-8 -*-
 import os
+import subprocess
+
 from utils.file import get_root_path
 import pytest
 
 
+def run_command(command):
+    """运行命令并处理错误"""
+    try:
+        subprocess.run(command, shell=True, check=True, stderr=subprocess.PIPE)
+    except subprocess.CalledProcessError as e:
+        print(f"命令执行失败: {e.cmd}")
+        print(f"错误信息: {e.stderr.decode()}")
+
+
 class TestPost:
+
     def setup_class(self):
-        self.test_file = 'tests/assets/posts/PostSync介绍.md'
         os.chdir(get_root_path())
 
-    def test_post(self):
-        os.chdir(get_root_path())
-        os.system('python app.py  -co static/imgs/logo.png -t python,github')
-
-    @pytest.mark.parametrize("site", ['zhihu'])
-    def test_post_with_single_site(self, site):
+    @pytest.mark.parametrize("site , test_file", [('zhihu', "tests/assets/posts/PostSync介绍.md")])
+    def test_post_with_single_site(self, site, test_file):
         """
         单次测试各个网站的
         :param site:
         :return:
         """
-        print(site)
-        os.system(f'python app.py -f {self.test_file} -s {site}')
-
-    @pytest.mark.parametrize("sites", ['csdn juejin zhihu wechat cnblog wordpress'])
-    def test_post_with_sites(self, sites):
-        """
-        单次测试多个网站的发布
-        :return:
-        """
-        order = f'python app.py -f {self.test_file} -co static/imgs/logo.png -s {sites}'
-        os.system(order)
-        print(order)
-
-    @pytest.mark.parametrize("tags", ['python github'])
-    def test_post_with_sites_and_tags(self, tags):
-        """
-        单次测试各个网站的发布，并添加标签
-        :return:
-        """
-        os.system(f'python app.py -f {self.test_file} -co static/imgs/logo.png -s juejin csdn -t {tags}')
+        run_command(f'python app.py -f {test_file} -s {site}')
 
     @pytest.mark.parametrize(
         'file,category,columns,tags,sites,cover_img',
         [
-#            ('tests/assets/posts/WordPress加载流程的解读分析.md', 'PHP', 'PHP文章', 'php github',
-#             'csdn juejin wordpress zhihu cnblog wechat bilibili', 'tests/assets/imgs/wp.png'),
-            ('tests/assets/posts/PostSync介绍.md','Python','Python文章','python blog 同步 自动化',
-             'wordpress','tests/assets/imgs/logo.png')
+            # ('tests/assets/posts/PostSync介绍.md', 'Python', 'Python文章', 'python blog 同步 自动化',
+            #  'wordpress bilibili zhihu csdn juejin cnblog wechat', 'tests/assets/imgs/logo.png'),
+            ('tests/assets/posts/PostSync介绍.md','Python','解决问题','python adguard',
+             'wordpress bilibili zhihu csdn juejin cnblog wechat', 'tests/assets/imgs/ad.png')
         ]
     )
-    def test_post_all_args(self,file, category, columns, tags, sites, cover_img):
+    def test_post_all_args(self, file, category, columns, tags, sites, cover_img):
         """
         单次测试所有参数的发布
         :return:
         """
-        os.system(f'python app.py -f {file} -t {tags} -s {sites} -ca {category} -co {cover_img} -cl {columns}')
+        order = f'python app.py -f {file} -s {sites} -ca {category} -co {cover_img} -cl {columns} -t {tags} '
+        print(order)
+        run_command(order)
+
+    def test_help(self):
+        run_command('python app.py --help')

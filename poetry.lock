@@ -189,6 +189,21 @@ url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 reference = "mirrors"
 
 [[package]]
+name = "html2text"
+version = "2024.2.26"
+description = "Turn HTML into equivalent Markdown-structured text."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "html2text-2024.2.26.tar.gz", hash = "sha256:05f8e367d15aaabc96415376776cdd11afd5127a77fce6e36afc60c563ca2c32"},
+]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+reference = "mirrors"
+
+[[package]]
 name = "htmldocx"
 version = "0.0.6"
 description = "Convert html to docx"
@@ -556,6 +571,21 @@ files = [
 [package.extras]
 dev = ["pre-commit", "tox"]
 testing = ["pytest", "pytest-benchmark"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+reference = "mirrors"
+
+[[package]]
+name = "pydocx"
+version = "0.9.10"
+description = "docx (OOXML) to html converter"
+optional = false
+python-versions = "*"
+files = [
+    {file = "PyDocX-0.9.10.tar.gz", hash = "sha256:07bd9bce7834f8a5e0b00130f29b54bbdda22d625711a591421913bdfa8470e3"},
+]
 
 [package.source]
 type = "legacy"
@@ -952,4 +982,4 @@ reference = "mirrors"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.13"
-content-hash = "ee7b2b360c62d4652cfade41520f63f190e2d6db82d837585a9cd0bb24dce71a"
+content-hash = "48a5d4c7b1ed7fe199878b20bc04b4ac3f5d87d901df442defb19b6d9072b7dd"

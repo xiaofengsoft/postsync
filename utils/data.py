@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-from common.config import config
 import json
 from utils.file import get_path, get_file_dir
 import os
+from playwright.async_api import Page
 
 
-def get_storage_data(path: str = config['data']['storage']['path']) -> str:
+def get_storage_data(path: str) -> str:
     """
     获取存储数据
     :param path:
@@ -16,7 +16,7 @@ def get_storage_data(path: str = config['data']['storage']['path']) -> str:
         return data
 
 
-def format_json_file(path: str = config['data']['storage']['path']) -> str:
+def format_json_file(path: str) -> str:
     """
     格式化JSON文件
     在每次写入JSON数据时，都调用此函数格式化JSON文件
@@ -33,7 +33,7 @@ def format_json_file(path: str = config['data']['storage']['path']) -> str:
         return json_str
 
 
-def retrieve_storage_data(marks: tuple | str, path: str = get_path(config['data']['storage']['path'])) -> bool:
+def retrieve_storage_data(marks: tuple | str, path: str) -> bool:
     """
     检索存储数据是否存在含有标志
     检索的JSON数据必须格式化
@@ -41,6 +41,7 @@ def retrieve_storage_data(marks: tuple | str, path: str = get_path(config['data'
     :param path:
     :return:
     """
+    path = get_path(path)
     with open(path, 'r', encoding='utf-8') as file:
         content = file.read()
         for mark in marks:
@@ -76,3 +77,18 @@ def convert_html_img_path_to_abs_path(html_file_path: str):
             img_tag['src'] = os.path.join(get_file_dir(html_file_path), img_src)
     with open(html_file_path, 'w', encoding='utf-8') as f:
         f.write(str(soup))
+
+
+async def insert_anti_detection_script(page: Page):
+    """
+    在页面中插入防检测脚本
+    :param page:
+    """
+    await page.evaluate("""() => {
+                    Object.defineProperty(navigator, 'webdriver', {
+                        get: () => undefined
+                    });
+                }""")
+    with open(get_path('data/scripts/stealth.min.js')) as f:
+        js = f.read()
+    await page.add_init_script(js)
