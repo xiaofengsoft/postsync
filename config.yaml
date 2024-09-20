@@ -17,12 +17,13 @@ data:
 
 wordpress:
   enable: True  # 是否启用WordPress同步
+  domain: yunyicloud.cn  # WordPress博客域名
   url: https://yunyicloud.cn  # WordPress博客地址
 
 default:
   user_agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36
   author: 张一风
-  devtools: True  # 是否打开浏览器调试工具
+  devtools: False  # 是否打开浏览器调试工具
   headless: False  # 是否后台运行浏览器
   browser: chrome  # 选择使用的浏览器 (msedge,chrome,firefox)
   no_viewport: True  # 是否全屏
@@ -30,8 +31,8 @@ default:
   tags:
     - Python
   url:  # 默认博客连接
-  timeout: 10000  # 请求超时时间
-  login_timeout: 5000  # 登录检测超时时间
+  timeout: 30000  # 请求超时时间
+  login_timeout: 10000  # 登录检测超时时间
   category: 后端  # 默认分类
   topic: 知识  # 默认话题
   columns:

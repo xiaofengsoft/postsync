@@ -12,17 +12,16 @@ import typing as t
 class Cnblog(Community):
     site_name = '博客园'
     url_post_new = 'https://i.cnblogs.com/posts/edit'
-    url_redirect_login = 'https://account.cnblogs.com/signin'
     site_alias = 'cnblog'
     login_url = 'https://account.cnblogs.com/signin'
     site_storage_mark = (
-        "cnblog.com",
+        "cnblogs.com",
     )
 
     async def upload(self) -> t.AnyStr:
         if not self.is_login:
             await self.login(self.login_url,
-                             "https://account.cnblogs.com/user/userinfo",
+                             re.compile(r"account\.cnblogs\.com/user/userinfo"),
                              lambda login_data: login_data['spaceUserId'])  # 发送用户ID说明登录成功
         # 打开发布页面
         await self.page.goto(self.url_post_new, wait_until='load')
@@ -156,9 +155,14 @@ class Cnblog(Community):
         return data['message']
 
     async def check_login_state(self) -> bool:
+        if not await super().check_login_state():
+            return False
         try:
+            await self.page.pause()
             await self.page.goto(self.url_post_new)
-            await self.page.wait_for_url(url=re.compile(self.url_redirect_login),timeout=config['default']['login_timeout'])
+            await self.page.wait_for_url(
+                url=re.compile(r'^https?:\/\/account\.cnblogs\.com\/signin'),
+                timeout=config['default']['login_timeout'])
             print(f"{self.site_name} 未登录")
             return False
         except BrowserTimeoutError:

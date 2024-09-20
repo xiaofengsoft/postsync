@@ -180,6 +180,8 @@ class Bilibili(Community):
         return str(soup)
 
     async def check_login_state(self) -> bool:
+        if not await super().check_login_state():
+            return False
         try:
             await self.page.goto(self.url_post_new)
             await self.page.wait_for_url(

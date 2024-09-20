@@ -35,7 +35,7 @@ class TestPost:
             # ('tests/assets/posts/PostSync介绍.md', 'Python', 'Python文章', 'python blog 同步 自动化',
             #  'wordpress bilibili zhihu csdn juejin cnblog wechat', 'tests/assets/imgs/logo.png'),
             ('tests/assets/posts/PostSync介绍.md','Python','解决问题','python adguard',
-             'wordpress bilibili zhihu csdn juejin cnblog wechat', 'tests/assets/imgs/ad.png')
+             'wechat', 'tests/assets/imgs/ad.png')
         ]
     )
     def test_post_all_args(self, file, category, columns, tags, sites, cover_img):

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import re
+
 from common.error import BrowserTimeoutError
 import typing as t
 from common.func import wait_random_time
@@ -26,7 +28,7 @@ class Wechat(Community):
         if not self.is_login:
             await self.login(
                 self.login_url,
-                "mp.weixin.qq.com/cgi-bin/bizlogin?action=login",
+                re.compile(r"^https?:\/\/mp\.weixin\.qq\.com\/cgi-bin\/bizlogin\?action=login"),
                 lambda login_data: 0 == 0,
             )
         await self.page.goto(Wechat.url_post_new)
@@ -50,7 +52,9 @@ class Wechat(Community):
             await self.page.locator("#js_cover_area").scroll_into_view_if_needed()
             wait_random_time()
             await self.page.locator("#js_cover_area").hover()
+            wait_random_time()
             await self.page.locator("#js_cover_null > ul > li:nth-child(2) > a").click()
+            wait_random_time()
             await self.page.locator("#vue_app label").nth(1).click()
         file_chooser = await fc_info.value
         async with self.page.expect_response(
@@ -101,9 +105,13 @@ class Wechat(Community):
         return "上传失败"
 
     async def check_login_state(self) -> bool:
-        # TODO 这个判断错误
+        if not await super().check_login_state():
+            return False
         try:
-            await self.page.wait_for_selector(".weui-desktop-regist-access",timeout=config['default']['timeout'])
+            await self.page.goto(self.url_post_new)
+            await self.page.wait_for_selector(
+                "#header > div.weui-desktop-head > div > div > div.weui-desktop-layout__extra > div > a",
+                timeout=config['default']['login_timeout'])
         except BrowserTimeoutError:
             return True
         return False

@@ -24,8 +24,8 @@ class Csdn(Community):
         # 处理参数
         if not self.is_login:
             await self.login(self.login_url,
-                             "https://g-api.csdn.net/community/toolbar-api/v1/get-user-info",
-                             lambda login_data: login_data['code'] == 200)
+                             re.compile(r"^https?:\/\/passport\.csdn\.net\/v1\/login\/user\/cert\/collect\/state"),
+                             lambda login_data: int(login_data['code']) == 0)
         # 打开发布页面
         await self.page.goto(self.url_post_new)
         await self.page.locator(".editor__inner").fill("")
@@ -115,6 +115,8 @@ class Csdn(Community):
         return data['data']['imageUrl']
 
     async def check_login_state(self) -> bool:
+        if not await super().check_login_state():
+            return False
         try:
             await self.page.goto(self.url_post_new)
             await self.page.wait_for_url(url=re.compile(

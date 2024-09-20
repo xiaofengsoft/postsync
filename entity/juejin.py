@@ -22,15 +22,14 @@ class Juejin(Community):
     )
     url_post_new = "https://juejin.cn/editor/drafts/new"
     url_redirect_login = "https://juejin.cn/login"
-    login_url = "https://juejin.cn/user/login"
+    login_url = "https://juejin.cn/login"
     url = "https://www.juejin.cn"
 
     async def upload(self) -> t.AnyStr:
         if not self.is_login:
-            # TODO 这个判断错误
-            await self.login(self.url,
-                             "https://api.juejin.cn/user_api/v1/user/profile_id",
-                             lambda login_data: login_data['err_no'] == 0)
+            await self.login(self.login_url,
+                             re.compile(r"^https?:\/\/api\.juejin\.cn\/user_api\/v1\/sys\/token"),
+                             lambda login_data: 0 == 0)
         # 打开发布页面
         await self.page.goto(self.url_post_new)
         # 处理图片路径
@@ -64,13 +63,12 @@ class Juejin(Community):
         tag_selector = self.page.locator('.tag-select-add-margin')
         tag_input = self.page.get_by_role("banner").get_by_role("textbox").nth(1)
         # 逐个搜索添加标签
-        wait_random_time()
         for tag in self.post['tags']:
+            wait_random_time()
             await tag_input.fill(tag)
             await tag_input.press('Enter')
             try:
-                await tag_selector.locator("li", has_text=re.compile(tag, re.IGNORECASE)
-                                           ).first.click(timeout=config['default']['timeout'])
+                await tag_selector.locator("li").first.click(timeout=config['default']['timeout'])
             except BrowserTimeoutError:
                 continue
         # 输入摘要
@@ -129,10 +127,12 @@ class Juejin(Community):
         return str(soup)
 
     async def check_login_state(self) -> bool:
+        if not await super().check_login_state():
+            return False
         try:
             await self.page.goto(self.url_post_new)
-            await self.page.wait_for_url(url=re.compile(
-                self.url_redirect_login),
+            await self.page.wait_for_url(
+                url=re.compile(self.url_redirect_login),
                 timeout=config['default']['login_timeout'])
             print(f"{self.site_name} 未登录")
             return False

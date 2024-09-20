@@ -1,13 +1,14 @@
+from playwright._impl._async_base import AsyncEventInfo
 from common.apis import Post
 from common.config import config
 import asyncio
 from playwright.async_api import Page
-from playwright.async_api import BrowserContext, Browser
+from playwright.async_api import BrowserContext, Browser, Response
 import typing as t
 from common import constant
 from common.error import ConfigNotConfiguredError
 from utils.data import retrieve_storage_data, insert_anti_detection_script
-import re
+from common.func import wait_random_time
 import json
 from utils.file import get_path
 from utils.data import format_json_file
@@ -54,7 +55,7 @@ class Community(object):
         await insert_anti_detection_script(self.page)
 
     async def login(
-            self, login_url: str, resp_url: str,
+            self, login_url: str, resp_url: t.Union[t.Pattern, str],
             check_func: t.Callable[[t.AnyStr], bool],
             before_func: t.Callable = login_before_func
     ):
@@ -68,21 +69,25 @@ class Community(object):
         """
         await before_func(self)
         await self.page.goto(login_url)
+        response: t.Union[AsyncEventInfo["Response"], Response]
+        wait_random_time()
         async with self.page.expect_response(
-                re.compile(resp_url),
+                resp_url,
                 timeout=constant.INFINITE_TIMEOUT
         ) as response:
             data = await response.value
+            code = data.status
             try:
                 data = await data.body()
                 data = json.loads(data.decode(constant.FILE_ENCODING))
             except Exception:
                 # 说明没有返回信息
                 pass
-            if check_func(data):
+            if code in constant.HTTP_SUCCESS_STATUS_CODES and check_func(data):
                 await self.context.storage_state(path=get_path(config['data']['storage']['path']))
                 format_json_file(config['data']['storage']['path'])
-                print(f"{self.site_name}登录成功")
+                await self.page.close()
+                print(f"{self.site_name}登录成功，已关闭{self.site_name}页面")
 
     async def upload(self) -> t.AnyStr:
         """

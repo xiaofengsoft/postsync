@@ -59,18 +59,14 @@ Then copy config.yaml to the dist/PostSync directory, and run PostSync.exe from 
 
 ### Optimization Tasks
 
-- [x] New context
-- [x] Data directory will be cleaned up if users use the software for the first time.
+- [ ] Optimize the checking login status of platforms.
 - [ ] Materialize the timeout
 - [ ] Record the logs of the process.
 - [ ] Specially handle the case of the specific exception.
 - [ ] Specially handle the case of the specific column argument.
-- [ ] Optimize the code typing structure.
-- [ ] Optimize code document read and output.
 - [ ] Not input if the arguments are not provided.
 - [ ] Direct publishing to WeChat Official Account.
 - [ ] Optimize inclusion search to approximate search.
-- [ ] Connect to an already open browser instance.
 
 ### Development Guidelines
 

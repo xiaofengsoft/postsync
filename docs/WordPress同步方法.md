@@ -1,4 +1,4 @@
-1. 登录WordPress后台
+1. 首先确保您已经登录WordPress后台
 2. 打开 `config.yaml` 文件，做出如下修改：
     ```yaml
     wordpress:
