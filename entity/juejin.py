@@ -59,18 +59,19 @@ class Juejin(Community):
                    .locator("div", has_text=re.compile(config['default']['community']['juejin']['category'],
                                                        re.IGNORECASE)).click(timeout=5000))
         # 选择标签
-        await self.page.get_by_text("请搜索添加标签").click(),
+        await self.page.get_by_text("请搜索添加标签").click()
         tag_selector = self.page.locator('.tag-select-add-margin')
         tag_input = self.page.get_by_role("banner").get_by_role("textbox").nth(1)
+
         # 逐个搜索添加标签
-        for tag in self.post['tags']:
-            wait_random_time()
-            await tag_input.fill(tag)
+        async def add_tag(inner_tag: str):
+            await tag_input.fill(inner_tag)
             await tag_input.press('Enter')
-            try:
-                await tag_selector.locator("li").first.click(timeout=config['default']['timeout'])
-            except BrowserTimeoutError:
-                continue
+
+        await self.upload_tags(
+            tag_selector.locator("li"),
+            add_tag
+        )
         # 输入摘要
         await self.page.get_by_role("banner").locator("textarea").fill(self.post['digest'])
         time.sleep(0.1)
@@ -138,6 +139,3 @@ class Juejin(Community):
             return False
         except BrowserTimeoutError:
             return True
-
-
-

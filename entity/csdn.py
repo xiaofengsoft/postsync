@@ -30,7 +30,6 @@ class Csdn(Community):
         await self.page.goto(self.url_post_new)
         await self.page.locator(".editor__inner").fill("")
         wait_random_time()
-        # TODO 换成MD输入 或者 优化md转html
         # 处理内容
         content = await self.convert_html_path(self.post['contents']['html'])
         # 输入标题
@@ -105,8 +104,8 @@ class Csdn(Community):
         img_path = get_path(img_path)
         async with self.page.expect_response("https://csdn-img-blog.obs.cn-north-4.myhuaweicloud.com/") as first:
             async with self.page.expect_file_chooser() as fc_info:
-                await self.page.get_by_role("button", name="图片 图片").click()
-                await self.page.locator(".uploadPicture > input").click()
+                await self.page.get_by_role("button", name="图片 图片").dblclick()
+                await self.page.locator(".uploadPicture > input").dblclick()
                 file_chooser = await fc_info.value
                 await file_chooser.set_files(img_path)
         resp = await first.value

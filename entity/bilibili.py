@@ -127,7 +127,7 @@ class Bilibili(Community):
         )
         try:
             column = self.post['columns'][0]
-            await column_zone.locator("div", has_text=re.compile(column)).click()
+            await column_zone.locator("div", has_text=re.compile(column)).first.click()
         except BrowserTimeoutError:
             column = config['default']['community'][self.site_alias]['columns'][0]
             await column_zone.locator("div", has_text=re.compile(column)).first.click()

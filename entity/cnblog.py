@@ -63,28 +63,33 @@ class Cnblog(Community):
         # 处理摘要
         await self.page.locator("#summary").fill(self.post['digest'])
         # 处理分类
-        await self.page.locator(
-            "body > cnb-root > cnb-app-layout > div.main > as-split > as-split-area:nth-child(2) > div > div > "
-            "cnb-spinner > div > cnb-posts-entry > cnb-post-editing-v2 > cnb-post-editor > div.panel.panel--main > "
-            "cnb-category-select-panel > cnb-collapse-panel > "
-            "div.panel-content.ng-tns-c31-9.ng-trigger.ng-trigger-openClosePanel.cnb-panel-body > div > div > "
-            "cnb-post-category-select > cnb-tree-category-select > div > nz-tree-select > div").click()
-        await self.page.locator(
-            "body > cnb-root > cnb-app-layout > div.main > as-split > as-split-area:nth-child(2) > div > div > "
-            "cnb-spinner > div > cnb-posts-entry > cnb-post-editing-v2 > cnb-post-editor > div.panel.panel--main > "
-            "cnb-category-select-panel > cnb-collapse-panel > "
-            "div.panel-content.ng-tns-c31-9.ng-trigger.ng-trigger-openClosePanel.cnb-panel-body > div > div > "
-            "cnb-post-category-select > cnb-tree-category-select > div > nz-tree-select > div > nz-select-search > "
-            "input").fill(
-            self.post['category'])
-        await self.page.locator(".cdk-overlay-connected-position-bounding-box").locator("nz-tree-node").first.click()
-        await self.page.locator(
-            "body > cnb-root > cnb-app-layout > div.main > as-split > as-split-area:nth-child(2) > div > div > "
-            "cnb-spinner > div > cnb-posts-entry > cnb-post-editing-v2 > cnb-post-editor > div.panel.panel--main > "
-            "cnb-site-category-selector > cnb-collapse-panel > "
-            "div.cnb-panel-header.ng-tns-c31-11.cnb-panel-header-clickable > span:nth-child(2)").click()
         try:
             try:
+                await self.page.locator(
+                    "body > cnb-root > cnb-app-layout > div.main > as-split > as-split-area:nth-child(2) > div > div > "
+                    "cnb-spinner > div > cnb-posts-entry > cnb-post-editing-v2 > cnb-post-editor > "
+                    "div.panel.panel--main >"
+                    "cnb-category-select-panel > cnb-collapse-panel > "
+                    "div.panel-content.ng-tns-c31-9.ng-trigger.ng-trigger-openClosePanel.cnb-panel-body > div > div > "
+                    "cnb-post-category-select > cnb-tree-category-select > div > nz-tree-select > div").click()
+                await self.page.locator(
+                    "body > cnb-root > cnb-app-layout > div.main > as-split > as-split-area:nth-child(2) > div > div > "
+                    "cnb-spinner > div > cnb-posts-entry > cnb-post-editing-v2 > cnb-post-editor > "
+                    "div.panel.panel--main >"
+                    "cnb-category-select-panel > cnb-collapse-panel > "
+                    "div.panel-content.ng-tns-c31-9.ng-trigger.ng-trigger-openClosePanel.cnb-panel-body > div > div > "
+                    "cnb-post-category-select > cnb-tree-category-select > div > nz-tree-select > div > "
+                    "nz-select-search >"
+                    "input").fill(
+                    self.post['category'])
+                await self.page.locator(
+                    ".cdk-overlay-connected-position-bounding-box").locator("nz-tree-node").first.click()
+                await self.page.locator(
+                    "body > cnb-root > cnb-app-layout > div.main > as-split > as-split-area:nth-child(2) > div > div > "
+                    "cnb-spinner > div > cnb-posts-entry > cnb-post-editing-v2 > cnb-post-editor > "
+                    "div.panel.panel--main >"
+                    "cnb-site-category-selector > cnb-collapse-panel > "
+                    "div.cnb-panel-header.ng-tns-c31-11.cnb-panel-header-clickable > span:nth-child(2)").click()
                 await self.page.locator(
                     "body > cnb-root > cnb-app-layout > div.main > as-split > as-split-area:nth-child(2) > div > div "
                     "> cnb-spinner > div > cnb-posts-entry > cnb-post-editing-v2 > cnb-post-editor > "
@@ -158,7 +163,6 @@ class Cnblog(Community):
         if not await super().check_login_state():
             return False
         try:
-            await self.page.pause()
             await self.page.goto(self.url_post_new)
             await self.page.wait_for_url(
                 url=re.compile(r'^https?:\/\/account\.cnblogs\.com\/signin'),

@@ -59,6 +59,7 @@ Then copy config.yaml to the dist/PostSync directory, and run PostSync.exe from 
 
 ### Optimization Tasks
 
+- [ ] Fix the bug of image upload limited to one repeatedly.
 - [ ] Optimize the checking login status of platforms.
 - [ ] Materialize the timeout
 - [ ] Record the logs of the process.

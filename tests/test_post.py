@@ -34,8 +34,10 @@ class TestPost:
         [
             # ('tests/assets/posts/PostSync介绍.md', 'Python', 'Python文章', 'python blog 同步 自动化',
             #  'wordpress bilibili zhihu csdn juejin cnblog wechat', 'tests/assets/imgs/logo.png'),
-            ('tests/assets/posts/PostSync介绍.md','Python','解决问题','python adguard',
-             'wechat', 'tests/assets/imgs/ad.png')
+            # ('tests/assets/posts/PostSync介绍.md','Python','解决问题','python adguard',
+            #  'wechat', 'tests/assets/imgs/ad.png'),
+            (r'C:\Users\xiaof\Desktop\利用Adguard屏蔽必应搜索中的CSDN内容.md', '搜索', '解决', 'Adguard CSDN',
+                'zhihu', r'C:\Users\xiaof\Desktop\imgs\ad.png')
         ]
     )
     def test_post_all_args(self, file, category, columns, tags, sites, cover_img):

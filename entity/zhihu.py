@@ -103,14 +103,18 @@ class Zhihu(Community):
 
     async def upload_img(self, img_path: str) -> str:
         self.page.on("response", self.check_response)
+        await self.page.pause()
         async with self.page.expect_response("https://api.zhihu.com/images"):
             async with self.page.expect_file_chooser() as fc_info:
                 if self.pic_nums != 0:
-                    await self.page.get_by_role("button", name="本地上传").click()
+                    await self.page.locator("body > div:nth-child(28) > div > div > div > "
+                                            "div.Modal.Modal--default.css-zelv4t > div > div > div > div.css-1jf2703 "
+                                            "> div.css-s3axrf > div > div").first.click()
                 else:
                     await self.page.locator(".css-n71hcb").click()
                 file_chooser = await fc_info.value
                 await file_chooser.set_files(img_path)
+                self.pic_nums += 1
             while self.origin_src is None:
                 await asyncio.sleep(0.1)
             origin_src = self.origin_src

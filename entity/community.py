@@ -2,7 +2,7 @@ from playwright._impl._async_base import AsyncEventInfo
 from common.apis import Post
 from common.config import config
 import asyncio
-from playwright.async_api import Page
+from playwright.async_api import Page, Locator
 from playwright.async_api import BrowserContext, Browser, Response
 import typing as t
 from common import constant
@@ -12,6 +12,7 @@ from common.func import wait_random_time
 import json
 from utils.file import get_path
 from utils.data import format_json_file
+from common.error import BrowserTimeoutError
 
 
 class Community(object):
@@ -127,3 +128,26 @@ class Community(object):
         :return: 转换后的DOCX内容
         """
         raise NotImplementedError("请在子类中实现该方法")
+
+    async def upload_tags(
+            self, tag_selector: t.Union[Locator, Page],
+            loop_mid_func: t.Callable[[str], t.Coroutine[t.Any, t.Any, None]],
+    ):
+        """
+        上传标签
+        :param loop_mid_func: 循环中间函数
+        :param tag_selector:  标签选择器
+        :return:
+        """
+        tags = self.post['tags']
+        try:
+            for tag in tags:
+                wait_random_time()
+                await loop_mid_func(tag)
+                await tag_selector.first.click(timeout=config['default']['timeout'])
+        except BrowserTimeoutError:
+            tags = config['default']["community"][self.site_alias]['tags']
+            for tag in tags:
+                wait_random_time()
+                await loop_mid_func(tag)
+                await tag_selector.first.click(timeout=config['default']['timeout'])

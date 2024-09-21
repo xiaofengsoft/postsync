@@ -39,10 +39,10 @@ class Wordpress(Community):
                     .replace('.', r'\.')),
                 lambda login_data: 0 == 0,
             )
-        await self.page.goto(self.url, wait_until='load', timeout=10000)
+        await self.page.goto(self.url, wait_until='load')
         # 处理参数
         md_content = await self.convert_html_path(self.post['contents']['html'])
-        await self.page.goto(self.url, wait_until='load', timeout=10000)
+        await self.page.goto(self.url, wait_until='load')
         await self.page.get_by_label("选项", exact=True).first.click()
         await self.page.locator(
             "body > div.components-popover__fallback-container > div > div > div > div:nth-child(2) > div:nth-child("
