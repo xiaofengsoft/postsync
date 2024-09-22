@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
+import asyncio
 import time
 import typing as t
 from common.error import BrowserTimeoutError
-from playwright.async_api import Browser, BrowserContext
+from playwright.async_api import Browser, BrowserContext, Response
 from common.apis import Post
 from common.config import config
+from common.func import wait_random_time
 from entity.community import Community
-import json
+from urllib.parse import quote
 import re
 from bs4 import BeautifulSoup
 from utils.domain import get_domain, join_url_paths
+from utils.file import get_file_name_without_ext
 
 
 class Wordpress(Community):
@@ -57,11 +60,19 @@ class Wordpress(Community):
             "div.interface-navigable-region.interface-interface-skeleton__content > div.editor-text-editor > "
             "div.editor-text-editor__toolbar > button").click()
         # 处理目录
-        await self.page.locator("#inspector-text-control-0").fill(self.post['category'])
-        time.sleep(0.1)
-        elements = await self.page.query_selector_all(".components-checkbox-control__label")
-        for element in elements:
-            await element.click()
+        await self.page.pause()
+        category_zone = self.page.locator(r"#tabs-0-edit-post\/document-view > div:nth-child(3) > div > "
+                                          r"div.editor-post-taxonomies__hierarchical-terms-list")
+        try:
+            try:
+                for column in self.post['columns']:
+                    await category_zone.locator("label", has_text=re.compile(column)).click()
+                    wait_random_time()
+            except BrowserTimeoutError:
+                for column in config['default']['community'][self.site_alias]['columns']:
+                    await category_zone.locator("label", has_text=re.compile(column)).click()
+        except TypeError:
+            pass
         # 设置封面
         await self.page.locator(
             r"#tabs-0-edit-post\/document-view > div.components-flex.components-h-stack.components-v-stack.editor"
@@ -106,19 +117,21 @@ class Wordpress(Community):
             return data['guid']['rendered']
 
     async def upload_img(self, img_path: str) -> str:
-        async with self.page.expect_response(re.compile(r"admin-ajax\.php")) as response_info:
+        wait_random_time()
+        file_name = get_file_name_without_ext(img_path)
+        # 中文的话转化为Unicode编码
+        if not re.match(r'^[a-zA-Z0-9_]+$', file_name):
+            file_name = quote(file_name)
+        file_name = f'-{file_name}-'
+        async with self.page.expect_response(
+                re.compile(file_name)
+        ) as response_info:
             async with self.page.expect_file_chooser() as fc_info:
                 await self.page.locator("#__wp-uploader-id-1").click()
                 filechooser = await fc_info.value
                 await filechooser.set_files(img_path)
         response = await response_info.value
-        data = await response.body()
-        data = json.loads(data.decode('utf-8'))
-        try:
-            res = str(data['data']['url'])
-        except Exception:
-            res = str(data['data'][0]['url'])
-        return res
+        return response.url
 
     async def convert_html_path(self, content: str) -> str:
         # 处理图片
@@ -142,3 +155,4 @@ class Wordpress(Community):
             return False
         except BrowserTimeoutError:
             return True
+
