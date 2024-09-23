@@ -38,7 +38,7 @@ class ProcessCore(object):
         :return: 返回处理后的参数
         """
         if self.args.file is None:
-            raise FileNotReferencedError('请指定文件')
+            raise FileNotReferencedError()
         source_file = self.args.file
         title, ext = get_file_name_ext(source_file)
         self.args.title = self.args.title or title  # 没有指定则使用文件名作为标题
@@ -57,7 +57,7 @@ class ProcessCore(object):
             file_paths['html'] = convert_docx_to_html(source_file)
             file_paths['md'] = convert_docx_to_md(source_file)
         else:
-            raise FileNotSupportedError('不支持的文件类型')
+            raise FileNotSupportedError(ext)
         try:
             self.args.topic = config['default']['topic'] if self.args.topic is None else self.args.topic
             self.args.category = config['default']['category'] if self.args.category is None else self.args.category
