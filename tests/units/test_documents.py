@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import markdown
-from common.func import get_abs_path
+from utils.file import get_abs_path
+
 
 def test_md():
     """
@@ -8,7 +9,7 @@ def test_md():
     :return:
     """
     md = markdown.Markdown()
-    md.convertFile(get_abs_path('/README.md'), 'readme.html',"utf-8")
+    md.convertFile(get_abs_path('/README.md'), 'readme.html', "utf-8")
 
 
 def test_bs_html():
@@ -27,8 +28,7 @@ def test_bs_html():
 
 
 def test_yaml_load():
-
-    from common.func import load_yaml
-    from common.func import get_root_path
+    from utils.file import load_yaml
+    from utils.file import get_root_path
     print()
     print(load_yaml(get_root_path() + '/config.yaml'))
