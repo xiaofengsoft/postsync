@@ -11,23 +11,18 @@ platforms.
 
 ### Usage
 
-1. Open your browser, log in to your accounts on various platforms: Juejin, CSDN, Zhihu, WeChat Official Account, Bilibili,
-CNBlog, and your personal WordPress site.
-2. Open the config.yaml file, configure your browser information, browser user data directory and executable file path.
+1. Open the config.yaml file and configure your browser information, browser user data directory, and executable browser path. 
    ```yaml
-   user:
-     dir: C:\Users\xiaof\AppData\Local\Microsoft\Edge\User Data  # 浏览器用户数据目录
-   executable:
-     path: C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe # 浏览器可执行文件路径
-   default:
-     browser: msedge # 选择使用的浏览器 (msedge,chrome,firefox)
+    executable:
+      path: C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe # Path to the browser executable
+    default:
+      browser: msedge # Browser to use (msedge, chrome, firefox)
    ```
-   > Please search for the browser user data directory with the internet.
-3. Run the command line:
-  ``` shell
-  .\PostSync.exe -h
-  ```
-4. Enter the command to use the software.
+   >  You can search online to find the location of the browser data directory.
+2. Run the command line. Manually log in to the platform type you need to upload to.   
+   The system will automatically detect whether the login is successful.   
+   If successful, it will automatically save the login information and close the page.
+3. Run the command line again.
 
 ### Development
 
@@ -42,7 +37,6 @@ Then copy config.yaml to the dist/PostSync directory, and run PostSync.exe from 
 
 ### Notes
 
-- Ensure you have logged in to your accounts on all platforms before using the software.
 - Ensure you have created the corresponding tags and categories on the relevant platforms if you plan to use tagging and
   categorization features.
 
@@ -59,7 +53,6 @@ Then copy config.yaml to the dist/PostSync directory, and run PostSync.exe from 
 
 ### Optimization Tasks
 
-- [ ] Fix the bug of image upload limited to one repeatedly.
 - [ ] Optimize the checking login status of platforms.
 - [ ] Materialize the timeout
 - [ ] Record the logs of the process.

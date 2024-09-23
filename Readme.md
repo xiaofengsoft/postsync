@@ -14,24 +14,19 @@
 
 ### 使用
 
-1. 打开浏览器，登录各个平台的账号，掘金、CSDN、知乎、公众号、哔哩哔哩、博客园、个人WordPress
-2. 打开config.yaml文件，配置你的浏览器信息、浏览器用户数据目录、可执行浏览器路径
+1. 打开config.yaml文件，配置你的浏览器信息、浏览器用户数据目录、可执行浏览器路径
    ```yaml
-   user:
-     dir: C:\Users\xiaof\AppData\Local\Microsoft\Edge\User Data  # 浏览器用户数据目录
    executable:
      path: C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe # 浏览器可执行文件路径
    default:
      browser: msedge # 选择使用的浏览器 (msedge,chrome,firefox)
    ```
    > 可以联网查找浏览器数据目录所在位置
-3. 运行命令行：
-    ``` bash
-    .\PostSync.exe -h
-    ```
-4. 输入命令即可使用
-
-
+2. 运行命令行
+   根据需要上传的平台类型手动登录
+   系统会自动检测是否登录成功
+   成功后会自动保存登录信息并关闭页面
+3. 再次运行命令行
 
 ### 开发
 
@@ -48,7 +43,6 @@ pyinstaller PostSync.spec
 
 ### 注意事项
 
-- 在使用前请确保已经登录各个平台的账号
 - 使用标签分类等功能请确保您在相关平台上已经创建相应的标签分类
 
 
@@ -64,7 +58,6 @@ pyinstaller PostSync.spec
 
 ### 优化任务
 
-- [ ] 修复图片上传只有重复的问题
 - [ ] 优化判断是否登录
 - [ ] 超时时间具体化
 - [ ] 记录失败日志
