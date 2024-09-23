@@ -99,14 +99,15 @@ class ProcessCore(object):
             channel=config['default']['browser'],
             headless=config['default']['headless'],
             args=['--start-maximized --disable-blink-features=AutomationControlled'],
-            devtools=bool(config['default']['devtools'])
+            devtools=bool(config['default']['devtools']),
+            timeout=int(config['default']['timeout'])
         )
         viewport = config['default']['no_viewport'] if config['default']['no_viewport'] else {
             'width': config['view']['width'], 'height': config['view']['height']}
         self.context = await self.browser.new_context(
             storage_state=get_path(config['data']['storage']['path']),
             no_viewport=viewport,
-            user_agent=config['default']['user_agent']
+            user_agent=config['default']['user_agent'],
         )
         # 读取存储文件 TODO 采用playwright已解析的数据
         tasks = []

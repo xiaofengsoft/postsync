@@ -48,6 +48,7 @@ default:
         - Python文章
       cover:
       topic: 知识
+      timeout: 20000
     csdn:
       category:
       tags:
@@ -56,6 +57,7 @@ default:
         - Python文章
       cover:
       topic: 知识
+      timeout: 20000
     zhihu:
       category: Python
       tags: Python
@@ -63,6 +65,7 @@ default:
         - Python
       cover:
       topic:
+      timeout: 20000
     wechat:
       category: 后端
       tags: python
@@ -70,6 +73,7 @@ default:
         - PHP文章
       cover:
       topic:
+      timeout: 20000
     cnblog:
       category: Python
       tags:
@@ -78,6 +82,7 @@ default:
         - Python文章
       cover:
       topic:
+      timeout: 20000
     wordpress:
       category:
       tags:
@@ -85,6 +90,7 @@ default:
       columns:
       cover:
       topic:
+      timeout: 20000
     bilibili:
       category: 科技
       tags: Python
@@ -92,3 +98,4 @@ default:
         - Python文章
       cover:
       topic: 编程
+      timeout: 20000

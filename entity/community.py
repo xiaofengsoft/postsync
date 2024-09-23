@@ -35,7 +35,10 @@ class Community(object):
         """
         处理参数
         """
-        self.page.set_default_timeout(config['default']['timeout'])
+        self.page.set_default_timeout(
+            int(config['default']['community'][self.site_alias]['timeout'])
+            or int(config['default']['timeout'])
+        )
         self.post['columns'] = self.post['columns'] or config['default']["community"][self.site_alias]['columns']
         self.post['tags'] = self.post['tags'] or config['default']["community"][self.site_alias]['tags']
         self.post['category'] = self.post['category'] or config['default']["community"][self.site_alias]['category']
@@ -144,10 +147,10 @@ class Community(object):
             for tag in tags:
                 wait_random_time()
                 await loop_mid_func(tag)
-                await tag_selector.first.click(timeout=config['default']['timeout'])
+                await tag_selector.first.click()
         except BrowserTimeoutError:
             tags = config['default']["community"][self.site_alias]['tags']
             for tag in tags:
                 wait_random_time()
                 await loop_mid_func(tag)
-                await tag_selector.first.click(timeout=config['default']['timeout'])
+                await tag_selector.first.click()
