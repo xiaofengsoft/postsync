@@ -32,7 +32,6 @@ default:
     - Python
   url:  # 默认博客连接
   timeout: 20000  # 请求超时时间
-  login_timeout: 1000  # 登录检测超时时间
   category: 后端  # 默认分类
   topic: 知识  # 默认话题
   columns:
@@ -48,7 +47,7 @@ default:
         - Python文章
       cover:
       topic: 知识
-      timeout: 20000
+      timeout: 30000
     csdn:
       category:
       tags:

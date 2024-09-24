@@ -2,7 +2,7 @@ import asyncio
 import re
 import typing as t
 
-from common.apis import Post
+from common.apis import Post, StorageType
 from common.config import config
 from common.func import wait_random_time
 from entity.community import Community
@@ -18,9 +18,18 @@ class Zhihu(Community):
     url_redirect_login = "https://www.zhihu.com/signin"
     site_name = "知乎"
     site_alias = "zhihu"
-    site_storage_mark = (
-        "zhihu.com",
-    )
+    site_storage_mark:t.List[StorageType] = [{
+        "type": "local",
+        "domain": "www.zhihu.com",
+        "name": "uhiuhvk_wrnhq",
+        "value": ""
+    },{
+        "type": "cookie",
+        "domain": "zhihu.com",
+        "name": "z_c0",
+        "value": ""
+    }]
+    url = "https://www.zhihu.com"
 
     def __init__(self, browser: "Browser", context: "BrowserContext", post: Post):
         super().__init__(browser, context, post)
@@ -103,7 +112,6 @@ class Zhihu(Community):
 
     async def upload_img(self, img_path: str) -> str:
         self.page.on("response", self.check_response)
-        await self.page.pause()
         async with self.page.expect_response("https://api.zhihu.com/images"):
             async with self.page.expect_file_chooser() as fc_info:
                 if self.pic_nums != 0:
@@ -117,8 +125,8 @@ class Zhihu(Community):
                 self.pic_nums += 1
             while self.origin_src is None:
                 await asyncio.sleep(0.1)
-            origin_src = self.origin_src
-            return origin_src
+            self.origin_src: str
+            return self.origin_src
 
     async def convert_html_path(self, content: str) -> str:
         soup = BeautifulSoup(content, 'html.parser')
@@ -127,15 +135,3 @@ class Zhihu(Community):
             img['src'] = await self.upload_img(img['src'])
         return str(soup)
 
-    async def check_login_state(self) -> bool:
-        if not await super().check_login_state():
-            return False
-        try:
-            await self.page.goto(self.url_post_new)
-            await self.page.wait_for_url(
-                url=re.compile(self.url_redirect_login),
-                timeout=config['default']['login_timeout'])
-            print(f"{self.site_name} 未登录")
-            return False
-        except BrowserTimeoutError:
-            return True

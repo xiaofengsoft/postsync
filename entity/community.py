@@ -1,18 +1,20 @@
 from playwright._impl._async_base import AsyncEventInfo
-from common.apis import Post
+from common.apis import Post, StorageData
 from common.config import config
 import asyncio
 from playwright.async_api import Page, Locator
 from playwright.async_api import BrowserContext, Browser, Response
 import typing as t
 from common import constant
-from common.error import ConfigNotConfiguredError
-from utils.data import retrieve_storage_data, insert_anti_detection_script
+from common.error import ConfigNotConfiguredError,BrowserError
+from utils.data import insert_anti_detection_script
 from common.func import wait_random_time
 import json
 from utils.file import get_path
 from utils.data import format_json_file
 from common.error import BrowserTimeoutError
+from common.apis import StorageType
+from utils.storage import get_page_local_storage
 
 
 class Community(object):
@@ -21,7 +23,8 @@ class Community(object):
     """
     site_name: str = constant.UNKNOWN_SITE_NAME
     site_alias: str = constant.UNKNOWN_SITE_ALIAS
-    site_storage_mark: tuple = ()
+    site_storage_mark: t.List[StorageType]
+    url = ""
 
     def __init__(self, browser: "Browser", context: "BrowserContext", post: Post):
         self.browser = browser
@@ -48,12 +51,52 @@ class Community(object):
         """
         检查登录状态
         """
+        await self.page.goto(self.url)
         if not config['data']['storage']['path']:
             raise ConfigNotConfiguredError("请设置存储路径")
-        if retrieve_storage_data(self.site_storage_mark, get_path(config['data']['storage']['path'])):
-            return True
-        print(f"{self.site_name}尚未登录")
-        return False
+        file_path = get_path(config['data']['storage']['path'])
+        with open(file_path, 'r', encoding=constant.FILE_ENCODING) as f:
+            storage_data: StorageData = json.loads(f.read())
+        if storage_data == {} or storage_data is None:
+            return False
+        cookies_now = await self.context.cookies()
+        locals_now: dict = await get_page_local_storage(self.page)
+        for mark in self.site_storage_mark:
+            if mark['type'] == 'cookie':
+                if not any(
+                        cookie for cookie in cookies_now
+                        if mark['domain'] in cookie['domain'] and mark['name'] in cookie['name']
+                        and (mark['value'] is None or mark['value'] in cookie['value'])):
+                    # 这里检测到了未登录状态，刷新Storage
+                    await self.context.storage_state(path=get_path(config['data']['storage']['path']))
+                    format_json_file(config['data']['storage']['path'])
+                    return False
+            if mark['type'] == 'local':
+                if not any(
+                        1 for local_name, local_value in locals_now.items()
+                        if mark['name'] in local_name and (
+                        mark['value'] is None or mark['value'] in local_value
+                )):
+                    # 这里检测到了未登录状态，刷新Storage
+                    await self.context.storage_state(path=get_path(config['data']['storage']['path']))
+                    format_json_file(config['data']['storage']['path'])
+                    return False
+        return sum(
+            1
+            for mark in self.site_storage_mark
+            if (mark['type'] == 'local' and any(
+                origin for origin in storage_data['origins']
+                if mark['domain'] in origin['origin'] and any(
+                    local_storage for local_storage in origin['localStorage']
+                    if mark['name'] in local_storage['name'] and (
+                            mark['value'] is None or mark['value'] in local_storage['value'])
+                )
+            )) or (mark['type'] != 'local' and any(
+                cookie for cookie in storage_data['cookies']
+                if mark['domain'] in cookie['domain'] and mark['name'] in cookie['name'] and (
+                        mark['value'] is None or mark['value'] in cookie['value'])
+            ))
+        ) == len(self.site_storage_mark)
 
     async def login_before_func(self):
         await insert_anti_detection_script(self.page)
@@ -84,7 +127,7 @@ class Community(object):
             try:
                 data = await data.body()
                 data = json.loads(data.decode(constant.FILE_ENCODING))
-            except Exception:
+            except BrowserError:
                 # 说明没有返回信息
                 pass
             if code in constant.HTTP_SUCCESS_STATUS_CODES and check_func(data):

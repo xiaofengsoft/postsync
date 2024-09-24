@@ -3,7 +3,7 @@ import re
 import time
 import typing as t
 from bs4 import BeautifulSoup
-from common.apis import Post
+from common.apis import Post, StorageType
 from common.config import config
 from common.error import BrowserTimeoutError
 from common.func import wait_random_time
@@ -17,9 +17,12 @@ class Juejin(Community):
 
     site_name = "稀土掘金"
     site_alias = "juejin"
-    site_storage_mark = (
-        'api.juejin.cn'
-    )
+    site_storage_mark: t.List[StorageType] = [{
+        "type": "local",
+        "domain": "juejin.cn",
+        "name": "lastLoginParams",
+        "value": ""
+    }]
     url_post_new = "https://juejin.cn/editor/drafts/new"
     url_redirect_login = "https://juejin.cn/login"
     login_url = "https://juejin.cn/login"
@@ -127,15 +130,3 @@ class Juejin(Community):
             img['src'] = await self.upload_img(img['src'])
         return str(soup)
 
-    async def check_login_state(self) -> bool:
-        if not await super().check_login_state():
-            return False
-        try:
-            await self.page.goto(self.url_post_new)
-            await self.page.wait_for_url(
-                url=re.compile(self.url_redirect_login),
-                timeout=config['default']['login_timeout'])
-            print(f"{self.site_name} 未登录")
-            return False
-        except BrowserTimeoutError:
-            return True

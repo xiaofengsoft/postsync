@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from common.apis import StorageType
 from entity.community import Community
 from bs4 import BeautifulSoup
 import json
@@ -14,9 +15,13 @@ class Cnblog(Community):
     url_post_new = 'https://i.cnblogs.com/posts/edit'
     site_alias = 'cnblog'
     login_url = 'https://account.cnblogs.com/signin'
-    site_storage_mark = (
-        "cnblogs.com",
-    )
+    url = 'https://www.cnblogs.com/'
+    site_storage_mark: t.List[StorageType] = [{
+        'type': 'cookie',
+        'domain': 'cnblogs.com',
+        'name': 'XSRF-TOKEN',
+        'value': ''
+    }]
 
     async def upload(self) -> t.AnyStr:
         if not self.is_login:
@@ -158,16 +163,3 @@ class Cnblog(Community):
             "body > div.tox.tox-silver-sink.tox-tinymce-aux > div > div.tox-dialog > div.tox-dialog__header > button "
             "> div").click()
         return data['message']
-
-    async def check_login_state(self) -> bool:
-        if not await super().check_login_state():
-            return False
-        try:
-            await self.page.goto(self.url_post_new)
-            await self.page.wait_for_url(
-                url=re.compile(r'^https?:\/\/account\.cnblogs\.com\/signin'),
-                timeout=config['default']['login_timeout'])
-            print(f"{self.site_name} 未登录")
-            return False
-        except BrowserTimeoutError:
-            return True

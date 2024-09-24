@@ -1,4 +1,6 @@
 import typing as t
+
+from common.apis import StorageType
 from entity.community import Community
 from bs4 import BeautifulSoup
 import json
@@ -14,9 +16,12 @@ class Csdn(Community):
     url_post_new = 'https://editor.csdn.net/md/'
     url_redirect_login = 'https://passport.csdn.net/login'
     site_alias = 'csdn'
-    site_storage_mark = (
-        'passport.csdn.net',
-    )
+    site_storage_mark: t.List[StorageType] = [{
+        "type": "cookie",
+        "domain": "csdn.net",
+        "name": "UserToken",
+        "value": ""
+    }]
     url = "https://www.csdn.net/"
     login_url = "https://passport.csdn.net/login?code=applets"
 
@@ -112,16 +117,3 @@ class Csdn(Community):
         resp_body = await resp.body()
         data = json.loads(resp_body.decode('utf-8'))
         return data['data']['imageUrl']
-
-    async def check_login_state(self) -> bool:
-        if not await super().check_login_state():
-            return False
-        try:
-            await self.page.goto(self.url_post_new)
-            await self.page.wait_for_url(url=re.compile(
-                self.url_redirect_login),
-                timeout=config['default']['login_timeout'])
-            print(f"{self.site_name} 未登录")
-            return False
-        except BrowserTimeoutError:
-            return True

@@ -3,8 +3,8 @@ import asyncio
 import time
 import typing as t
 from common.error import BrowserTimeoutError
-from playwright.async_api import Browser, BrowserContext, Response
-from common.apis import Post
+from playwright.async_api import Browser, BrowserContext
+from common.apis import Post, StorageType
 from common.config import config
 from common.func import wait_random_time
 from entity.community import Community
@@ -18,9 +18,13 @@ from utils.file import get_file_name_without_ext
 class Wordpress(Community):
     site_name = "Wordpress"
     site_alias = "wordpress"
-    site_storage_mark = (
-        get_domain(config['wordpress']['url']),
-    )
+    site_storage_mark:t.List[StorageType] = [{
+        "type": "cookie",
+        "name": "wordpress_logged_in",
+        "domain": get_domain(config['wordpress']['url']),
+        "value": ""
+    }]
+    url = config['wordpress']['url']
     url_post_new = config['wordpress']['url'] + "/wp-admin/post-new.php"
     login_url = config['wordpress']['url'] + "/wp-login.php"
     url_redirect_login = config['wordpress']['url'] + "/user"
@@ -60,7 +64,6 @@ class Wordpress(Community):
             "div.interface-navigable-region.interface-interface-skeleton__content > div.editor-text-editor > "
             "div.editor-text-editor__toolbar > button").click()
         # 处理目录
-        await self.page.pause()
         category_zone = self.page.locator(r"#tabs-0-edit-post\/document-view > div:nth-child(3) > div > "
                                           r"div.editor-post-taxonomies__hierarchical-terms-list")
         try:
@@ -142,17 +145,4 @@ class Wordpress(Community):
         for img in img_tags:
             img['src'] = await self.upload_img(img['src'])
         return str(soup)
-
-    async def check_login_state(self) -> bool:
-        if not await super().check_login_state():
-            return False
-        try:
-            await self.page.goto(self.url_post_new)
-            await self.page.wait_for_url(
-                url=re.compile(self.url_redirect_login),
-                timeout=config['default']['login_timeout'])
-            print(f"{self.site_name} 未登录")
-            return False
-        except BrowserTimeoutError:
-            return True
 

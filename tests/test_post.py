@@ -36,7 +36,7 @@ class TestPost:
             #  'wordpress bilibili zhihu csdn juejin cnblog wechat', 'tests/assets/imgs/logo.png'),
             # ('tests/assets/posts/PostSync介绍.md','Python','解决问题','python adguard',
             #  'wechat', 'tests/assets/imgs/ad.png'),
-            (r'C:\Users\xiaof\Desktop\PlayWright检测用户登录保存Cookie.md', '搜索', '解决', 'Adguard CSDN',
+            (r'C:\Users\xiaof\Desktop\PlayWright检测用户登录保存Cookie.md', '测试', '解决', 'PlayWright',
                 'wordpress', r'')
         ]
     )

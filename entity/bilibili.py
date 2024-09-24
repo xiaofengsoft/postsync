@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import typing as t
+
+from common.apis import StorageType
 from entity.community import Community
 from common.config import config
 from bs4 import BeautifulSoup
@@ -21,9 +23,12 @@ class Bilibili(Community):
     url_redirect_login = "https://passport.bilibili.com/login"
     url_post_manager = "https://member.bilibili.com/platform/upload-manager/opus"
     url = "https://www.bilibili.com/"
-    site_storage_mark = (
-        "bilibili.com",
-    )
+    site_storage_mark: t.List[StorageType] = [{
+        "type": "cookie",
+        "domain": "bilibili.com",
+        "name": "DedeUserID",
+        "value": ""
+    }]
 
     async def upload(self) -> t.AnyStr:
         if not self.is_login:
@@ -179,15 +184,3 @@ class Bilibili(Community):
             img['src'] = await self.upload_img(img['src'])
         return str(soup)
 
-    async def check_login_state(self) -> bool:
-        if not await super().check_login_state():
-            return False
-        try:
-            await self.page.goto(self.url_post_new)
-            await self.page.wait_for_url(
-                url=re.compile(self.url_redirect_login),
-                timeout=config['default']['login_timeout'])
-            print(f"{self.site_name} 未登录")
-            return False
-        except BrowserTimeoutError:
-            return True

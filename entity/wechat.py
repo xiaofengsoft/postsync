@@ -1,23 +1,25 @@
 # -*- coding: utf-8 -*-
 import re
-
-from common.error import BrowserTimeoutError
 import typing as t
 from common.func import wait_random_time
 from common.config import config
 from entity.community import Community
 import json
 from playwright.async_api import Browser, BrowserContext
-from common.apis import Post
+from common.apis import Post, StorageType
 
 
 class Wechat(Community):
     url_post_new = "https://mp.weixin.qq.com/"
     site_name = "公众号"
     site_alias = "wechat"
-    site_storage_mark = (
-        "mp.weixin.qq.com",
-    )
+    site_storage_mark: t.List[StorageType] = [{
+        "type": "cookie",
+        "domain": "mp.weixin.qq.com",
+        "name": "slave_sid",
+        "value": "",
+    }]
+    url = "https://mp.weixin.qq.com/"
     login_url = "https://mp.weixin.qq.com/"
 
     def __init__(self, browser: "Browser", context: "BrowserContext", post: Post):
@@ -103,15 +105,3 @@ class Wechat(Community):
             return self.page.url
         # 获取链接
         return "上传失败"
-
-    async def check_login_state(self) -> bool:
-        if not await super().check_login_state():
-            return False
-        try:
-            await self.page.goto(self.url_post_new)
-            await self.page.wait_for_selector(
-                "#header > div.weui-desktop-head > div > div > div.weui-desktop-layout__extra > div > a",
-                timeout=config['default']['login_timeout'])
-        except BrowserTimeoutError:
-            return True
-        return False

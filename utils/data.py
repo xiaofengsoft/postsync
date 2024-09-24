@@ -33,23 +33,6 @@ def format_json_file(path: str) -> str:
         return json_str
 
 
-def retrieve_storage_data(marks: tuple | str, path: str) -> bool:
-    """
-    检索存储数据是否存在含有标志
-    检索的JSON数据必须格式化
-    :param marks:
-    :param path:
-    :return:
-    """
-    path = get_path(path)
-    with open(path, 'r', encoding='utf-8') as file:
-        content = file.read()
-        for mark in marks:
-            if mark not in content:
-                return False
-    return True
-
-
 def convert_html_content_to_md(html_content: str) -> str:
     """
     将HTML内容转换为Markdown
