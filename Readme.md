@@ -44,6 +44,7 @@ pyinstaller PostSync.spec
 ### 注意事项
 
 - 使用标签分类等功能请确保您在相关平台上已经创建相应的标签分类
+- 文件路径带有空格请使用英文双引号包裹
 
 
 ### 功能
@@ -58,11 +59,9 @@ pyinstaller PostSync.spec
 
 ### 优化任务
 
-- [ ] 优化判断是否登录
-- [ ] 超时时间具体化
+- [ ] 双try catch 处理异常
+- [ ] 算法处理内容提取摘要和标签
 - [ ] 记录失败日志
-- [ ] 具体异常具体处理
-- [ ] 具体栏目参数具体处理
 - [ ] 未填写参数不输入网站处理
 - [ ] 公众号直接发布
 - [ ] 包含查找优化为近似查找
@@ -72,20 +71,6 @@ pyinstaller PostSync.spec
 - entity包下的新增社区嘞应继承Community类
 - 新增社区类的命令应为首字母大写其余字母全部小写
 - 代码风格遵循PEP8规范
-
-### 技术架构
-
-- pytest
-- requests
-- playwright
-- faker
-- pyyaml
-- markdown
-- beautifulsoup4
-- argparse
-- nest-asyncio
-- pyinstaller
-- customtkinter
 
 ### 关于作者
 

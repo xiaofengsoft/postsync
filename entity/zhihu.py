@@ -82,12 +82,21 @@ class Zhihu(Community):
             await self.page.locator(".Creator-SearchBar-searchIcon").dblclick()
             await self.page.locator(".css-1335jw2 > div > .Button").first.click()
             await self.page.get_by_role("button", name="确定").click()
-
-        # 标签当作文章话题
-        for tag in self.post['tags']:
-            await self.page.get_by_role("button", name="添加话题").click()
-            await self.page.get_by_placeholder("搜索话题").fill(tag)
-            await self.page.locator(".css-ogem9c > button").first.click()
+        try:
+            try:
+                # 标签当作文章话题
+                for tag in self.post['tags']:
+                    await self.page.get_by_role("button", name="添加话题").click()
+                    await self.page.get_by_placeholder("搜索话题").fill(tag)
+                    await self.page.locator(".css-ogem9c > button").first.click()
+            except BrowserTimeoutError:
+                self.post['tags'] = config['default']['community'][self.site_alias]['tags']
+                for tag in self.post['tags']:
+                    await self.page.get_by_role("button", name="添加话题").click()
+                    await self.page.get_by_placeholder("搜索话题").fill(tag)
+                    await self.page.locator(".css-ogem9c > button").first.click()
+        except BrowserTimeoutError:
+            pass
         # 选择专栏
         await self.page.locator("label").filter(has_text=re.compile(r"^发布到专栏$")).click()
         try:

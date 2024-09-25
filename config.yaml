@@ -89,7 +89,7 @@ default:
       columns:
       cover:
       topic:
-      timeout: 20000
+      timeout: 30000
     bilibili:
       category: 科技
       tags: Python

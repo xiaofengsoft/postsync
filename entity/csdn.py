@@ -50,6 +50,8 @@ class Csdn(Community):
         if cover_attr.strip() != "":
             await cover_img.hover()
             await self.page.locator("body > div.app.app--light > div.modal > div > div.modal__inner-2 > "
+                                    "div.modal__content > div:nth-child(3) > div > div.preview-box > a > i").hover()
+            await self.page.locator("body > div.app.app--light > div.modal > div > div.modal__inner-2 > "
                                     "div.modal__content > div:nth-child(3) > div > div.preview-box > a > i").click()
         # 封面处理
         async with self.page.expect_file_chooser() as fc_info:

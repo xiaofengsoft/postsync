@@ -28,6 +28,7 @@ class ProcessCore(object):
         self.results: t.Optional[Result] = None
         parser = PostArgumentParser()
         self.args = parser.parse_args()
+        self.file_paths = self.process_files()
         self.args: PostArguments
         self.post = self.process_args()
         asyncio.run(self.init_browser())
@@ -37,13 +38,49 @@ class ProcessCore(object):
         处理命令行参数
         :return: 返回处理后的参数
         """
+        contents: PostContents = {}
+        try:
+            self.args.topic = config['default']['topic'] if self.args.topic is None else self.args.topic
+            self.args.category = config['default']['category'] if self.args.category is None else self.args.category
+            self.args.cover = config['default']['cover'] if self.args.cover is None else self.args.cover
+            self.args.tags = config['default']['tags'] if self.args.tags is None else self.args.tags
+            self.args.columns = config['default']['columns'] if self.args.columns is None else self.args.columns
+        except KeyError as e:
+            raise ConfigurationLackError('缺少配置项 {}'.format(e))
+        if self.args.sites is None or self.args.sites == [] or len(self.args.sites) == 0:
+            self.args.sites = config['default']['community'].keys()
+        for site in self.args.sites:
+            if site not in config['default']['community'].keys():
+                raise CommunityNotExistError('社区 {} 不存在'.format(site))
+        with open(self.file_paths['html'], 'r', encoding='utf-8') as f:
+            contents['html'] = f.read()
+        with open(self.file_paths['md'], 'r', encoding='utf-8') as f:
+            contents['md'] = f.read()
+        digest = self.args.digest or contents['md'][0:config['default']['digest']['length']]
+        return {
+            'title': self.args.title,
+            'paths': self.file_paths,
+            'digest': digest,
+            'category': self.args.category,
+            'cover': self.args.cover,
+            'topic': self.args.topic,
+            'sites': self.args.sites,
+            'tags': self.args.tags,
+            'columns': self.args.columns,
+            'contents': contents
+        }
+
+    def process_files(self) -> PostPaths:
+        """
+        处理文件
+        :return:
+        """
         if self.args.file is None:
             raise FileNotReferencedError()
-        source_file = self.args.file
+        source_file = self.args.file.strip("'\"")   # 去除引号
         title, ext = get_file_name_ext(source_file)
         self.args.title = self.args.title or title  # 没有指定则使用文件名作为标题
         file_paths: PostPaths = {}
-        contents: PostContents = {}
         if ext in HTML_EXTENSIONS:
             file_paths['docx'] = convert_html_to_docx(source_file)
             file_paths['html'] = source_file
@@ -58,36 +95,7 @@ class ProcessCore(object):
             file_paths['md'] = convert_docx_to_md(source_file)
         else:
             raise FileNotSupportedError(ext)
-        try:
-            self.args.topic = config['default']['topic'] if self.args.topic is None else self.args.topic
-            self.args.category = config['default']['category'] if self.args.category is None else self.args.category
-            self.args.cover = config['default']['cover'] if self.args.cover is None else self.args.cover
-            self.args.tags = config['default']['tags'] if self.args.tags is None else self.args.tags
-            self.args.columns = config['default']['columns'] if self.args.columns is None else self.args.columns
-        except KeyError as e:
-            raise ConfigurationLackError('缺少配置项 {}'.format(e))
-        if self.args.sites is None or self.args.sites == [] or len(self.args.sites) == 0:
-            self.args.sites = config['default']['community'].keys()
-        for site in self.args.sites:
-            if site not in config['default']['community'].keys():
-                raise CommunityNotExistError('社区 {} 不存在'.format(site))
-        with open(file_paths['html'], 'r', encoding='utf-8') as f:
-            contents['html'] = f.read()
-        with open(file_paths['md'], 'r', encoding='utf-8') as f:
-            contents['md'] = f.read()
-        digest = self.args.digest or contents['md'][0:config['default']['digest']['length']]
-        return {
-            'title': self.args.title,
-            'paths': file_paths,
-            'digest': digest,
-            'category': self.args.category,
-            'cover': self.args.cover,
-            'topic': self.args.topic,
-            'sites': self.args.sites,
-            'tags': self.args.tags,
-            'columns': self.args.columns,
-            'contents': contents
-        }
+        return file_paths
 
     async def init_browser(self):
         """
@@ -150,6 +158,7 @@ class PostArgumentParser(argparse.ArgumentParser):
     """
     继承自argparse.ArgumentParser，重写exit方法，防止打印额外内容
     """
+
     def __init__(self, **kwargs):
         super().__init__(
             prog=config['app']['name'],
@@ -220,4 +229,3 @@ class PostArgumentParser(argparse.ArgumentParser):
         else:
             print(message)
         self.exit()
-

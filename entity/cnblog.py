@@ -29,13 +29,14 @@ class Cnblog(Community):
                              re.compile(r"account\.cnblogs\.com/user/userinfo"),
                              lambda login_data: login_data['spaceUserId'])  # 发送用户ID说明登录成功
         # 打开发布页面
-        await self.page.goto(self.url_post_new, wait_until='load')
+        await self.page.goto(self.url_post_new, wait_until='domcontentloaded')
         wait_random_time()
         # 处理内容
         content = await self.convert_html_path(self.post['contents']['html'])
         # 处理标题
         wait_random_time()
         await self.page.locator("#post-title").fill(self.post['title'])
+        wait_random_time(1,2)
         await insert_html_content_to_frame(self.page, "#postBodyEditor_ifr", "#tinymce", content)
         await self.page.frame_locator("#postBodyEditor_ifr").locator("#tinymce").click()
         await self.page.locator("#summary").scroll_into_view_if_needed()
@@ -59,6 +60,7 @@ class Cnblog(Community):
             await self.page.locator("#modal-upload-featured-image > div > div > div:nth-child(3) > button").click()
             file_chooser = await fc_info.value
             await file_chooser.set_files(self.post['cover'])
+        wait_random_time()
         await self.page.locator(
             "#cdk-overlay-1 > nz-modal-container > div > div > div.ant-modal-footer.ng-tns-c59-19.ng-star-inserted > "
             "button.ant-btn.ant-btn-primary.ant-btn-sm.ng-star-inserted").scroll_into_view_if_needed()

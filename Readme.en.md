@@ -53,11 +53,8 @@ Then copy config.yaml to the dist/PostSync directory, and run PostSync.exe from 
 
 ### Optimization Tasks
 
-- [ ] Optimize the checking login status of platforms.
-- [ ] Materialize the timeout
+- [ ] Use algorithm to optimize the digest and tags of articles.
 - [ ] Record the logs of the process.
-- [ ] Specially handle the case of the specific exception.
-- [ ] Specially handle the case of the specific column argument.
 - [ ] Not input if the arguments are not provided.
 - [ ] Direct publishing to WeChat Official Account.
 - [ ] Optimize inclusion search to approximate search.
@@ -67,17 +64,3 @@ Then copy config.yaml to the dist/PostSync directory, and run PostSync.exe from 
 New community classes under the entity package should inherit from the Community class.
 The naming of new community classes should be in camelCase.
 Code style follows PEP8 standards.
-
-### Technical Architecture
-
-- pytest
-- requests
-- playwright
-- faker
-- pyyaml
-- markdown
-- beautifulsoup4
-- argparse
-- nest-asyncio
-- pyinstaller
-- customtkinter
