@@ -3,9 +3,7 @@ from common.apis import StorageType
 from entity.community import Community
 from bs4 import BeautifulSoup
 import json
-from common.config import config
 from common.func import insert_html_content_to_frame, wait_random_time
-from common.error import BrowserTimeoutError
 import re
 import typing as t
 
@@ -70,61 +68,63 @@ class Cnblog(Community):
         # 处理摘要
         await self.page.locator("#summary").fill(self.post['digest'])
         # 处理分类
-        try:
-            try:
-                await self.page.locator(
-                    "body > cnb-root > cnb-app-layout > div.main > as-split > as-split-area:nth-child(2) > div > div > "
-                    "cnb-spinner > div > cnb-posts-entry > cnb-post-editing-v2 > cnb-post-editor > "
-                    "div.panel.panel--main >"
-                    "cnb-category-select-panel > cnb-collapse-panel > "
-                    "div.panel-content.ng-tns-c31-9.ng-trigger.ng-trigger-openClosePanel.cnb-panel-body > div > div > "
-                    "cnb-post-category-select > cnb-tree-category-select > div > nz-tree-select > div").click()
-                await self.page.locator(
-                    "body > cnb-root > cnb-app-layout > div.main > as-split > as-split-area:nth-child(2) > div > div > "
-                    "cnb-spinner > div > cnb-posts-entry > cnb-post-editing-v2 > cnb-post-editor > "
-                    "div.panel.panel--main >"
-                    "cnb-category-select-panel > cnb-collapse-panel > "
-                    "div.panel-content.ng-tns-c31-9.ng-trigger.ng-trigger-openClosePanel.cnb-panel-body > div > div > "
-                    "cnb-post-category-select > cnb-tree-category-select > div > nz-tree-select > div > "
-                    "nz-select-search >"
-                    "input").fill(
-                    self.post['category'])
-                await self.page.locator(
-                    ".cdk-overlay-connected-position-bounding-box").locator("nz-tree-node").first.click()
-                await self.page.locator(
-                    "body > cnb-root > cnb-app-layout > div.main > as-split > as-split-area:nth-child(2) > div > div > "
-                    "cnb-spinner > div > cnb-posts-entry > cnb-post-editing-v2 > cnb-post-editor > "
-                    "div.panel.panel--main >"
-                    "cnb-site-category-selector > cnb-collapse-panel > "
-                    "div.cnb-panel-header.ng-tns-c31-11.cnb-panel-header-clickable > span:nth-child(2)").click()
-                await self.page.locator(
-                    "body > cnb-root > cnb-app-layout > div.main > as-split > as-split-area:nth-child(2) > div > div "
-                    "> cnb-spinner > div > cnb-posts-entry > cnb-post-editing-v2 > cnb-post-editor > "
-                    "div.panel.panel--main > cnb-site-category-selector > cnb-collapse-panel > "
-                    "div.panel-content.ng-tns-c31-11.ng-trigger.ng-trigger-openClosePanel.cnb-panel-body > "
-                    "div").locator(
-                    "div", has_text=re.compile(self.post['category'], re.IGNORECASE)).first.click()
-            except BrowserTimeoutError:
-                await self.page.locator(
-                    "body > cnb-root > cnb-app-layout > div.main > as-split > as-split-area:nth-child(2) > div > div "
-                    "> cnb-spinner > div > cnb-posts-entry > cnb-post-editing-v2 > cnb-post-editor > "
-                    "div.panel.panel--main > cnb-site-category-selector > cnb-collapse-panel > "
-                    "div.panel-content.ng-tns-c31-11.ng-trigger.ng-trigger-openClosePanel.cnb-panel-body > "
-                    "div").locator(
-                    "div", has_text=re.compile(config['default']['community']['cnblog']['category'],
-                                               re.IGNORECASE)).first.click()
-        except BrowserTimeoutError:
-            pass
+
+        async def inner_upload_category(category: str):
+            await self.page.locator(
+                "body > cnb-root > cnb-app-layout > div.main > as-split > as-split-area:nth-child(2) > div > div > "
+                "cnb-spinner > div > cnb-posts-entry > cnb-post-editing-v2 > cnb-post-editor > "
+                "div.panel.panel--main >"
+                "cnb-category-select-panel > cnb-collapse-panel > "
+                "div.panel-content.ng-tns-c31-9.ng-trigger.ng-trigger-openClosePanel.cnb-panel-body > div > div > "
+                "cnb-post-category-select > cnb-tree-category-select > div > nz-tree-select > div").click()
+            await self.page.locator(
+                "body > cnb-root > cnb-app-layout > div.main > as-split > as-split-area:nth-child(2) > div > div > "
+                "cnb-spinner > div > cnb-posts-entry > cnb-post-editing-v2 > cnb-post-editor > "
+                "div.panel.panel--main >"
+                "cnb-category-select-panel > cnb-collapse-panel > "
+                "div.panel-content.ng-tns-c31-9.ng-trigger.ng-trigger-openClosePanel.cnb-panel-body > div > div > "
+                "cnb-post-category-select > cnb-tree-category-select > div > nz-tree-select > div > "
+                "nz-select-search >"
+                "input").fill(
+                category)
+            await self.page.locator(
+                ".cdk-overlay-connected-position-bounding-box").locator("nz-tree-node").first.click()
+            await self.page.locator(
+                "body > cnb-root > cnb-app-layout > div.main > as-split > as-split-area:nth-child(2) > div > div > "
+                "cnb-spinner > div > cnb-posts-entry > cnb-post-editing-v2 > cnb-post-editor > "
+                "div.panel.panel--main >"
+                "cnb-site-category-selector > cnb-collapse-panel > "
+                "div.cnb-panel-header.ng-tns-c31-11.cnb-panel-header-clickable > span:nth-child(2)").click()
+            await self.page.locator(
+                "body > cnb-root > cnb-app-layout > div.main > as-split > as-split-area:nth-child(2) > div > div "
+                "> cnb-spinner > div > cnb-posts-entry > cnb-post-editing-v2 > cnb-post-editor > "
+                "div.panel.panel--main > cnb-site-category-selector > cnb-collapse-panel > "
+                "div.panel-content.ng-tns-c31-11.ng-trigger.ng-trigger-openClosePanel.cnb-panel-body > "
+                "div").locator(
+                "div", has_text=re.compile(category, re.IGNORECASE)).first.click()
+
+        await self.double_try_single_data(
+            'category',
+            inner_upload_category,
+            inner_upload_category
+        )
+
         await self.page.locator(
             "#tags > div > div > nz-select > nz-select-top-control > nz-select-search > input").click()
         tag_selector = self.page.locator(".cdk-virtual-scroll-content-wrapper")
         # 处理标签
-        for tag in self.post['tags']:
+
+        async def inner_upload_tag(tag: str):
             await self.page.locator(
                 "#tags > div > div > nz-select > nz-select-top-control > nz-select-search > input").fill(tag)
             await tag_selector.locator("span", has_text=re.compile(tag, re.IGNORECASE)).first.click()
-        wait_random_time()
 
+        await self.double_try_data(
+            'tags',
+            inner_upload_tag,
+            inner_upload_tag
+        )
+        wait_random_time()
         async with self.page.expect_response("https://i.cnblogs.com/api/posts") as response:
             submit_button = self.page.locator(
                 "body > cnb-root > cnb-app-layout > div.main > as-split > as-split-area:nth-child(2) > div > div > "

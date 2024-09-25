@@ -1,15 +1,11 @@
 # -*- coding: utf-8 -*-
 import typing as t
-
 from common.apis import StorageType
 from entity.community import Community
-from common.config import config
-from bs4 import BeautifulSoup
 import json
 import re
 from common.func import wait_random_time
 from common.func import insert_html_to_element
-from common.error import BrowserTimeoutError
 
 
 class Bilibili(Community):
@@ -61,15 +57,18 @@ class Bilibili(Community):
             "#app > div > div.web-editor__wrap > div.b-read-editor > div.b-read-editor__settings.mt-m > div > "
             "div:nth-child(1) > div.bre-settings__sec__ctn > div.bre-settings__categories"
         )
-        try:
-            button = category_zone.locator("div", has_text=re.compile(self.post['category']))
+
+        async def inner_upload_category(category: str):
+            button = category_zone.locator("div", has_text=re.compile(category))
             await button.click()
             await category_zone.locator("li:nth-child(1)").click()
-        except BrowserTimeoutError:
-            button = category_zone.locator("div", has_text=re.compile(
-                config['default']['community'][self.site_alias]['category']))
-            await button.click()
-            await category_zone.locator("li:nth-child(1)").click()
+
+        await self.double_try_single_data(
+            'category',
+            inner_upload_category,
+            inner_upload_category
+        )
+
         # 处理封面
         async with self.page.expect_file_chooser() as select_file:
             await self.page.locator(
@@ -83,36 +82,31 @@ class Bilibili(Community):
             "body > div.bre-modal.bre-img-corpper-modal > div > div.bre-modal__content > "
             "div.bre-img-corpper-modal__footer > button.bre-btn.primary").click()
         # 处理话题
+
+        async def inner_upload_topic(topic: str):
+            await self.page.locator(
+                "#app > div > div.web-editor__wrap > div.b-read-editor > div.b-read-editor__settings.mt-m > div > "
+                "div:nth-child(3) > div.bre-settings__sec__ctn > div > div > div.bili-topic-selector__search > "
+                "div > div > div.bili-topic-search__input > input"
+            ).fill(topic)
+            wait_random_time()
+            await self.page.locator(
+                "#app > div > div.web-editor__wrap > div.b-read-editor > div.b-read-editor__settings.mt-m > div > "
+                "div:nth-child(3) > div.bre-settings__sec__ctn > div > div > div.bili-topic-selector__search > "
+                "div > div > div.bili-topic-search__result > div.bili-topic-search__list > div:nth-child(1)"
+            ).click()
+
         if self.post['topic']:
             await self.page.locator(
                 "#app > div > div.web-editor__wrap > div.b-read-editor > div.b-read-editor__settings.mt-m > div > "
                 "div:nth-child(3) > div.bre-settings__sec__ctn > div > div > div.bili-topic-selector__search > div > "
                 "div > div.bili-topic-search__input > span"
             ).click()
-            try:
-                await self.page.locator(
-                    "#app > div > div.web-editor__wrap > div.b-read-editor > div.b-read-editor__settings.mt-m > div > "
-                    "div:nth-child(3) > div.bre-settings__sec__ctn > div > div > div.bili-topic-selector__search > "
-                    "div > div > div.bili-topic-search__input > input"
-                ).fill(self.post['topic'])
-                wait_random_time()
-                await self.page.locator(
-                    "#app > div > div.web-editor__wrap > div.b-read-editor > div.b-read-editor__settings.mt-m > div > "
-                    "div:nth-child(3) > div.bre-settings__sec__ctn > div > div > div.bili-topic-selector__search > "
-                    "div > div > div.bili-topic-search__result > div.bili-topic-search__list > div:nth-child(1)"
-                ).click()
-            except BrowserTimeoutError:
-                await self.page.locator(
-                    "#app > div > div.web-editor__wrap > div.b-read-editor > div.b-read-editor__settings.mt-m > div > "
-                    "div:nth-child(3) > div.bre-settings__sec__ctn > div > div > div.bili-topic-selector__search > "
-                    "div > div > div.bili-topic-search__input > input"
-                ).fill(config['default']['community'][self.site_alias]['topic'])
-                wait_random_time()
-                await self.page.locator(
-                    "#app > div > div.web-editor__wrap > div.b-read-editor > div.b-read-editor__settings.mt-m > div > "
-                    "div:nth-child(3) > div.bre-settings__sec__ctn > div > div > div.bili-topic-selector__search > "
-                    "div > div > div.bili-topic-search__result > div.bili-topic-search__list > div:nth-child(1)"
-                ).click()
+            await self.double_try_single_data(
+                'topic',
+                inner_upload_topic,
+                inner_upload_topic
+            )
 
         # 处理标签
         tag_input = self.page.locator(
@@ -130,12 +124,16 @@ class Bilibili(Community):
             "body > div.bre-modal.bre-list-modal > div > div.bre-modal__content > div.bre-list-modal__content.mt-m > "
             "div.bre-radio-group.bre-list-modal__items"
         )
-        try:
-            column = self.post['columns'][0]
+
+        async def inner_upload_column(column: str):
             await column_zone.locator("div", has_text=re.compile(column)).first.click()
-        except BrowserTimeoutError:
-            column = config['default']['community'][self.site_alias]['columns'][0]
-            await column_zone.locator("div", has_text=re.compile(column)).first.click()
+
+        await self.double_try_first_index(
+            'columns',
+            inner_upload_column,
+            inner_upload_column
+        )
+
         await self.page.locator(
             "body > div.bre-modal.bre-list-modal > div > div.bre-modal__content > div.bre-list-modal__footer > button"
         ).click()
@@ -149,7 +147,7 @@ class Bilibili(Community):
         data_body = await data.body()
         if data_body.decode('utf-8') != 'ok':
             raise Exception("发布失败")
-        await self.page.goto(self.url_post_manager, wait_until='load')
+        await self.page.goto(self.url_post_manager, wait_until='domcontentloaded')
         async with self.context.expect_page() as page_info:
             await self.page.frame_locator(
                 "#cc-body > div.cc-content-body.upload-manage > div.opus.content > div > div > iframe").locator(
@@ -177,10 +175,4 @@ class Bilibili(Community):
         data = json.loads(resp_body.decode('utf-8'))
         return data['data']['url']
 
-    async def convert_html_path(self, content: str) -> str:
-        soup = BeautifulSoup(content, 'html.parser')
-        img_tags = soup.find_all('img')
-        for img in img_tags:
-            img['src'] = await self.upload_img(img['src'])
-        return str(soup)
 

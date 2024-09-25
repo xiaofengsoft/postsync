@@ -50,50 +50,61 @@ class Juejin(Community):
 
         # 点击发布按钮
         await self.page.locator("button", has_text="发布").first.click()
+
         # 选择分类
-        try:
+        async def inner_upload_category(category: str):
             await (self.page.locator(".category-list")
                    .locator(
                 "div",
-                has_text=re.compile(self.post['category'], re.IGNORECASE)
-            ).click(timeout=5000))
-        except BrowserTimeoutError:
-            await (self.page.locator(".category-list")
-                   .locator("div", has_text=re.compile(config['default']['community']['juejin']['category'],
-                                                       re.IGNORECASE)).click(timeout=5000))
+                has_text=re.compile(category, re.IGNORECASE)
+            ).click())
+
+        await self.double_try_single_data(
+            'category',
+            inner_upload_category,
+            inner_upload_category
+        )
+
         # 选择标签
         await self.page.get_by_text("请搜索添加标签").click()
-        tag_selector = self.page.locator('.tag-select-add-margin')
         tag_input = self.page.get_by_role("banner").get_by_role("textbox").nth(1)
 
         # 逐个搜索添加标签
-        async def add_tag(inner_tag: str):
-            await tag_input.fill(inner_tag)
-            await tag_input.press('Enter')
 
-        await self.upload_tags(
-            tag_selector.locator("li"),
-            add_tag
+        tag_zone = self.page.locator(
+            "body > div.byte-select-dropdown.byte-select-dropdown--multiple.tag-select-add-margin > div"
+        )
+
+        async def inner_upload_tag(inner_tag: str):
+            await tag_input.fill(inner_tag)
+            wait_random_time()
+            await tag_zone.locator("li").first.click()
+
+        await self.double_try_data(
+            'tags',
+            inner_upload_tag,
+            inner_upload_tag
         )
         # 输入摘要
         await self.page.get_by_role("banner").locator("textarea").fill(self.post['digest'])
-        time.sleep(0.1)
+        wait_random_time()
         # 选择封面
         await choose_cover()
         # 点击空白处防止遮挡
-        # await self.page.locator("//div[@class='title' and text()='发布文章']").click()
         # 选择专栏
         column_selector = self.page.locator(".byte-select-dropdown").last
         column_input = self.page.get_by_role("banner").get_by_role("textbox").nth(2)
-        try:
-            for column in self.post['columns']:
-                await column_input.fill(column)
-                await column_selector.locator("li", has_text=re.compile(column, re.IGNORECASE)).first.click()
-        except BrowserTimeoutError:
-            columns = config['default']['community']['juejin']['columns']
-            for column in columns:
-                await column_input.fill(column)
-                await column_selector.locator("li", has_text=re.compile(column, re.IGNORECASE)).first.click()
+
+        async def inner_upload_column(column: str):
+            await column_input.fill(column)
+            await column_selector.locator("li", has_text=re.compile(column, re.IGNORECASE)).first.click()
+
+        await self.double_try_data(
+            'columns',
+            inner_upload_column,
+            inner_upload_column
+        )
+
         # 选择话题
         if self.post['topic']:
             topic_selector = self.page.locator(".topic-select-dropdown")
@@ -101,8 +112,19 @@ class Juejin(Community):
             await topic_input.fill(self.post['topic'])
             await topic_selector.locator("span", has_text=re.compile(self.post['topic'], re.IGNORECASE)).first.click()
         # 点击发布按钮
-        await self.page.get_by_role("button", name="确定并发布").click()
-        await self.page.wait_for_url("**/published")
+        wait_random_time()
+
+        async def inner_click_publish():
+            await self.page.locator(
+                "#juejin-web-editor > div.edit-draft > div > header > div.right-box > "
+                "div.publish-popup.publish-popup.with-padding.active > div > div.footer > div > "
+                "button.ui-btn.btn.primary.medium.default"
+            ).click()
+        await self.double_try(
+            inner_click_publish,
+            inner_click_publish
+        )
+        await self.page.wait_for_url(re.compile(r"\/published"))
         # 获取文章链接
         res = self.page.expect_response("**/article/detail*")
         first = await res.__aenter__()
@@ -123,10 +145,4 @@ class Juejin(Community):
         data = json.loads(resp_body.decode('utf-8'))
         return data['data']['main_url']
 
-    async def convert_html_path(self, content: str) -> str:
-        soup = BeautifulSoup(content, 'html.parser')
-        img_tags = soup.find_all('img')
-        for img in img_tags:
-            img['src'] = await self.upload_img(img['src'])
-        return str(soup)
 

@@ -46,7 +46,7 @@ class Wordpress(Community):
                     .replace('.', r'\.')),
                 lambda login_data: 0 == 0,
             )
-        await self.page.goto(self.url, wait_until='load')
+        await self.page.goto(self.url, wait_until='domcontentloaded')
         # 处理参数
         md_content = await self.convert_html_path(self.post['contents']['html'])
         await self.page.goto(self.url, wait_until='load')
@@ -55,7 +55,7 @@ class Wordpress(Community):
             "body > div.components-popover__fallback-container > div > div > div > div:nth-child(2) > div:nth-child("
             "2) > button:nth-child(2)").click()
         await self.page.get_by_label("选项", exact=True).first.click()
-        time.sleep(0.1)
+        wait_random_time()
         await self.page.locator("#inspector-textarea-control-0").fill(self.post['title'])
         await self.page.locator("#post-content-0").fill(md_content)
         await self.page.locator(
@@ -66,16 +66,17 @@ class Wordpress(Community):
         # 处理目录
         category_zone = self.page.locator(r"#tabs-0-edit-post\/document-view > div:nth-child(3) > div > "
                                           r"div.editor-post-taxonomies__hierarchical-terms-list")
-        try:
-            try:
-                for column in self.post['columns']:
-                    await category_zone.locator("label", has_text=re.compile(column)).click()
-                    wait_random_time()
-            except BrowserTimeoutError:
-                for column in config['default']['community'][self.site_alias]['columns']:
-                    await category_zone.locator("label", has_text=re.compile(column)).click()
-        except TypeError:
-            pass
+
+        async def inner_upload_columns(column: str):
+            await category_zone.locator("label", has_text=re.compile(column)).click()
+
+        await self.double_try_data(
+            'columns',
+            inner_upload_columns,
+            inner_upload_columns,
+            BrowserTimeoutError,
+            TypeError
+        )
         # 设置封面
         await self.page.locator(
             r"#tabs-0-edit-post\/document-view > div.components-flex.components-h-stack.components-v-stack.editor"

@@ -18,12 +18,12 @@ class Zhihu(Community):
     url_redirect_login = "https://www.zhihu.com/signin"
     site_name = "知乎"
     site_alias = "zhihu"
-    site_storage_mark:t.List[StorageType] = [{
+    site_storage_mark: t.List[StorageType] = [{
         "type": "local",
         "domain": "www.zhihu.com",
         "name": "uhiuhvk_wrnhq",
         "value": ""
-    },{
+    }, {
         "type": "cookie",
         "domain": "zhihu.com",
         "name": "z_c0",
@@ -74,41 +74,53 @@ class Zhihu(Community):
         await self.page.get_by_placeholder("请输入关键词查找问题").click()
         await self.page.get_by_placeholder("请输入关键词查找问题").fill(self.post['category'])
         wait_random_time(1, 2)
-        try:
+
+        async def inner_upload_category():
             await self.page.locator(".Creator-SearchBar-searchIcon").dblclick()
             await self.page.locator(".css-1335jw2 > div > .Button").first.click()
             await self.page.get_by_role("button", name="确定").click()
-        except BrowserTimeoutError:
-            await self.page.locator(".Creator-SearchBar-searchIcon").dblclick()
-            await self.page.locator(".css-1335jw2 > div > .Button").first.click()
-            await self.page.get_by_role("button", name="确定").click()
-        try:
-            try:
-                # 标签当作文章话题
-                for tag in self.post['tags']:
-                    await self.page.get_by_role("button", name="添加话题").click()
-                    await self.page.get_by_placeholder("搜索话题").fill(tag)
-                    await self.page.locator(".css-ogem9c > button").first.click()
-            except BrowserTimeoutError:
-                self.post['tags'] = config['default']['community'][self.site_alias]['tags']
-                for tag in self.post['tags']:
-                    await self.page.get_by_role("button", name="添加话题").click()
-                    await self.page.get_by_placeholder("搜索话题").fill(tag)
-                    await self.page.locator(".css-ogem9c > button").first.click()
-        except BrowserTimeoutError:
-            pass
+
+        await self.double_try(
+            inner_upload_category,
+            inner_upload_category
+        )
+
+        async def inner_upload_tag(tag):
+            await self.page.get_by_role("button", name="添加话题").click()
+            await self.page.get_by_placeholder("搜索话题").fill(tag)
+            await self.page.locator(".css-ogem9c > button").first.click()
+
+        await self.double_try_data(
+            'tags',
+            inner_upload_tag,
+            inner_upload_tag
+        )
         # 选择专栏
+
+        async def inner_upload_column(column):
+            await self.page.locator("#Popover22-toggle").click()
+            await self.page.locator(f"//button[contains(text(),'{column}')]").first.click()
+
         await self.page.locator("label").filter(has_text=re.compile(r"^发布到专栏$")).click()
-        try:
-            column = self.post['columns'][0]
-            await self.page.locator("#Popover22-toggle").click()
-            await self.page.locator(f"//button[contains(text(),'{column}')]").first.click()
-        except BrowserTimeoutError:
-            column = config['default']['community'][self.site_alias]['columns'][0]
-            await self.page.locator("#Popover22-toggle").click()
-            await self.page.locator(f"//button[contains(text(),'{column}')]").first.click()
+        await self.double_try_first_index(
+            'columns',
+            inner_upload_column,
+            inner_upload_column
+        )
+        esc_alert = self.page.locator(
+                "body > div:nth-child(31) > div > div > div > div.Modal.Modal--fullPage.DraftHistoryModal > button"
+        )
+        wait_random_time()
+        if await esc_alert.is_visible():
+            await esc_alert.click()
+
         # 发布文章
-        await self.page.get_by_role("button", name="发布", exact=True).click()
+        await self.page.locator(
+            "#root > div > main > div > div.WriteIndexLayout-main.WriteIndex.css-1losy9j > div.css-1so3nbl > "
+            "div.PostEditor-wrapper > div.css-13mrzb0 > div.css-1ppjin3 > div > "
+            "button.Button.css-d0uhtl.FEfUrdfMIKpQDJDqkjte.Button--primary.Button--blue.epMJl0lFQuYbC7jrwr_o"
+            ".JmYzaky7MEPMFcJDLNMG"
+        ).click()
         await self.page.wait_for_url("https://zhuanlan.zhihu.com/p/*")
         return self.page.url
 
@@ -143,4 +155,3 @@ class Zhihu(Community):
         for img in img_tags:
             img['src'] = await self.upload_img(img['src'])
         return str(soup)
-

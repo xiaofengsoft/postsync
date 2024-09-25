@@ -1,3 +1,4 @@
+from bs4 import BeautifulSoup
 from playwright._impl._async_base import AsyncEventInfo
 from common.apis import Post, StorageData
 from common.config import config
@@ -6,7 +7,7 @@ from playwright.async_api import Page, Locator
 from playwright.async_api import BrowserContext, Browser, Response
 import typing as t
 from common import constant
-from common.error import ConfigNotConfiguredError,BrowserError
+from common.error import ConfigNotConfiguredError, BrowserError
 from utils.data import insert_anti_detection_script
 from common.func import wait_random_time
 import json
@@ -66,7 +67,7 @@ class Community(object):
                 if not any(
                         cookie for cookie in cookies_now
                         if mark['domain'] in cookie['domain'] and mark['name'] in cookie['name']
-                        and (mark['value'] is None or mark['value'] in cookie['value'])):
+                           and (mark['value'] is None or mark['value'] in cookie['value'])):
                     # 这里检测到了未登录状态，刷新Storage
                     await self.context.storage_state(path=get_path(config['data']['storage']['path']))
                     format_json_file(config['data']['storage']['path'])
@@ -75,8 +76,8 @@ class Community(object):
                 if not any(
                         1 for local_name, local_value in locals_now.items()
                         if mark['name'] in local_name and (
-                        mark['value'] is None or mark['value'] in local_value
-                )):
+                                mark['value'] is None or mark['value'] in local_value
+                        )):
                     # 这里检测到了未登录状态，刷新Storage
                     await self.context.storage_state(path=get_path(config['data']['storage']['path']))
                     format_json_file(config['data']['storage']['path'])
@@ -157,7 +158,11 @@ class Community(object):
         :param content: HTML内容
         :return: 转换后的HTML内容
         """
-        raise NotImplementedError("请在子类中实现该方法")
+        soup = BeautifulSoup(content, 'html.parser')
+        img_tags = soup.find_all('img')
+        for img in img_tags:
+            img['src'] = await self.upload_img(img['src'])
+        return str(soup)
 
     async def convert_md_path(self, content: str) -> str:
         """
@@ -175,25 +180,88 @@ class Community(object):
         """
         raise NotImplementedError("请在子类中实现该方法")
 
-    async def upload_tags(
-            self, tag_selector: t.Union[Locator, Page],
-            loop_mid_func: t.Callable[[str], t.Coroutine[t.Any, t.Any, None]],
-    ):
+    async def double_try_data[T: t.Callable](
+            self,
+            index: t.Literal['columns', 'tags'],
+            main_func: T, other_func: T,
+            first_error: t.Type[Exception] = BrowserTimeoutError,
+            second_error: t.Type[Exception] = BrowserTimeoutError):
         """
-        上传标签
-        :param loop_mid_func: 循环中间函数
-        :param tag_selector:  标签选择器
+        双重尝试数据
+        :param index:
+        :param main_func:
+        :param other_func:
+        :param first_error:
+        :param second_error:
         :return:
         """
-        tags = self.post['tags']
+        items = self.post[index]
         try:
-            for tag in tags:
-                wait_random_time()
-                await loop_mid_func(tag)
-                await tag_selector.first.click()
-        except BrowserTimeoutError:
-            tags = config['default']["community"][self.site_alias]['tags']
-            for tag in tags:
-                wait_random_time()
-                await loop_mid_func(tag)
-                await tag_selector.first.click()
+            for item in items:
+                await main_func(item)
+        except first_error:
+            items = config['default']["community"][self.site_alias][index]
+            try:
+                for item in items:
+                    await other_func(item)
+            except second_error:
+                pass
+
+    async def double_try_first_index[T: t.Callable](
+            self,
+            index: t.Literal['columns', 'tags'],
+            main_func: T, other_func: T,
+            first_error: t.Type[Exception] = BrowserTimeoutError,
+            second_error: t.Type[Exception] = BrowserTimeoutError
+    ):
+        try:
+            item = self.post[index][0]
+            await main_func(item)
+        except first_error:
+            try:
+                item = config['default']["community"][self.site_alias][index][0]
+                await other_func(item)
+            except second_error:
+                pass
+
+    async def double_try_single_data[T: t.Callable](
+            self,
+            index: t.Literal['category', 'topic'],
+            main_func: T, other_func: T,
+            first_error: t.Type[Exception] = BrowserTimeoutError,
+            second_error: t.Type[Exception] = BrowserTimeoutError
+    ):
+        """
+        双重尝试单条记录的数据
+        :param index:
+        :param main_func:
+        :param other_func:
+        :param first_error:
+        :param second_error:
+        :return:
+        """
+        try:
+            item = self.post[index]
+            await main_func(item)
+        except first_error:
+            try:
+                item = config['default']["community"][self.site_alias][index]
+                await other_func(item)
+            except second_error:
+                pass
+
+    async def double_try(
+            self,
+            main_func: t.Callable,
+            other_func: t.Callable,
+            first_error: t.Type[Exception] = BrowserTimeoutError,
+            second_error: t.Type[Exception] = BrowserTimeoutError
+    ):
+        try:
+            await main_func()
+        except first_error:
+            try:
+                await other_func()
+            except second_error:
+                pass
+

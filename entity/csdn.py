@@ -66,6 +66,7 @@ class Csdn(Community):
         await self.page.locator(".mark_selection_title_el_tag > .tag__btn-tag").click()
         tag_input = self.page.locator(".el-input--suffix > .el-input__inner")
         column_selector = self.page.locator(".el-autocomplete-suggestion__list")
+
         for tag in self.post['tags']:
             await tag_input.fill(tag)
             try:
@@ -76,15 +77,17 @@ class Csdn(Community):
         wait_random_time()
         # 专栏处理
         column_selector = self.page.locator(".tag__options-list")
-        try:
-            for column in self.post['columns']:
-                await self.page.locator(".tag__item-list > .tag__btn-tag").click()
-                await column_selector.locator("span", has_text=re.compile(column, re.IGNORECASE)).first.click()
-        except BrowserTimeoutError:
-            columns = config['default']['community']['csdn']['columns']
-            for column in columns:
-                await self.page.locator(".tag__item-list > .tag__btn-tag").click()
-                await column_selector.locator("span", has_text=re.compile(column, re.IGNORECASE)).first.click()
+
+        async def inner_upload_column(column:str):
+            await self.page.locator(".tag__item-list > .tag__btn-tag").click()
+            await column_selector.locator("span", has_text=re.compile(column, re.IGNORECASE)).first.click()
+
+        await self.double_try_data(
+            'columns',
+            inner_upload_column,
+            inner_upload_column,
+        )
+
         await self.page.locator(".tag__options-txt > .modal__close-button").click()
         # 点击发布按钮
         wait_random_time()

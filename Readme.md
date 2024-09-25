@@ -59,7 +59,7 @@ pyinstaller PostSync.spec
 
 ### 优化任务
 
-- [ ] 双try catch 处理异常
+- [ ] 优化md,html,docx之间的转化生成结果
 - [ ] 算法处理内容提取摘要和标签
 - [ ] 记录失败日志
 - [ ] 未填写参数不输入网站处理
