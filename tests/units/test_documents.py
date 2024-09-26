@@ -1,15 +1,19 @@
 # -*- coding: utf-8 -*-
-import markdown
+import pytest
+from utils.file import convert_md_to_html
 from utils.file import get_abs_path
 
 
-def test_md():
+@pytest.mark.parametrize('md_file', [
+    r"C:\Users\xiaof\Desktop\PlayWright检测用户登录保存Cookie.md"
+])
+def test_md(md_file):
     """
     测试markdown转html
     :return:
     """
-    md = markdown.Markdown()
-    md.convertFile(get_abs_path('/README.md'), 'readme.html', "utf-8")
+    convert_md_to_html(md_file)
+
 
 
 def test_bs_html():
