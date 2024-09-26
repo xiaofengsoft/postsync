@@ -1,18 +1,22 @@
 # -*- coding: utf-8 -*-
 import pytest
-from utils.file import convert_md_to_html
 from utils.file import get_abs_path
 
 
-@pytest.mark.parametrize('md_file', [
-    r"C:\Users\xiaof\Desktop\PlayWright检测用户登录保存Cookie.md"
+@pytest.mark.parametrize('md_file_path , dst_file_path', [
+    (r"C:\Users\xiaof\Desktop\PlayWright检测用户登录保存Cookie.md",
+     r"C:\Users\xiaof\Desktop\PlayWright检测用户登录保存Cookie.html")
 ])
-def test_md(md_file):
+def test_md(md_file_path, dst_file_path):
     """
     测试markdown转html
     :return:
     """
-    convert_md_to_html(md_file)
+    import markdown
+    from markdown.extensions.codehilite import CodeHiliteExtension
+    from markdown.extensions.fenced_code import FencedCodeExtension
+    md = markdown.Markdown(extensions=[FencedCodeExtension(), CodeHiliteExtension()])
+    md.convertFile(md_file_path, dst_file_path, "utf-8")
 
 
 def test_bs_html():

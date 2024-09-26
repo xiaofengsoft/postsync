@@ -1,13 +1,56 @@
 # -*- coding: utf-8 -*-
 import pytest
-from utils.file import get_file_path_without_ext
+from utils.file import get_file_path_without_ext, convert_html_to_docx, convert_docx_to_html, convert_docx_to_md
 from utils.file import check_file_same_name_exists
+from utils.file import convert_md_to_html,convert_md_to_docx,convert_html_to_md
+
+
+@pytest.mark.parametrize("file_path", [
+    r"C:\Users\xiaof\Desktop\PlayWright检测用户登录保存Cookie.md"
+])
+def test_convert_md_to_html(file_path: str) -> None:
+    convert_md_to_html(file_path)
+
+
+@pytest.mark.parametrize("file_path", [
+    r"C:\Users\xiaof\Desktop\PlayWright检测用户登录保存Cookie.md"
+])
+def test_convert_md_to_html(file_path: str) -> None:
+    convert_md_to_docx(file_path)
+
+
+@pytest.mark.parametrize("file_path", [
+    r"C:\Users\xiaof\Desktop\PlayWright检测用户登录保存Cookie.html"
+])
+def test_convert_html_to_md(file_path: str) -> None:
+    convert_html_to_md(file_path)
+
+
+@pytest.mark.parametrize("file_path", [
+    r"C:\Users\xiaof\Desktop\PlayWright检测用户登录保存Cookie.html"
+])
+def test_convert_html_to_docx(file_path: str) -> None:
+    convert_html_to_docx(file_path)
+
+
+@pytest.mark.parametrize("file_path", [
+    r"C:\Users\xiaof\Desktop\PlayWright检测用户登录保存Cookie.docx"
+])
+def test_convert_docx_to_html(file_path: str) -> None:
+    convert_docx_to_html(file_path)
+
+
+@pytest.mark.parametrize("file_path", [
+    r"C:\Users\xiaof\Desktop\PlayWright检测用户登录保存Cookie.docx"
+])
+def test_convert_docx_to_md(file_path: str) -> None:
+    convert_docx_to_md(file_path)
 
 
 @pytest.mark.parametrize("file_path, expected_result", [
     (r"D:\Python\Projects\MyGitProjects\PostSync\Readme.md", r"D:\Python\Projects\MyGitProjects\PostSync\Readme"),
     (r"D:\Python\Projects\MyGitProjects\PostSync\Readme.en.md", r"D:\Python\Projects\MyGitProjects\PostSync\Readme.en"),
-    (r"tests\data\test.txt",r"tests\data\test"),
+    (r"tests\data\test.txt", r"tests\data\test"),
 ])
 def test_get_file_path_without_ext(file_path, expected_result):
     print("file_path:", file_path)

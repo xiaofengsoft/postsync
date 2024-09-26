@@ -3,8 +3,11 @@ import os
 import typing as t
 from docx import Document
 from htmldocx import HtmlToDocx
-from common.constant import *
 from pydocx import PyDocX
+from markdown.extensions.codehilite import CodeHiliteExtension
+from markdown import Markdown
+from markdown.extensions.fenced_code import FencedCodeExtension
+from common.constant import *
 
 
 def get_path(path: str) -> str:
@@ -69,7 +72,7 @@ def load_yaml(path: str) -> dict:
     加载YAML文件
     """
     import yaml
-    with open(path, 'r', encoding='utf-8') as f:
+    with open(path, 'r', encoding=FILE_ENCODING) as f:
         yaml_data = yaml.load(stream=f, Loader=yaml.FullLoader)
         return yaml_data
 
@@ -89,9 +92,11 @@ def convert_md_to_html(md_file_path: str, html_file_path: str = None) -> str:
             dst_file_path = get_path(get_file_path_without_ext(md_file_path)+".html")
     else:
         dst_file_path = html_file_path
-    from markdown import Markdown
-    md = Markdown()
-    md.convertFile(md_file_path, dst_file_path, "utf-8")
+    md = Markdown(extensions=[
+        CodeHiliteExtension(),  # 代码高亮
+        FencedCodeExtension()  # 允许代码块
+    ])
+    md.convertFile(md_file_path, dst_file_path, FILE_ENCODING)
     return dst_file_path
 
 
@@ -111,7 +116,7 @@ def convert_html_to_docx(html_file_path: str, docx_file_path: t.Optional[str] = 
     else:
         dst_file_path = docx_file_path
     from utils.data import convert_html_img_path_to_abs_path
-    with open(html_file_path, 'r', encoding='utf-8') as f:
+    with open(html_file_path, 'r', encoding=FILE_ENCODING) as f:
         html_content = f.read()
     # 转换图片路径为绝对路径
     convert_html_img_path_to_abs_path(html_file_path)
@@ -144,23 +149,23 @@ def convert_md_to_docx(md_file_path: str, docx_file_path: str = None) -> str:
     return dst_file_path
 
 
-def convert_docx_to_html(md_file_path: str, docx_file_path: str = None) -> str:
+def convert_docx_to_html(docx_file_path: str, html_file_path: str = None) -> str:
     """
     将DOCX文件转换为HTML
-    :param md_file_path:
-    :param docx_file_path:
-    :return: HTML内容
+    :param docx_file_path: DOCX文件路径
+    :param html_file_path: HTML文件路径，默认为DOCX文件路径
+    :return: HTML文件路径
     """
-    if docx_file_path is None:
-        dst_file_path = check_file_same_name_exists(md_file_path, DOC_EXTENSIONS)
+    if html_file_path is None:
+        dst_file_path = check_file_same_name_exists(docx_file_path, HTML_EXTENSIONS)
         if dst_file_path:
             return dst_file_path
         else:
-            dst_file_path = get_path(get_file_path_without_ext(md_file_path)+".html")
+            dst_file_path = get_path(get_file_path_without_ext(docx_file_path)+".html")
     else:
-        dst_file_path = docx_file_path
-    html_content = PyDocX.to_html(get_path(md_file_path))
-    with open(dst_file_path, 'w', encoding="utf-8") as f:
+        dst_file_path = html_file_path
+    html_content = PyDocX.to_html(get_path(docx_file_path))
+    with open(dst_file_path, 'w', encoding=FILE_ENCODING) as f:
         f.write(html_content)
     return dst_file_path
 
