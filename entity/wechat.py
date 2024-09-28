@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import re
 import typing as t
-from common.func import wait_random_time
-from common.config import config
+from utils.helper import wait_random_time
+from common.constant import config
 from entity.community import Community
 import json
 from playwright.async_api import Browser, BrowserContext

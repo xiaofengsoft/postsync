@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
-import asyncio
-import time
 import typing as t
 from common.error import BrowserTimeoutError
 from playwright.async_api import Browser, BrowserContext
 from common.apis import Post, StorageType
-from common.config import config
-from common.func import wait_random_time
+from common.constant import config
+from utils.helper import wait_random_time
 from entity.community import Community
 from urllib.parse import quote
 import re

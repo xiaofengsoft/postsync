@@ -9,7 +9,7 @@ from importlib import import_module
 from common.error import FileNotReferencedError, BrowserError, CommunityNotExistError, BrowserExceptionGroup, \
     FileNotSupportedError, ConfigurationLackError
 from utils.file import get_path
-from common.config import config
+from utils.data import convert_html_img_path_to_abs_path, convert_md_img_path_to_abs_path
 import argparse
 from typing import List
 from common.apis import Post, PostPaths, PostArguments, PostContents
@@ -82,12 +82,14 @@ class ProcessCore(object):
         self.args.title = self.args.title or title  # 没有指定则使用文件名作为标题
         file_paths: PostPaths = {}
         if ext in HTML_EXTENSIONS:
-            file_paths['docx'] = convert_html_to_docx(source_file)
             file_paths['html'] = source_file
+            convert_html_img_path_to_abs_path(file_paths['html'])
+            file_paths['docx'] = convert_html_to_docx(source_file)
             file_paths['md'] = convert_html_to_md(source_file)
         elif ext in MD_EXTENSIONS:
-            file_paths['html'] = convert_md_to_html(source_file)
             file_paths['md'] = source_file
+            convert_md_img_path_to_abs_path(file_paths['md'])
+            file_paths['html'] = convert_md_to_html(source_file)
             file_paths['docx'] = convert_md_to_docx(source_file)
         elif ext in DOC_EXTENSIONS:
             file_paths['docx'] = source_file

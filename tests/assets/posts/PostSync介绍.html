@@ -1,75 +1,165 @@
-<div align="center">
-<img height="200" src="tests/assets/posts\./../imgs/logo.png" width="200"/>
-<h3 align="center">
-    PostSync
-    </h3>
-<p align="center">
-        促进技术文章发展
-    </p>
-</div>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <style>.pydocx-caps {
+        text-transform: uppercase
+    }
+
+    .pydocx-center {
+        text-align: center
+    }
+
+    .pydocx-comment {
+        color: blue
+    }
+
+    .pydocx-delete {
+        color: red;
+        text-decoration: line-through
+    }
+
+    .pydocx-hidden {
+        visibility: hidden
+    }
+
+    .pydocx-insert {
+        color: green
+    }
+
+    .pydocx-left {
+        text-align: left
+    }
+
+    .pydocx-list-style-type-cardinalText {
+        list-style-type: decimal
+    }
+
+    .pydocx-list-style-type-decimal {
+        list-style-type: decimal
+    }
+
+    .pydocx-list-style-type-decimalEnclosedCircle {
+        list-style-type: decimal
+    }
+
+    .pydocx-list-style-type-decimalEnclosedFullstop {
+        list-style-type: decimal
+    }
+
+    .pydocx-list-style-type-decimalEnclosedParen {
+        list-style-type: decimal
+    }
+
+    .pydocx-list-style-type-decimalZero {
+        list-style-type: decimal-leading-zero
+    }
+
+    .pydocx-list-style-type-lowerLetter {
+        list-style-type: lower-alpha
+    }
+
+    .pydocx-list-style-type-lowerRoman {
+        list-style-type: lower-roman
+    }
+
+    .pydocx-list-style-type-none {
+        list-style-type: none
+    }
+
+    .pydocx-list-style-type-ordinalText {
+        list-style-type: decimal
+    }
+
+    .pydocx-list-style-type-upperLetter {
+        list-style-type: upper-alpha
+    }
+
+    .pydocx-list-style-type-upperRoman {
+        list-style-type: upper-roman
+    }
+
+    .pydocx-right {
+        text-align: right
+    }
+
+    .pydocx-small-caps {
+        font-variant: small-caps
+    }
+
+    .pydocx-strike {
+        text-decoration: line-through
+    }
+
+    .pydocx-tab {
+        display: inline-block;
+        width: 4em
+    }
+
+    .pydocx-underline {
+        text-decoration: underline
+    }
+
+    body {
+        margin: 0px auto;
+        width: 51.00em
+    }</style>
+</head>
+<body><p><img height="128px"
+              src="D:\Python\Projects\MyGitProjects\PostSync\tests\assets\posts\imgs\img0.png"
+              width="128px"/></p>
+<h3>PostSync</h3>
+<p>促进技术文章发展</p>
 <h3>介绍</h3>
 <p>这是一个开源的同步文章的软件，你可以使用它来同步你的文章到多个平台。</p>
 <h3>使用</h3>
-<ol>
-<li>打开浏览器，登录各个平台的账号，掘金、CSDN、知乎、公众号、哔哩哔哩、博客园、个人WordPress</li>
-<li>打开config.yaml文件，配置你的浏览器信息以及浏览器用户数据目录</li>
-<li>运行命令行：
-    <code>bash
-    .\PostSync.exe -h</code></li>
-<li>输入命令即可使用</li>
-</ol>
-<h3>开发</h3>
-<h4>配置debug</h4>
-<p>打开<code>config.yaml</code>文件,将<code>app/debug</code>设置为<code>True</code></p>
-<h4>打包</h4>
-<p><code>bash
-pyinstaller PostSync.spec</code>
-接着拷贝config.yaml到dist/PostSync目录下，命令行运行PostSync.exe即可</p>
+<p><span
+        style="margin-left:3.00em">打开浏览器，登录各个平台的账号，掘金、CSDN、知乎、公众号、哔哩哔哩、博客园、个人WordPress</span>
+</p>
+<p><span style="margin-left:3.00em">打开config.yaml文件，配置你的浏览器信息以及浏览器用户数据目录</span></p>
+<p><span style="margin-left:3.00em">运行命令行：bash .\PostSync.exe -h</span></p>
+<p><span style="margin-left:3.00em">输入命令即可使用</span></p>
+<h3>开发</h3><h4><em>配置debug</em></h4>
+<p>打开config.yaml文件,将app/debug设置为True</p><h4><em>打包</em></h4>
+<p>pyinstaller PostSync.spec<br/></p>
+<p>接着拷贝config.yaml到dist/PostSync目录下，命令行运行PostSync.exe即可</p>
 <h3>注意事项</h3>
-<ul>
-<li>在使用前请确保已经登录各个平台的账号</li>
-<li>使用标签分类等功能请确保您在相关平台上已经创建相应的标签分类</li>
-<li>使用前请退出浏览器</li>
-</ul>
+<p><span style="margin-left:3.00em">在使用前请确保已经登录各个平台的账号</span></p>
+<p><span style="margin-left:3.00em">使用标签分类等功能请确保您在相关平台上已经创建相应的标签分类</span></p>
+<p><span style="margin-left:3.00em">使用前请退出浏览器</span></p>
 <h3>功能</h3>
-<ul>
-<li>自动同步文章到掘金、CSDN、知乎、公众号、哔哩哔哩、博客园、个人WordPress平台并返回生成文章链接</li>
-<li>支持多协程，异步上传文章</li>
-<li>支持包含查找，大小写模糊匹配</li>
-<li>支持md,html文件</li>
-<li>支持自定义默认配置</li>
-<li>支持命令行界面</li>
-<li>自定义标签、分类、专栏、封面、摘要</li>
-</ul>
+<p><span
+        style="margin-left:3.00em">自动同步文章到掘金、CSDN、知乎、公众号、哔哩哔哩、博客园、个人WordPress平台并返回生成文章链接</span>
+</p>
+<p><span style="margin-left:3.00em">支持多协程，异步上传文章</span></p>
+<p><span style="margin-left:3.00em">支持包含查找，大小写模糊匹配</span></p>
+<p><span style="margin-left:3.00em">支持md,html文件</span></p>
+<p><span style="margin-left:3.00em">支持自定义默认配置</span></p>
+<p><span style="margin-left:3.00em">支持命令行界面</span></p>
+<p><span style="margin-left:3.00em">自定义标签、分类、专栏、封面、摘要</span></p>
 <h3>优化任务</h3>
-<ul>
-<li>[ ] 记录失败日志</li>
-<li>[ ] 具体异常具体处理</li>
-<li>[ ] 具体栏目参数具体处理</li>
-<li>[ ] 优化代码类型结构</li>
-<li>[ ] 优化代码文档读取生成</li>
-<li>[ ] 未填写参数不输入网站处理</li>
-<li>[ ] 公众号直接发布</li>
-<li>[ ] 连接已经打开的浏览器实例</li>
-<li>[ ] 包含查找优化为近似查找</li>
-</ul>
+<p><span style="margin-left:3.00em">[ ] 记录失败日志</span></p>
+<p><span style="margin-left:3.00em">[ ] 具体异常具体处理</span></p>
+<p><span style="margin-left:3.00em">[ ] 具体栏目参数具体处理</span></p>
+<p><span style="margin-left:3.00em">[ ] 优化代码类型结构</span></p>
+<p><span style="margin-left:3.00em">[ ] 优化代码文档读取生成</span></p>
+<p><span style="margin-left:3.00em">[ ] 未填写参数不输入网站处理</span></p>
+<p><span style="margin-left:3.00em">[ ] 公众号直接发布</span></p>
+<p><span style="margin-left:3.00em">[ ] 连接已经打开的浏览器实例</span></p>
+<p><span style="margin-left:3.00em">[ ] 包含查找优化为近似查找</span></p>
 <h3>开发规范</h3>
-<ul>
-<li>entity包下的新增社区嘞应继承Community类</li>
-<li>新增社区类的命令应为首字母大写其余字母全部小写</li>
-<li>代码风格遵循PEP8规范</li>
-</ul>
+<p><span style="margin-left:3.00em">entity包下的新增社区嘞应继承Community类</span></p>
+<p><span style="margin-left:3.00em">新增社区类的命令应为首字母大写其余字母全部小写</span></p>
+<p><span style="margin-left:3.00em">代码风格遵循PEP8规范</span></p>
 <h3>技术架构</h3>
-<ul>
-<li>pytest</li>
-<li>requests</li>
-<li>playwright</li>
-<li>faker</li>
-<li>pyyaml</li>
-<li>markdown</li>
-<li>beautifulsoup4</li>
-<li>argparse</li>
-<li>nest-asyncio</li>
-<li>pyinstaller</li>
-<li>customtkinter</li>
-</ul>
+<p><span style="margin-left:3.00em">pytest</span></p>
+<p><span style="margin-left:3.00em">requests</span></p>
+<p><span style="margin-left:3.00em">playwright</span></p>
+<p><span style="margin-left:3.00em">faker</span></p>
+<p><span style="margin-left:3.00em">pyyaml</span></p>
+<p><span style="margin-left:3.00em">markdown</span></p>
+<p><span style="margin-left:3.00em">beautifulsoup4</span></p>
+<p><span style="margin-left:3.00em">argparse</span></p>
+<p><span style="margin-left:3.00em">nest-asyncio</span></p>
+<p><span style="margin-left:3.00em">pyinstaller</span></p>
+<p><span style="margin-left:3.00em">customtkinter</span></p></body>
+</html>

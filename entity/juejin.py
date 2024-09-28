@@ -1,12 +1,8 @@
 import json
 import re
-import time
 import typing as t
-from bs4 import BeautifulSoup
-from common.apis import Post, StorageType
-from common.config import config
-from common.error import BrowserTimeoutError
-from common.func import wait_random_time
+from common.apis import StorageType
+from utils.helper import wait_random_time
 from entity.community import Community
 
 

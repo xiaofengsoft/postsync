@@ -4,9 +4,8 @@ from common.apis import StorageType
 from entity.community import Community
 from bs4 import BeautifulSoup
 import json
-from common.config import config
 import re
-from common.func import wait_random_time
+from utils.helper import wait_random_time
 from common.error import BrowserTimeoutError
 from utils.file import get_path
 

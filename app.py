@@ -2,7 +2,7 @@ from common.core import ProcessCore
 from common.handler import handle_global_exception
 import nest_asyncio
 # 加载配置
-from common.config import config
+from common.constant import config
 
 
 def main():

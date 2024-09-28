@@ -3,7 +3,8 @@ from common.apis import StorageType
 from entity.community import Community
 from bs4 import BeautifulSoup
 import json
-from common.func import insert_html_content_to_frame, wait_random_time
+from utils.helper import wait_random_time
+from utils.data import insert_html_content_to_frame
 import re
 import typing as t
 

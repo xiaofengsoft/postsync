@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 from playwright._impl._async_base import AsyncEventInfo
 from common.apis import Post, StorageData
-from common.config import config
+from common.constant import config
 import asyncio
 from playwright.async_api import Page, Locator
 from playwright.async_api import BrowserContext, Browser, Response
@@ -9,7 +9,7 @@ import typing as t
 from common import constant
 from common.error import ConfigNotConfiguredError, BrowserError
 from utils.data import insert_anti_detection_script
-from common.func import wait_random_time
+from utils.helper import wait_random_time
 import json
 from utils.file import get_path
 from utils.data import format_json_file

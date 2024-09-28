@@ -34,8 +34,8 @@ class TestPost:
         [
             # ('tests/assets/posts/PostSync介绍.md', 'Python', 'Python文章', 'python blog 同步 自动化',
             #  'wordpress bilibili zhihu csdn juejin cnblog wechat', 'tests/assets/imgs/logo.png'),
-            ('tests/assets/posts/PostSync介绍.md','Python','解决问题','python adguard',
-             'wordpress', 'tests/assets/imgs/ad.png'),
+            ('tests/assets/posts/PostSync介绍.docx','Python','解决问题','python adguard',
+             'bilibili', 'tests/assets/imgs/wp.png'),
             # (r'"C:\Users\xiaof\Desktop\module collections has no attribute Hashable PyDocx 库报错.md"', 'Python', '解决',
             #  'PyDocx Hash', 'cnblog', r'')
         ]

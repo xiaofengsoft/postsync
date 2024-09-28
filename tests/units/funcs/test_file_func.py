@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import pytest
-from utils.file import get_file_path_without_ext, convert_html_to_docx, convert_docx_to_html, convert_docx_to_md
+from utils.file import get_file_path_without_ext, convert_html_to_docx, convert_docx_to_html, convert_docx_to_md, \
+    get_path
 from utils.file import check_file_same_name_exists
 from utils.file import convert_md_to_html,convert_md_to_docx,convert_html_to_md
 
@@ -16,25 +17,33 @@ def test_convert_md_to_html(file_path: str) -> None:
     r"C:\Users\xiaof\Desktop\PlayWright检测用户登录保存Cookie.md"
 ])
 def test_convert_md_to_html(file_path: str) -> None:
-    convert_md_to_docx(file_path)
+    convert_md_to_html(file_path)
 
 
 @pytest.mark.parametrize("file_path", [
-    r"C:\Users\xiaof\Desktop\PlayWright检测用户登录保存Cookie.html"
+    r"tests/assets/posts/PostSync介绍.md"
+])
+def test_convert_md_to_docx(file_path: str) -> None:
+    convert_md_to_docx(get_path(file_path))
+
+
+@pytest.mark.parametrize("file_path", [
+    r"test/assets/posts/PostSync介绍.html"
 ])
 def test_convert_html_to_md(file_path: str) -> None:
     convert_html_to_md(file_path)
 
 
 @pytest.mark.parametrize("file_path", [
-    r"C:\Users\xiaof\Desktop\PlayWright检测用户登录保存Cookie.html"
+    r"tests/assets/posts/PostSync介绍.html"
 ])
 def test_convert_html_to_docx(file_path: str) -> None:
-    convert_html_to_docx(file_path)
+    convert_html_to_docx(get_path(file_path))
 
 
 @pytest.mark.parametrize("file_path", [
-    r"C:\Users\xiaof\Desktop\PlayWright检测用户登录保存Cookie.docx"
+    # r"C:\Users\xiaof\Desktop\PlayWright检测用户登录保存Cookie.docx",
+    r"tests/assets/posts/PostSync介绍.docx"
 ])
 def test_convert_docx_to_html(file_path: str) -> None:
     convert_docx_to_html(file_path)

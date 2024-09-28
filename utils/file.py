@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
-import os
+from utils.data import convert_html_content_images_base64_to_local
 import typing as t
-from docx import Document
-from htmldocx import HtmlToDocx
 from pydocx import PyDocX
-from markdown.extensions.codehilite import CodeHiliteExtension
-from markdown import Markdown
-from markdown.extensions.fenced_code import FencedCodeExtension
 from common.constant import *
+import os
+from utils.data import convert_md_img_path_to_abs_path,convert_html_img_path_to_abs_path
 
 
 def get_path(path: str) -> str:
@@ -22,6 +19,15 @@ def get_path(path: str) -> str:
         return os.path.normpath(path)
     else:
         return os.path.normpath(os.path.join(get_root_path(), path))
+
+
+def replace_file_ext(path: str, new_ext: str) -> str:
+    """
+    替换文件扩展名
+    """
+    if path.endswith('.' + new_ext):
+        return path
+    return os.path.splitext(path)[0] + '.' + new_ext
 
 
 def get_abs_path(path: str) -> str:
@@ -89,14 +95,10 @@ def convert_md_to_html(md_file_path: str, html_file_path: str = None) -> str:
         if dst_file_path:
             return dst_file_path
         else:
-            dst_file_path = get_path(get_file_path_without_ext(md_file_path)+".html")
+            dst_file_path = get_path(replace_file_ext(md_file_path, 'html'))
     else:
         dst_file_path = html_file_path
-    md = Markdown(extensions=[
-        CodeHiliteExtension(),  # 代码高亮
-        FencedCodeExtension()  # 允许代码块
-    ])
-    md.convertFile(md_file_path, dst_file_path, FILE_ENCODING)
+    md_html_parser.convertFile(md_file_path, dst_file_path, FILE_ENCODING)
     return dst_file_path
 
 
@@ -112,18 +114,12 @@ def convert_html_to_docx(html_file_path: str, docx_file_path: t.Optional[str] = 
         if dst_file_path:
             return dst_file_path
         else:
-            dst_file_path = get_file_path_without_ext(html_file_path)+".docx"
+            dst_file_path = replace_file_ext(html_file_path, 'docx')
     else:
         dst_file_path = docx_file_path
-    from utils.data import convert_html_img_path_to_abs_path
-    with open(html_file_path, 'r', encoding=FILE_ENCODING) as f:
-        html_content = f.read()
     # 转换图片路径为绝对路径
     convert_html_img_path_to_abs_path(html_file_path)
-    document = Document()
-    new_parser = HtmlToDocx()
-    new_parser.add_html_to_document(html_content, document)
-    document.save(dst_file_path)
+    html_docx_parser.parse_html_file(html_file_path, get_file_path_without_ext(dst_file_path))
     return dst_file_path
 
 
@@ -139,12 +135,14 @@ def convert_md_to_docx(md_file_path: str, docx_file_path: str = None) -> str:
         if dst_file_path:
             return dst_file_path
         else:
-            dst_file_path = get_path(get_file_path_without_ext(md_file_path)+".docx")
+            dst_file_path = get_path(replace_file_ext(md_file_path, 'docx'))
     else:
         dst_file_path = docx_file_path
     html_file_path = check_file_same_name_exists(md_file_path, HTML_EXTENSIONS)
     if not html_file_path:
         html_file_path = convert_md_to_html(md_file_path, docx_file_path)
+    convert_md_img_path_to_abs_path(html_file_path)
+    convert_md_to_html(md_file_path, html_file_path)
     convert_html_to_docx(html_file_path, docx_file_path)
     return dst_file_path
 
@@ -152,6 +150,7 @@ def convert_md_to_docx(md_file_path: str, docx_file_path: str = None) -> str:
 def convert_docx_to_html(docx_file_path: str, html_file_path: str = None) -> str:
     """
     将DOCX文件转换为HTML
+    DOCX文件转换为HTML后，文档中附带的图片将自动转换为本地图片
     :param docx_file_path: DOCX文件路径
     :param html_file_path: HTML文件路径，默认为DOCX文件路径
     :return: HTML文件路径
@@ -161,11 +160,14 @@ def convert_docx_to_html(docx_file_path: str, html_file_path: str = None) -> str
         if dst_file_path:
             return dst_file_path
         else:
-            dst_file_path = get_path(get_file_path_without_ext(docx_file_path)+".html")
+            dst_file_path = get_path(replace_file_ext(docx_file_path, 'html'))
     else:
         dst_file_path = html_file_path
+
     html_content = PyDocX.to_html(get_path(docx_file_path))
+
     with open(dst_file_path, 'w', encoding=FILE_ENCODING) as f:
+        convert_html_content_images_base64_to_local(html_content, os.path.dirname(dst_file_path))
         f.write(html_content)
     return dst_file_path
 
@@ -182,14 +184,13 @@ def convert_html_to_md(html_file_path: str, md_file_path: str = None) -> str:
         if dst_file_path:
             return dst_file_path
         else:
-            dst_file_path = get_file_path_without_ext(html_file_path)+".md"
+            dst_file_path = replace_file_ext(html_file_path, 'md')
     else:
         dst_file_path = md_file_path
-    from html2text import html2text
-    with open(html_file_path, 'r', encoding='utf-8') as f:
+    with open(html_file_path, 'r', encoding=FILE_ENCODING) as f:
         html_content = f.read()
-    md_content = html2text(html_content)
-    with open(dst_file_path, 'w', encoding="utf-8") as f:
+    md_content = html_md_parser(html_content)
+    with open(dst_file_path, 'w', encoding=FILE_ENCODING) as f:
         f.write(md_content)
     return dst_file_path
 
@@ -206,7 +207,7 @@ def convert_docx_to_md(docx_file_path: str, md_file_path: str = None) -> str:
         if dst_file_path:
             return dst_file_path
         else:
-            dst_file_path = get_file_path_without_ext(docx_file_path)+".md"
+            dst_file_path = replace_file_ext(docx_file_path, 'md')
     else:
         dst_file_path = md_file_path
     html_file_path = check_file_same_name_exists(docx_file_path, HTML_EXTENSIONS)

@@ -4,8 +4,9 @@ from common.apis import StorageType
 from entity.community import Community
 import json
 import re
-from common.func import wait_random_time
-from common.func import insert_html_to_element
+from utils.helper import wait_random_time
+from utils.data import insert_html_to_element
+from utils.data import delete_blank_tags
 
 
 class Bilibili(Community):
@@ -48,6 +49,32 @@ class Bilibili(Community):
             "#app > div > div.web-editor__wrap > div.b-read-editor > div.b-read-editor__content.mt-m > "
             "div.b-read-editor__input.mb-l > div.b-read-editor__field > div > div.ql-editor",
             content)
+        # 删除所有空行P标签
+        await delete_blank_tags(
+            self.page,
+            "#app > div > div.web-editor__wrap > div.b-read-editor > "
+            "div.b-read-editor__content.mt-m > div.b-read-editor__input.mb-l > "
+            "div.b-read-editor__field > div p")
+        # 处理图片，将其被包裹在<p>标签中，并添加属性，防止B站编辑器报错
+        await self.page.evaluate(
+            """
+            var imgElements = document.querySelectorAll('#app > div > div.web-editor__wrap > div.b-read-editor > div.b-read-editor__content.mt-m > div.b-read-editor__input.mb-l > div.b-read-editor__field > div img');
+            imgElements.forEach((imgElement)=>{
+                var pElement = document.createElement('p');
+                var newImgElement = document.createElement('img');
+                newImgElement.src = imgElement.src;
+                newImgElement.alt = imgElement.alt;
+                newImgElement.setAttribute('data-status', 'loaded'); 
+                newImgElement.setAttribute('data-w', imgElement.naturalWidth); 
+                newImgElement.setAttribute('data-h', imgElement.naturalHeight);
+                pElement.setAttribute('class', 'normal-img focused'); 
+                pElement.setAttribute('contenteditable', 'false');  
+                pElement.appendChild(newImgElement);
+                imgElement.parentNode.insertBefore(pElement, imgElement);
+                imgElement.parentNode.removeChild(imgElement);
+            })
+            """
+        )
         await self.page.locator(
             "#app > div > div.web-editor__wrap > div.b-read-editor > div.b-read-editor__settings.mt-m > div > div > "
             "div.bre-settings__sec__tit.mb-s.more"
@@ -81,6 +108,7 @@ class Bilibili(Community):
         await self.page.locator(
             "body > div.bre-modal.bre-img-corpper-modal > div > div.bre-modal__content > "
             "div.bre-img-corpper-modal__footer > button.bre-btn.primary").click()
+
         # 处理话题
 
         async def inner_upload_topic(topic: str):
@@ -133,11 +161,11 @@ class Bilibili(Community):
             inner_upload_column,
             inner_upload_column
         )
-
         await self.page.locator(
             "body > div.bre-modal.bre-list-modal > div > div.bre-modal__content > div.bre-list-modal__footer > button"
         ).click()
         # 发布文章
+
         async with self.page.expect_response(re.compile("https://data.bilibili.com/v2/log/web")) as resp:
             await self.page.locator(
                 "#app > div > div.web-editor__wrap > div.b-read-editor > div.b-read-editor__btns.mt-m.mb-m > "
@@ -174,5 +202,3 @@ class Bilibili(Community):
         resp_body = await resp.body()
         data = json.loads(resp_body.decode('utf-8'))
         return data['data']['url']
-
-
