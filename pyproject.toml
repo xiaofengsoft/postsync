@@ -25,6 +25,7 @@ pydocx = "^0.9.10"
 html2text = "^2024.2.26"
 html3docx = "^0.0.9"
 pillow = "^10.4.0"
+flask = "^3.0.3"
 
 
 [[tool.poetry.source]]
