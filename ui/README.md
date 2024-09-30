@@ -1,39 +1,45 @@
-# ui
+<p style="display:flex; justify-content: center">
 
-This template should help get you started developing with Vue 3 in Vite.
+</p>
+<p align="center">
+  <a href="https://tdesign.tencent.com/vue-next/overview" target="_blank">
+   <img alt="TDesign Logo" width="200" src="./public/tdesign-logo.svg"/>
+  </a>
+</p>
 
-## Recommended IDE Setup
+<p align="center">
+  <a href="https://nodejs.org/en/about/releases/"><img src="https://img.shields.io/node/v/vite.svg" alt="node compatility"></a>
+  <a href="https://github.com/Tencent/tdesign-react-starter/blob/develop/LICENSE">
+    <img src="https://img.shields.io/npm/l/tdesign-react.svg?sanitize=true" alt="License">
+  </a>
+</p>
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## 项目简介
 
-## Type Support for `.vue` Imports in TS
+`tdesign-vue-next` 是一个 TDesign 适配桌面端的组件库，适合在 vue3.x 技术栈项目中使用。
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+## 开发
 
-## Customize configuration
+### 安装依赖
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
+```bash
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+### 启动项目
 
-```sh
+```bash
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+## 构建
 
-```sh
+### 构建正式环境
+
+```bash
 npm run build
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+## 开源协议
 
-```sh
-npm run lint
-```
+TDesign 遵循 [MIT 协议](https://github.com/Tencent/tdesign-starter-cli/blob/develop/LICENSE)。
