@@ -5,11 +5,10 @@ app:
   author: 张一风
   epilog: 请使用 -h 查看帮助信息
   debug: True  # 是否开启调试模式
-  port: 54188  # 监听端口
-  host: 127.0.0.1  # 监听地址
+
 view:
-  width: 1920
-  height: 1080
+  width: 1200
+  height: 800
 
 data:
   storage:

@@ -12,6 +12,7 @@
   "dependencies": {
     "@tinymce/tinymce-vue": "^5.1.1",
     "@vueup/vue-quill": "^1.2.0",
+    "axios": "^1.7.7",
     "tdesign-icons-vue-next": "^0.2.6",
     "tdesign-vue-next": "latest",
     "tinymce": "^7.3.0",

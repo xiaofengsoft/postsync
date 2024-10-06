@@ -1,14 +1,48 @@
 <script lang="ts">
+import windowApi from '../apis/window';
+
 export default {
   name: 'Layout',
   data: () => ({
-    currentTab: 'dashboard'
+    currentTab: 'dashboard',
+    isMaximized: false,
   }),
   methods: {
     handleMenuChange(value: string) {
       this.currentTab = value;
       this.$router.push(value);
-    }
+    },
+    minimizeWindow() {
+      windowApi.minimizeWindow().then((data) => {
+        console.log(data);
+      }).catch(() => {
+        console.log('minimize window failed');
+      });
+    },
+    toggleWindow() {
+      if (this.isMaximized) {
+        windowApi.restoreWindow().then((data) => {
+          this.isMaximized = false;
+          console.log(data);
+        }).catch(() => {
+          console.log('restore window failed');
+        });
+      } else {
+        this.isMaximized = true;
+        windowApi.maximizeWindow().then((data) => {
+          console.log(data);
+        }).catch(() => {
+          console.log('maximize window failed');
+        });
+      }
+    },
+    closeWindow() {
+      windowApi.closeWindow().then((data) => {
+        console.log(data);
+      }).catch(() => {
+        console.log('close window failed');
+      });
+    },
   },
   created() {
     this.currentTab = this.$route.name as string;
@@ -23,7 +57,9 @@ export default {
           <img width="136" class="logo" src="@/assets/imgs/logo-landscape.png" alt="logo" />
         </template>
         <template #operations>
-          <a href="/"><t-icon class="t-menu__operations-icon" name="home" /></a>
+          <a @click="minimizeWindow"><t-icon class="t-menu__operations-icon" name="remove" /></a>
+          <a @click="toggleWindow"><t-icon class="t-menu__operations-icon" name="center-focus-strong" /></a>
+          <a @click="closeWindow"><t-icon class="t-menu__operations-icon" name="close" /></a>
         </template>
       </t-head-menu>
     </t-header>

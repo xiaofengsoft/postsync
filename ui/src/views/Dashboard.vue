@@ -50,7 +50,7 @@ export default {
     return {
       title: '最近的一篇文章',
       subtitle: '摘要',
-      cover: '/public/imgs/logo-landscape.png',
+      cover: '/imgs/logo-landscape.png',
       options: [
         {
           content: '操作一',
