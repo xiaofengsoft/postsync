@@ -1,5 +1,5 @@
 <script lang="ts">
-import { s } from 'vite/dist/node/types.d-aGj9QkWt';
+import postApi from "../apis/post";
 
 export default {
   data() {
@@ -20,7 +20,10 @@ export default {
   },
   methods: {
     chooseFilePost() {
-
+      postApi.choosePost().then(res => {
+        console.log(res);
+        this.post = res.data;
+      })
     }
   }
 }
@@ -29,7 +32,9 @@ export default {
   <t-card style="padding: 5% 2%;">
     <t-form labelAlign="left">
       <t-form-item label="选择文件" name="file">
-        <t-upload action="" v-model="post" @success="chooseFilePost" theme="file-input" placeholder="未选择文件"></t-upload>
+        <!-- <t-upload action="" v-model="post" @success="chooseFilePost" theme="file-input" placeholder="未选择文件"></t-upload> -->
+        <t-input placeholder="请输入标题" />
+        <t-button type="primary" @click="chooseFilePost">选择文件</t-button>
       </t-form-item>
       <t-form-item label="文章标题" name="name" initialData="TDesign">
         <t-input placeholder="请输入标题" />

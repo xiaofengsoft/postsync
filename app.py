@@ -19,7 +19,9 @@ def flask_run():
     app = Flask(__name__, static_folder='ui/dist', static_url_path='')
     c.server_app = app
     from server.window import window_api
+    from server.post import post_api
     app.register_blueprint(window_api)
+    app.register_blueprint(post_api)
     from server import static  # 静态文件托管，不可删除
     app.run(
         debug=c.config['app']['debug'],
