@@ -4,7 +4,7 @@ import json
 
 
 def handle_global_exception(e):
-    handle_global_exception_with_exception(*sys.exc_info())
+    return handle_global_exception_with_exception(*sys.exc_info())
 
 
 def handle_global_exception_with_exception(exc_type, exc_value, exc_traceback):
@@ -17,7 +17,9 @@ def handle_global_exception_with_exception(exc_type, exc_value, exc_traceback):
         'value': exc_value.__str__(),
         'traceback': exc_traceback.__str__()
     }}
-    print(json.dumps(exc_json_map))
+    exc_json_map_msg = json.dumps(exc_json_map)
+    print(exc_json_map_msg)
+    return exc_json_map
 
 
 

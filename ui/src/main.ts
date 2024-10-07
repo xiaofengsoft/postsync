@@ -5,5 +5,8 @@ import "./assets/style/base.css";
 import "./assets/style/global.css";
 import Router from "./router/index";
 import App from "./App.vue";
+import clickOnceDirective from "./directives/click-once.directive";
 
-createApp(App).use(TDesign).use(Router).mount("#app");
+const app = createApp(App).use(TDesign).use(Router);
+app.directive("click-once", clickOnceDirective);
+app.mount("#app");

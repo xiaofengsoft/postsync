@@ -1,5 +1,6 @@
 # -*- mode: python ; coding: utf-8 -*-
-
+from PyInstaller.building.api import PYZ, EXE, COLLECT
+from PyInstaller.building.build_main import Analysis
 
 a = Analysis(
     ['app.py'],
@@ -13,8 +14,7 @@ a = Analysis(
         ('common', 'common'),
         ('static', 'static'),
         ('data', 'data'),
-        ('utils', 'utils'),
-        ('ui', 'ui'),
+        ('utils', 'utils')
     ],
     hiddenimports=['bs4','pyperclip'],  # 遇到No module named xxx 等问题，添加依赖库到这里
     hookspath=[],

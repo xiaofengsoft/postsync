@@ -50,7 +50,7 @@ export default {
 }
 </script>
 <template>
-  <t-layout :style="{ height: '100vh' }">
+  <t-layout style="height: 100vh;">
     <t-header class="layout-header">
       <t-head-menu value="item1">
         <template #logo>
@@ -137,6 +137,8 @@ export default {
 .layout-content {
   padding: 10px 10px 0 10px;
   background-color: var(--td-brand-color-1);
+  overflow-y: hidden;
+  height: 100%;
 }
 
 .layout-footer {

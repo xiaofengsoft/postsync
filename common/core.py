@@ -1,3 +1,4 @@
+from types import SimpleNamespace
 from playwright.async_api import async_playwright
 from utils.file import get_file_name_ext, convert_html_to_md, convert_md_to_docx, convert_docx_to_html, \
     convert_docx_to_md
@@ -21,13 +22,17 @@ from playwright.async_api import BrowserContext, Browser
 # 执行所有操作的总流程
 
 class ProcessCore(object):
-    def __init__(self):
+    def __init__(self, is_pass_args_by_cmd: bool = True, args: PostArguments = None):
         # 加载配置
         self.context: t.Optional[BrowserContext] = None
         self.browser: t.Optional[Browser] = None
         self.results: t.Optional[Result] = None
-        parser = PostArgumentParser()
-        self.args = parser.parse_args()
+        if is_pass_args_by_cmd:
+            parser = PostArgumentParser()
+            self.args = parser.parse_args()
+        else:
+            self.args = SimpleNamespace(**args)
+
         self.file_paths = self.process_files()
         self.args: PostArguments
         self.post = self.process_args()
@@ -77,7 +82,7 @@ class ProcessCore(object):
         """
         if self.args.file is None:
             raise FileNotReferencedError()
-        source_file = self.args.file.strip("'\"")   # 去除引号
+        source_file = self.args.file.strip("'\"")  # 去除引号
         title, ext = get_file_name_ext(source_file)
         self.args.title = self.args.title or title  # 没有指定则使用文件名作为标题
         file_paths: PostPaths = {}
