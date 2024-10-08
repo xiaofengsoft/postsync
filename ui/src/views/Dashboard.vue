@@ -1,72 +1,38 @@
 <template>
-  <t-card :title="title" :subtitle="subtitle" :cover="cover" :style="{ width: '400px' }">
-    <template #actions>
-      <t-dropdown :options="options" :min-column-width="112" @click="clickHandler">
-        <div class="tdesign-demo-dropdown-trigger">
-          <t-button variant="text" shape="square">
-            <more-icon />
-          </t-button>
-        </div>
-      </t-dropdown>
-    </template>
-    <template #footer>
-      <t-row :align="'middle'" justify="center" style="gap: 24px">
-        <t-col flex="auto" style="display: inline-flex; justify-content: center">
-          <t-button variant="text" shape="square">
-            <thumb-up-icon />
-          </t-button>
-        </t-col>
-
-        <t-col flex="auto" style="display: inline-flex; justify-content: center">
-          <t-button variant="text" shape="square">
-            <chat-icon />
-          </t-button>
-        </t-col>
-
-        <t-col flex="auto" style="display: inline-flex; justify-content: center">
-          <t-button variant="text" shape="square">
-            <share-icon />
-          </t-button>
-        </t-col>
-      </t-row>
-    </template>
+  <t-card style="height: 80vh;overflow-y: scroll;">
+    <MdPreview :editorId="id" :modelValue="readmeContent" class="readme-content" previewTheme="cyanosis" />
   </t-card>
 </template>
-<script lang="jsx">
-import {
-  ThumbUpIcon, ChatIcon, ShareIcon, MoreIcon,
-} from 'tdesign-icons-vue-next';
-import { MessagePlugin } from 'tdesign-vue-next';
-
+<script lang="ts">
+import dashboardApi from '../apis/dashboard';
+import { MdPreview } from 'md-editor-v3';
+import 'md-editor-v3/lib/preview.css';
 export default {
   name: 'Dashboard',
   components: {
-    ThumbUpIcon,
-    ChatIcon,
-    ShareIcon,
-    MoreIcon,
+    MdPreview,
   },
   data() {
     return {
-      title: '最近的一篇文章',
-      subtitle: '摘要',
-      cover: '/imgs/logo-landscape.png',
-      options: [
-        {
-          content: '操作一',
-          value: 1,
-        },
-        {
-          content: '操作二',
-          value: 2,
-        },
-      ],
+      readmeContent: '',
+      id: 'preview-only',
     };
   },
-  methods: {
-    clickHandler() {
-      MessagePlugin.success('操作');
-    },
-  },
-};
+  mounted() {
+    dashboardApi.readme().then((response) => {
+      console.log(response.data.data);
+      this.readmeContent = response.data.data;
+    })
+  }
+}
 </script>
+<style>
+.readme-content {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  padding: 10px 1px;
+}
+</style>

@@ -8,6 +8,14 @@ export const chooseCover = () => {
   return request.get("/post/choose/cover");
 };
 
+export const savePostFile = (data: {
+  title: string;
+  type: string;
+  content: string;
+}) => {
+  return request.post("/post/save/file", data);
+};
+
 export const uploadPost = (data: {
   title: string;
   digest: string;
@@ -26,4 +34,5 @@ export default {
   choosePost,
   chooseCover,
   uploadPost,
+  savePostFile,
 };

@@ -10,6 +10,9 @@ data:
     path: C:\Program Files\Google\Chrome\Application\chrome.exe
   storage:
     path: data/storage.json
+  posts:
+    path: D:\Documents\PostSync\posts
+  path: D:\Documents\PostSync
 default:
   author: 张一风
   browser: chrome

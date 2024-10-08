@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
+import os.path
 
 import nest_asyncio
 from flask import Blueprint, request
@@ -11,6 +12,7 @@ from common.core import ProcessCore
 from common.handler import handle_global_exception
 from common.result import Result
 from common import constant as c
+from utils.file import get_path
 
 post_api = Blueprint('post_api', __name__, url_prefix='/api/post')
 main_window = c.main_window
@@ -32,6 +34,18 @@ def chooses_cover():
         webview.OPEN_DIALOG, allow_multiple=False, file_types=file_types
     )
     return Result.success(data=result, message='选择成功')
+
+
+@post_api.route('/save/file', methods=['POST'])
+def save_file():
+    data = json.loads(request.get_data().decode('utf-8'))
+    file_path = os.path.join(get_path(config['data']['posts']['path']), data['title']+'.'+data['type'])
+    # 创建文件夹
+    if not os.path.exists(os.path.dirname(file_path)):
+        os.makedirs(os.path.dirname(file_path))
+    with open(file_path, 'w', encoding='utf-8') as f:
+        f.write(data['content'])
+    return Result.success(message='保存成功',data={'path':file_path})
 
 
 @post_api.route('/upload', methods=['POST'])

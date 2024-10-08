@@ -44,8 +44,9 @@ export default {
       });
     },
   },
-  created() {
+  mounted() {
     this.currentTab = this.$route.name as string;
+    console.log(this.currentTab);
   }
 }
 </script>

@@ -3,6 +3,7 @@ import threading
 from flask import Flask
 from common import constant as c
 import webview
+from server.dashboard import dashboard_api
 
 
 def flask_run():
@@ -14,6 +15,7 @@ def flask_run():
     app.register_blueprint(window_api)
     app.register_blueprint(post_api)
     app.register_blueprint(setting_api)
+    app.register_blueprint(dashboard_api)
     from server import static  # 静态文件托管，不可删除
     app.run(
         debug=c.config['app']['debug'],

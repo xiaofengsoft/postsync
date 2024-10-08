@@ -13,22 +13,22 @@ const routes = [
       },
       {
         path: "dashboard",
-        name: "Dashboard",
+        name: "dashboard",
         component: () => import("@/views/Dashboard.vue"),
       },
       {
         path: "write",
-        name: "Write",
+        name: "write",
         component: () => import("@/views/Write.vue"),
       },
       {
         path: "upload",
-        name: "Upload",
+        name: "upload",
         component: () => import("@/views/Upload.vue"),
       },
       {
         path: "settings",
-        name: "Settings",
+        name: "settings",
         component: () => import("@/views/Settings.vue"),
       },
     ],
