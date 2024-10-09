@@ -27,8 +27,8 @@ class Wordpress(Community):
     login_url = config['wordpress']['url'] + "/wp-login.php"
     url_redirect_login = config['wordpress']['url'] + "/user"
 
-    def __init__(self, browser: "Browser", context: "BrowserContext", post: Post):
-        super().__init__(browser, context, post)
+    def __init__(self, browser: "Browser", context: "BrowserContext", post: Post, **kwargs):
+        super().__init__(browser, context, post, **kwargs)
         if not bool(config['wordpress']['enable']):
             return
         self.url = config['wordpress']['url'] + "/wp-admin/post-new.php"

@@ -27,6 +27,7 @@ html3docx = "^0.0.9"
 pillow = "^10.4.0"
 flask = "^3.0.3"
 pywebview = "^5.2"
+asgiref = "^3.8.1"
 
 
 [[tool.poetry.source]]

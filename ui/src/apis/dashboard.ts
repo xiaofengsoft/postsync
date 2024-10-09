@@ -1,9 +1,17 @@
 import request from "../utils/request";
 
-export const readme = () => {
-  return request.get("/dashboard/readme");
+export const checkLogin = () => {
+  return request.get("dashboard/login/check");
+};
+export const loginOnce = (name: string) => {
+  return request.post("dashboard/login/once", { name });
+};
+export const getPostList = () => {
+  return request.get("dashboard/post/list");
 };
 
 export default {
-  readme,
+  checkLogin,
+  loginOnce,
+  getPostList,
 };

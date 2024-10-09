@@ -83,12 +83,13 @@ def load_yaml(path: str) -> dict:
         return yaml_data
 
 
-def convert_md_to_html(md_file_path: str, html_file_path: str = None) -> str:
+def convert_md_to_html(md_file_path: str, html_file_path: str = None,is_written:bool=True) -> str:
     """
     将Markdown文件转换为HTML
     :param md_file_path: Markdown文件路径
     :param html_file_path: HTML文件路径，默认为Markdown文件路径
-    :return: HTML文件路径
+    :param is_written: 是否写入文件
+    :return: HTML文件路径或者HTML内容
     """
     if html_file_path is None:
         dst_file_path = check_file_same_name_exists(md_file_path, HTML_EXTENSIONS)
@@ -98,8 +99,23 @@ def convert_md_to_html(md_file_path: str, html_file_path: str = None) -> str:
             dst_file_path = get_path(replace_file_ext(md_file_path, 'html'))
     else:
         dst_file_path = html_file_path
-    md_html_parser.convertFile(md_file_path, dst_file_path, FILE_ENCODING)
-    return dst_file_path
+    if is_written:
+        md_html_parser.convertFile(md_file_path, dst_file_path, FILE_ENCODING)
+        return dst_file_path
+    else:
+        with open(md_file_path, 'r', encoding=FILE_ENCODING) as f:
+            md_content = f.read()
+        html_content = md_html_parser.convert(md_content)
+        return html_content
+
+
+def convert_md_content_to_html(md_content: str) -> str:
+    """
+    将Markdown内容转换为HTML
+    :param md_content: Markdown内容
+    :return: HTML内容
+    """
+    return md_html_parser.convert(md_content)
 
 
 def convert_html_to_docx(html_file_path: str, docx_file_path: t.Optional[str] = None) -> str:

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 
+from bs4 import BeautifulSoup
 from flask import Flask
 from htmldocx import HtmlToDocx
 from markdown import Markdown

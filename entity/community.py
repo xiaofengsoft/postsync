@@ -27,11 +27,27 @@ class Community(object):
     site_storage_mark: t.List[StorageType]
     url = ""
 
-    def __init__(self, browser: "Browser", context: "BrowserContext", post: Post):
+    def __init__(self, browser: "Browser", context: "BrowserContext", post: Post,is_started: bool = True):
+        """
+        初始化
+        可以用来按照模板步骤上传文章
+        也可以判断是否已经登录
+        :param browser:
+        :param context:
+        :param post:
+        :param is_started: 是否立刻启动
+        """
         self.browser = browser
         self.context = context
         self.post = post
         self.page: "Page" = asyncio.run(self.context.new_page())
+        if is_started:
+            self.start()
+
+    def start(self):
+        """
+        启动社区
+        """
         self.is_login: bool = asyncio.run(self.check_login_state())
         self.process_args()
 
@@ -106,7 +122,7 @@ class Community(object):
             self, login_url: str, resp_url: t.Union[t.Pattern, str],
             check_func: t.Callable[[t.AnyStr], bool],
             before_func: t.Callable = login_before_func
-    ):
+    ) -> bool:
         """
         登录社区
         :param before_func:
@@ -136,6 +152,8 @@ class Community(object):
                 format_json_file(config['data']['storage']['path'])
                 await self.page.close()
                 print(f"{self.site_name}登录成功，已关闭{self.site_name}页面")
+                return True
+        return False
 
     async def upload(self) -> t.AnyStr:
         """

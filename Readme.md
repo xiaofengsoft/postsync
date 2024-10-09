@@ -1,9 +1,9 @@
 <div align="center">
-  <img src="static/imgs/logo.png" width="200" height="200">
-    <h3 align="center">
+<img height="200" src="static/imgs/logo.png" width="200"/>
+<h3 align="center">
     PostSync
     </h3>
-    <p align="center">
+<p align="center">
         促进技术文章发展
     </p>
 </div>
@@ -29,7 +29,7 @@
    default:
      browser: msedge # 选择使用的浏览器 (msedge,chrome,firefox)
    ```
-   > 可以联网查找浏览器数据目录所在位置
+   &gt; 可以联网查找浏览器数据目录所在位置
 2. 运行PostSync.exe文件命令行
    根据需要上传的平台类型手动登录
    系统会自动检测是否登录成功
@@ -84,19 +84,18 @@ python make.py
 作者本人目前就读于中原工学院，是一名超级热爱编程的本科生
 喜欢各种运动和各种音乐
 - 邮箱：<xiaofengs@yeah.net>
-- 网站: <https://yunyicloud.cn>
+- 网站: <https: yunyicloud.cn="">
 
 公众号: 
 
-<img src="static/imgs/official-account.jpg" width="200" height="200" alt="云奕科软公众号二维码">
+![云奕科软公众号二维码](static/imgs/official-account.jpg)
 
 ### 打赏
 
-> 如果觉得本软件对您有帮助，不如请我喝杯☕！
+&gt; 如果觉得本软件对您有帮助，不如请我喝杯☕！
 
-<img src="static/imgs/reward-wechat.jpg" width="200" height="200" alt="微信打赏">
-
+![微信支付](static/imgs/reward-wechat.jpg)
 
 ### 鸣谢
 - 感谢JetBrains公司提供的免费学生许可证
-- 感谢FittenCode AI智能代码辅助助手的大力相助
+- 感谢FittenCode AI智能代码辅助助手的大力相助</https:></xiaofengs@yeah.net>

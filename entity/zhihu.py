@@ -28,8 +28,8 @@ class Zhihu(Community):
     }]
     url = "https://www.zhihu.com"
 
-    def __init__(self, browser: "Browser", context: "BrowserContext", post: Post):
-        super().__init__(browser, context, post)
+    def __init__(self, browser: "Browser", context: "BrowserContext", post: Post, **kwargs):
+        super().__init__(browser, context, post, **kwargs)
         self.pic_nums = 0  # 正在处理的图片数量
         self.origin_src = None
 

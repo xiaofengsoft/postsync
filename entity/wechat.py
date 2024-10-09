@@ -22,8 +22,8 @@ class Wechat(Community):
     url = "https://mp.weixin.qq.com/"
     login_url = "https://mp.weixin.qq.com/"
 
-    def __init__(self, browser: "Browser", context: "BrowserContext", post: Post):
-        super().__init__(browser, context, post)
+    def __init__(self, browser: "Browser", context: "BrowserContext", post: Post, **kwargs):
+        super().__init__(browser, context, post, **kwargs)
         self.origin_src = None
 
     async def upload(self) -> t.AnyStr:

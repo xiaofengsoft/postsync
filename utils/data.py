@@ -50,10 +50,11 @@ def convert_html_content_to_md(html_content: str) -> str:
     return markdown_content
 
 
-def convert_html_img_path_to_abs_path(html_file_path: str):
+def convert_html_img_path_to_abs_path(html_file_path: str, is_written: bool = True):
     """
     将HTML文件中图片的路径转换为绝对路径
     :param html_file_path: HTML文件路径
+    :param is_written: 是否要写入文件还是作为值返回
     """
     with open(html_file_path, 'r', encoding='utf-8') as f:
         html_content = f.read()
@@ -64,26 +65,47 @@ def convert_html_img_path_to_abs_path(html_file_path: str):
         img_src = img_tag.get('src')
         if not img_src.startswith('http'):
             img_tag['src'] = os.path.join(os.path.dirname(html_file_path), img_src)
-    with open(html_file_path, 'w', encoding='utf-8') as f:
-        f.write(str(soup))
+    if is_written:
+        with open(html_file_path, 'w', encoding='utf-8') as f:
+            f.write(str(soup))
+    return str(soup)
 
 
-def convert_md_img_path_to_abs_path(md_file_path: str):
+def convert_html_content_img_path_to_abs_path(html_content: str, html_dir: str):
+    """
+    将HTML文件中图片的路径转换为绝对路径
+    :param html_content:
+    :param html_dir:
+    :return:
+    """
+    from bs4 import BeautifulSoup
+    soup = BeautifulSoup(html_content, 'html.parser')
+    img_tags = soup.find_all('img')
+    for img_tag in img_tags:
+        img_src = img_tag.get('src')
+        if not img_src.startswith('http'):
+            img_tag['src'] = os.path.join(html_dir, img_src)
+            img_tag['src'] = img_tag['src'].replace('\\', r'/')
+    return str(soup)
+
+
+def convert_md_img_path_to_abs_path(md_file_path: str, is_written: bool = True):
     """
     将MD文件中图片的路径转换为绝对路径
     :param md_file_path: MD文件路径
+    :param is_written: 是否要写入文件还是作为值返回
     """
-    convert_html_img_path_to_abs_path(md_file_path)
+    md_content = convert_html_img_path_to_abs_path(md_file_path, is_written)
     image_pattern = re.compile(r'!\[.*?\]\((.*?)\)')
-    with open(md_file_path, 'r', encoding='utf-8') as f:
-        md_content = f.read()
     img_paths = re.findall(image_pattern, md_content)
     for img_path in img_paths:
         if not img_path.startswith('http'):
             if not os.path.isabs(img_path):
                 md_content = md_content.replace(img_path, os.path.join(os.path.dirname(md_file_path), img_path))
-    with open(md_file_path, 'w', encoding='utf-8') as f:
-        f.write(md_content)
+    if is_written:
+        with open(md_file_path, 'w', encoding='utf-8') as f:
+            f.write(md_content)
+    return md_content
 
 
 async def insert_anti_detection_script(page: Page):
