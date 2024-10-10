@@ -74,6 +74,7 @@ async def check_login():
         task = one_check_task(site)
         tasks.append(task)
     results = await asyncio.gather(*tasks, return_exceptions=False)
+    await context.storage_state(path=get_path(config['data']['storage']['path']))
     await context.close()
     await asp.__aexit__()
     return Result.success(message='登录状态检查成功', data=results)

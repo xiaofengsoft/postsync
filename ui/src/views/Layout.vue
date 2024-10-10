@@ -138,11 +138,12 @@ export default {
 .layout-content {
   padding: 10px 10px 0 10px;
   background-color: var(--td-brand-color-1);
-  overflow-y: hidden;
-  height: 100%;
+  overflow-y: scroll;
+  height: 83vh;
 }
 
 .layout-footer {
   background-color: var(--td-brand-color-1);
+  height: 1vh;
 }
 </style>

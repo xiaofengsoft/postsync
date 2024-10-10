@@ -39,6 +39,8 @@ def chooses_cover():
 @post_api.route('/save/file', methods=['POST'])
 def save_file():
     data = json.loads(request.get_data().decode('utf-8'))
+    if not data.get('content') or not data.get('title'):
+        return Result.error(message='标题或者内容不能为空')
     file_path = os.path.join(get_path(config['data']['posts']['path']), data['title']+'.'+data['type'])
     # 创建文件夹
     if not os.path.exists(os.path.dirname(file_path)):

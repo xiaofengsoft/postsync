@@ -1,63 +1,71 @@
-<script lang="ts">
+<script setup lang="ts">
+import { ref } from 'vue';
 import postApi from "../apis/post";
 import { MessagePlugin } from 'tdesign-vue-next';
+import { onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+const siteAlias = ref([
+  { label: '全选', checkAll: true },
+  { label: '稀土掘金', value: 'juejin' },
+  { label: 'CSDN', value: 'csdn' },
+  { label: '知乎', value: 'zhihu' },
+  { label: '博客园', value: 'cnblog' },
+  { label: 'Bilibili', value: 'bilibili' },
+  { label: '微信公众号', value: 'wechat' },
+  { label: 'WordPress', value: 'wordpress' }
+]);
 
-export default {
-  data() {
-    return {
-      siteAlias: [
-        { label: '全选', checkAll: true },
-        { label: '稀土掘金', value: 'juejin' },
-        { label: 'CSDN', value: 'csdn' },
-        { label: '知乎', value: 'zhihu' },
-        { label: '博客园', value: 'cnblog' },
-        { label: 'Bilibili', value: 'bilibili' },
-        { label: '微信公众号', value: 'wechat' },
-        { label: 'WordPress', value: 'wordpress' }
-      ],
-      post: {
-        file: '',
-        title: '',
-        digest: '',
-        content: '',
-        sites: [],
-        category: [],
-        topic: '',
-        cover: '',
-        tags: [],
-        columns: [],
-      },
-    }
-  },
-  methods: {
-    chooseFilePost() {
-      postApi.choosePost().then(res => {
-        console.log(res);
-        this.post.file = res.data.data[0];
-      })
-    },
-    chooseFileCover() {
-      postApi.chooseCover().then(res => {
-        console.log(res);
-        this.post.cover = res.data.data[0];
-      })
-    },
-    uploadPost() {
-      console.log(this.post);
-      postApi.uploadPost(this.post).then(res => {
-        console.log(res);
-        if (res.data.code == 0) {
-          MessagePlugin.success({ content: '上传成功' })
-        } else {
-          MessagePlugin.error({ content: res.data.message })
-        }
-      })
-    }
+const post = ref({
+  file: '',
+  title: '',
+  digest: '',
+  content: '',
+  sites: [],
+  category: [],
+  topic: '',
+  cover: '',
+  tags: [],
+  columns: [],
+});
+const router = useRouter();
+onMounted(() => {
+  const tempPost = router.currentRoute.value.query.postFile as string;
+  if (tempPost) {
+    const postFile = JSON.parse(tempPost)
+    post.value.file = postFile.path;
+    post.value.title = postFile.name;
   }
-}
+});
+
+const chooseFilePost = () => {
+  postApi.choosePost().then(res => {
+    console.log(res);
+    post.value.file = res.data.data[0];
+  });
+};
+
+const chooseFileCover = () => {
+  postApi.chooseCover().then(res => {
+    console.log(res);
+    post.value.cover = res.data.data[0];
+  });
+};
+
+const uploadPost = () => {
+  console.log(post.value);
+  postApi.uploadPost(post.value).then(res => {
+    console.log(res);
+    if (res.data.code == 0) {
+      MessagePlugin.success({ content: '上传成功' });
+    } else {
+      MessagePlugin.error({ content: res.data.message });
+    }
+  });
+};
 </script>
+
 <template>
-  <t-card style="max-height: 81vh;overflow-y: scroll;" title="上传文章">
+  <t-card title="上传文章">
     <t-form labelAlign="left">
       <t-form-item label="文件路径" name="file">
         <t-input placeholder="请选择文件" v-model="post.file" style="margin-right: 10px;" />

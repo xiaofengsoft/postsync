@@ -96,7 +96,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <t-card style="max-height: 80vh;overflow: scroll;" title="设置" header-bordered>
+  <t-card title="设置" header-bordered>
     <template #actions>
       <t-button @click="saveSettings">保存</t-button>
     </template>

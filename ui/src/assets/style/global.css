@@ -1,3 +1,18 @@
 .t-card {
   box-shadow: var(--td-shadow-1);
 }
+
+/* 隐藏垂直滚动条 */
+::-webkit-scrollbar {
+  width: 0px;
+  /* 针对垂直滚动条 */
+  height: 0px;
+  /* 针对水平滚动条 */
+}
+
+* {
+  /* 隐藏滚动条 */
+  scrollbar-width: none;
+  scrollbar-color: #fff #fff;
+  /* 第一个颜色是滚动条颜色，第二个是轨道颜色 */
+}

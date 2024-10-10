@@ -1,35 +1,62 @@
-<script lang="ts">
+<script setup lang="ts">
+import { ref } from 'vue';
 import Editor from '@/components/Editor.vue';
 import postApi from '../apis/post';
-export default {
-  name: 'Write',
-  components: {
-    Editor,
-  },
-  data() {
-    return {
-      content: '',
-      title: '',
-      type: 'md'
-    };
-  },
-  methods: {
-    handleSave(content: string) {
-      this.content = content;
-      postApi.savePostFile({
-        title: this.title,
-        content: this.content,
-        type: this.type
-      }).then(res => {
-        console.log(res);
+import { MessagePlugin } from 'tdesign-vue-next';
+import { useRouter } from 'vue-router';
+
+const content = ref('');
+const title = ref('');
+const type = ref('md');
+
+const handleSave = (newContent: string) => {
+  content.value = newContent;
+  postApi.savePostFile({
+    title: title.value,
+    content: content.value,
+    type: type.value
+  }).then(res => {
+    if (res.data.code === 0) {
+      MessagePlugin.success('保存成功');
+    } else {
+      MessagePlugin.error(res.data.message);
+    }
+    console.log(res.data);
+  });
+};
+const router = useRouter();
+const handleUpload = () => {
+  postApi.savePostFile({
+    title: title.value,
+    content: content.value,
+    type: type.value
+  }).then(res => {
+    if (res.data.code === 0) {
+      MessagePlugin.success('保存成功');
+      router.push({
+        path: '/upload',
+        query: {
+          postFile: JSON.stringify({
+            name: title.value,
+            path: res.data.data.path,
+          })
+        }
       });
-    },
-  },
+    } else {
+      MessagePlugin.error(res.data.message);
+    }
+    console.log(res.data);
+  });
+
 };
 </script>
 
 <template>
-  <t-card title="文档编辑" style="height: 80vh;overflow: scroll;">
+  <t-card title="文档编辑">
+    <template #actions>
+      <t-button type="primary" @click="handleSave">保存</t-button>
+      <t-button type="info" style="margin-left: 10px;" @click="handleUpload">上传</t-button>
+    </template>
     <t-form-item label="文档标题">
       <t-input v-model="title" />
     </t-form-item>
