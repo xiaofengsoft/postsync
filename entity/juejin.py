@@ -24,11 +24,16 @@ class Juejin(Community):
     login_url = "https://juejin.cn/login"
     url = "https://www.juejin.cn"
 
-    async def upload(self) -> t.AnyStr:
+    async def login(self, *args, **kwargs):
         if not self.is_login:
-            await self.login(self.login_url,
-                             re.compile(r"^https?:\/\/api\.juejin\.cn\/user_api\/v1\/sys\/token"),
-                             lambda login_data: 0 == 0)
+            return await super().login(
+                self.login_url,
+                re.compile(r"^https?:\/\/api\.juejin\.cn\/user_api\/v1\/sys\/token"),
+                lambda login_data: 0 == 0)
+        return True
+
+    async def upload(self) -> t.AnyStr:
+
         # 打开发布页面
         await self.page.goto(self.url_post_new)
         # 处理图片路径
@@ -116,6 +121,7 @@ class Juejin(Community):
                 "div.publish-popup.publish-popup.with-padding.active > div > div.footer > div > "
                 "button.ui-btn.btn.primary.medium.default"
             ).click()
+
         await self.double_try(
             inner_click_publish,
             inner_click_publish
@@ -140,5 +146,3 @@ class Juejin(Community):
         resp_body = await resp.body()
         data = json.loads(resp_body.decode('utf-8'))
         return data['data']['main_url']
-
-

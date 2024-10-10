@@ -41,6 +41,7 @@ class Community(object):
         self.context = context
         self.post = post
         self.page: "Page" = asyncio.run(self.context.new_page())
+        self.is_login = False
         if is_started:
             self.start()
 
@@ -48,7 +49,7 @@ class Community(object):
         """
         启动社区
         """
-        self.is_login: bool = asyncio.run(self.check_login_state())
+        self.is_login = asyncio.run(self.check_login_state())
         self.process_args()
 
     def process_args(self):

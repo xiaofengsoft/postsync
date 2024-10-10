@@ -9,9 +9,13 @@ export const loginOnce = (name: string) => {
 export const getPostList = () => {
   return request.get("dashboard/post/list");
 };
+export const deletePostFile = (path: string) => {
+  return request.post("dashboard/post/delete", { path });
+};
 
 export default {
   checkLogin,
   loginOnce,
   getPostList,
+  deletePostFile,
 };

@@ -22,11 +22,15 @@ class Cnblog(Community):
         'value': ''
     }]
 
-    async def upload(self) -> t.AnyStr:
+    async def login(self, *args, **kwargs):
         if not self.is_login:
-            await self.login(self.login_url,
-                             re.compile(r"account\.cnblogs\.com/user/userinfo"),
-                             lambda login_data: login_data['spaceUserId'])  # 发送用户ID说明登录成功
+            return await super().login(
+                self.login_url,
+                re.compile(r"account\.cnblogs\.com/user/userinfo"),
+                lambda login_data: login_data['spaceUserId'])  # 发送用户ID说明登录成功
+        return True
+
+    async def upload(self) -> t.AnyStr:
         # 打开发布页面
         await self.page.goto(self.url_post_new, wait_until='domcontentloaded')
         wait_random_time()
@@ -35,7 +39,7 @@ class Cnblog(Community):
         # 处理标题
         wait_random_time()
         await self.page.locator("#post-title").fill(self.post['title'])
-        wait_random_time(1,2)
+        wait_random_time(1, 2)
         await insert_html_content_to_frame(self.page, "#postBodyEditor_ifr", "#tinymce", content)
         await self.page.frame_locator("#postBodyEditor_ifr").locator("#tinymce").click()
         await self.page.locator("#summary").scroll_into_view_if_needed()
@@ -68,6 +72,7 @@ class Cnblog(Community):
             "button.ant-btn.ant-btn-primary.ant-btn-sm.ng-star-inserted").click()
         # 处理摘要
         await self.page.locator("#summary").fill(self.post['digest'])
+
         # 处理分类
 
         async def inner_upload_category(category: str):
@@ -113,6 +118,7 @@ class Cnblog(Community):
         await self.page.locator(
             "#tags > div > div > nz-select > nz-select-top-control > nz-select-search > input").click()
         tag_selector = self.page.locator(".cdk-virtual-scroll-content-wrapper")
+
         # 处理标签
 
         async def inner_upload_tag(tag: str):

@@ -34,9 +34,9 @@ class Wordpress(Community):
         self.url = config['wordpress']['url'] + "/wp-admin/post-new.php"
         self.upload_url = config['wordpress']['url'] + "/wp-admin/upload.php"
 
-    async def upload(self) -> t.AnyStr:
+    async def login(self, *args, **kwargs):
         if not self.is_login:
-            await self.login(
+            return await super().login(
                 self.login_url,
                 re.compile(
                     (join_url_paths(config['wordpress']['domain'],
@@ -44,6 +44,10 @@ class Wordpress(Community):
                     .replace('.', r'\.')),
                 lambda login_data: 0 == 0,
             )
+        return True
+
+    async def upload(self) -> t.AnyStr:
+        await self.login()
         await self.page.goto(self.url, wait_until='domcontentloaded')
         # 处理参数
         md_content = await self.convert_html_path(self.post['contents']['html'])

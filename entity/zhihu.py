@@ -33,13 +33,16 @@ class Zhihu(Community):
         self.pic_nums = 0  # 正在处理的图片数量
         self.origin_src = None
 
-    async def upload(self) -> t.AnyStr:
-        if not self.is_login:
-            await self.login(
+    async def login(self,*args,**kwargs):
+        if not super().is_login:
+            return await self.login(
                 self.login_url,
                 re.compile(r"www\.zhihu\.com\/api\/v3\/oauth\/sign_in"),
                 lambda login_data: 0 == 0
             )
+        return True
+
+    async def upload(self) -> t.AnyStr:
         await self.page.goto(self.url_post_new)
         # 上传图片
         await self.page.get_by_label("图片").click()

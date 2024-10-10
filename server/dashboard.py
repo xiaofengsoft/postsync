@@ -74,7 +74,6 @@ async def check_login():
         task = one_check_task(site)
         tasks.append(task)
     results = await asyncio.gather(*tasks, return_exceptions=False)
-    # exceptions = [result for result in results if isinstance(result, Exception)]
     await context.close()
     await asp.__aexit__()
     return Result.success(message='登录状态检查成功', data=results)
@@ -106,7 +105,7 @@ async def login_once():
         browser=browser,
         context=context,
         post=None,
-        is_started=True
+        is_started=False
     )
     try:
         ret = await site_instance.login()
@@ -124,3 +123,10 @@ async def post_list():
     files = [get_file_name_without_ext(str(file_path)) for file_path in file_paths]
     data = [{'name': name, 'path': path} for name, path in zip(files, file_paths)]
     return Result.success(data=data)
+
+
+@dashboard_api.route('/post/delete', methods=['POST'])
+async def post_delete():
+    file_path = json.loads(request.get_data().decode('utf-8'))['path']
+    os.remove(file_path)
+    return Result.success(message='删除成功')

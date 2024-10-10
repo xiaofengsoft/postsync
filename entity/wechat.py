@@ -26,13 +26,16 @@ class Wechat(Community):
         super().__init__(browser, context, post, **kwargs)
         self.origin_src = None
 
-    async def upload(self) -> t.AnyStr:
+    async def login(self, *args, **kwargs) -> bool:
         if not self.is_login:
-            await self.login(
+            return await super().login(
                 self.login_url,
                 re.compile(r"^https?:\/\/mp\.weixin\.qq\.com\/cgi-bin\/bizlogin\?action=login"),
                 lambda login_data: 0 == 0,
             )
+        return True
+
+    async def upload(self) -> t.AnyStr:
         await self.page.goto(Wechat.url_post_new)
         async with self.context.expect_page() as new_page:
             await self.page.locator("#app > div.main_bd_new > div:nth-child(3) > div.weui-desktop-panel__bd > div > "

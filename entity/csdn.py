@@ -24,12 +24,16 @@ class Csdn(Community):
     url = "https://www.csdn.net/"
     login_url = "https://passport.csdn.net/login?code=applets"
 
-    async def upload(self) -> t.AnyStr:
-        # 处理参数
+    async def login(self, *args, **kwargs):
         if not self.is_login:
-            await self.login(self.login_url,
-                             re.compile(r"^https?:\/\/passport\.csdn\.net\/v1\/login\/user\/cert\/collect\/state"),
-                             lambda login_data: int(login_data['code']) == 0)
+            return await super().login(
+                self.login_url,
+                re.compile(
+                    r"^https?:\/\/passport\.csdn\.net\/v1\/login\/user\/cert\/collect\/state"),
+                lambda login_data: int(login_data['code']) == 0)
+        return True
+
+    async def upload(self) -> t.AnyStr:
         # 打开发布页面
         await self.page.goto(self.url_post_new)
         await self.page.locator(".editor__inner").fill("")
@@ -77,7 +81,7 @@ class Csdn(Community):
         # 专栏处理
         column_selector = self.page.locator(".tag__options-list")
 
-        async def inner_upload_column(column:str):
+        async def inner_upload_column(column: str):
             await self.page.locator(".tag__item-list > .tag__btn-tag").click()
             await column_selector.locator("span", has_text=re.compile(column, re.IGNORECASE)).first.click()
 

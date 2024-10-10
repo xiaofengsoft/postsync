@@ -27,12 +27,15 @@ class Bilibili(Community):
         "value": ""
     }]
 
-    async def upload(self) -> t.AnyStr:
+    async def login(self, *args, **kwargs):
         if not self.is_login:
-            await self.login(
+            await super().login(
                 self.url,
                 "https://passport.bilibili.com/x/passport-login/web/login",
                 lambda login_data: login_data['code'] == 0)
+        return True
+
+    async def upload(self) -> t.AnyStr:
         # 打开发布页面
         await self.page.goto(self.url_post_new, wait_until='load')
         wait_random_time()
