@@ -1,14 +1,11 @@
 from common.core import ProcessCore
 from common.handler import handle_global_exception
-import nest_asyncio
 # 加载配置
 from common.constant import config
 
 
 if __name__ == '__main__':
     try:
-        # 允许嵌套协程
-        nest_asyncio.apply()
         # 初始化
         process_core = ProcessCore()
         print(process_core.results.message)

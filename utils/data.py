@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 import re
-
+from common import constant as c
 from utils.helper import wait_random_time
 from utils.load import get_path
 import os
@@ -103,7 +103,7 @@ def convert_md_img_path_to_abs_path(md_file_path: str, is_written: bool = True):
             if not os.path.isabs(img_path):
                 md_content = md_content.replace(img_path, os.path.join(os.path.dirname(md_file_path), img_path))
     if is_written:
-        with open(md_file_path, 'w', encoding='utf-8') as f:
+        with open(md_file_path, 'w', encoding=c.FILE_ENCODING) as f:
             f.write(md_content)
     return md_content
 
@@ -118,7 +118,7 @@ async def insert_anti_detection_script(page: Page):
                         get: () => undefined
                     });
                 }""")
-    with open(get_path('data/scripts/stealth.min.js')) as f:
+    with open(get_path('static/scripts/stealth.min.js'), 'r', encoding=c.FILE_ENCODING) as f:
         js = f.read()
     await page.add_init_script(js)
 

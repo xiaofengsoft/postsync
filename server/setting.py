@@ -20,9 +20,9 @@ def read():
 @setting_api.route('/save', methods=['POST'])
 def save():
     data = json.loads(request.get_data().decode('utf-8'))
+    c.config = data
     with open(get_root_path() + '/config.yaml', 'w', encoding='utf-8') as file:
         yaml.dump(data, file, default_flow_style=False, encoding='utf-8',Dumper=Dumper,sort_keys=False,allow_unicode=True)
-    print(data)
     return Result.success(None, '更新配置成功')
 
 

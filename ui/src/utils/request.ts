@@ -5,6 +5,7 @@ const instance = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  timeout: 1000000,
 });
 
 export default instance;

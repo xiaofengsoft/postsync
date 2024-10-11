@@ -1,5 +1,7 @@
 from types import SimpleNamespace
 from playwright.async_api import async_playwright
+
+import utils.browser
 from utils.file import get_file_name_ext, convert_html_to_md, convert_md_to_docx, convert_docx_to_html, \
     convert_docx_to_md
 from utils.file import convert_html_to_docx
@@ -108,25 +110,8 @@ class ProcessCore(object):
         """
         异步上传文件
         """
-        asp = async_playwright()
-        ap = await asp.start()
-        self.browser = await ap.chromium.launch(
-            channel=config['default']['browser'],
-            headless=config['default']['headless'],
-            args=['--start-maximized --disable-blink-features=AutomationControlled'],
-            devtools=bool(config['default']['devtools']),
-            timeout=int(config['default']['timeout'])
-        )
-        viewport = config['default']['no_viewport'] if config['default']['no_viewport'] else {
-            'width': config['view']['width'], 'height': config['view']['height']}
-        # 检测文件是否存在
-        make_file_or_dir(config['data']['storage']['path'], is_dir=False, func=lambda x: x.write('{ }'))
-        self.context = await self.browser.new_context(
-            storage_state=get_path(config['data']['storage']['path']),
-            no_viewport=viewport,
-            user_agent=config['default']['user_agent'],
-        )
-        # 读取存储文件 TODO 采用playwright已解析的数据
+        self.browser, self.context,asp = await utils.browser.create_context(headless=config['default']['headless'])
+        # 读取存储文件
         tasks = []
         for site in self.post['sites']:
             task = self.upload_post_one_site(site)
