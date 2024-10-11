@@ -83,6 +83,31 @@ def load_yaml(path: str) -> dict:
         return yaml_data
 
 
+def make_file_or_dir(path: str, is_dir: bool = False, func: t.Callable[[t.IO], None] = None) -> bool:
+    """
+    创建文件或目录，如果不存在则创建，如果存在则不做任何操作
+    :param path: 文件或目录路径
+    :param is_dir: 是否为目录
+    :param func: 创建文件后需要执行的函数
+    :return: 是否已经存在
+    """
+    if is_dir:
+        if os.path.exists(path):
+            return True
+        else:
+            os.makedirs(path)
+    else:
+        if os.path.exists(path):
+            return True
+        else:
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            with open(path, 'w', encoding=FILE_ENCODING) as f:
+                f.write('')
+                if func:
+                    func(f)
+    return False
+
+
 def convert_md_to_html(md_file_path: str, html_file_path: str = None,is_written:bool=True) -> str:
     """
     将Markdown文件转换为HTML

@@ -9,9 +9,11 @@ data:
   executable:
     path: C:\Program Files\Google\Chrome\Application\chrome.exe
   storage:
-    path: data/storage.json
+    path: D:\Documents\PostSync\data\storage.json
   posts:
     path: D:\Documents\PostSync\posts
+  webview:
+    path: D:\Documents\PostSync\webview
   path: D:\Documents\PostSync
 default:
   author: 张一风

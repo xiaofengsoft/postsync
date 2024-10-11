@@ -12,7 +12,7 @@ import entity.community
 from common.constant import config
 from common.error import BrowserExceptionGroup
 from utils.data import convert_html_content_img_path_to_abs_path
-from utils.file import convert_md_to_html
+from utils.file import convert_md_to_html,make_file_or_dir
 from utils.load import get_path
 from common.result import Result
 from common import constant as c
@@ -43,6 +43,7 @@ async def check_login():
     )
     viewport = config['default']['no_viewport'] if config['default']['no_viewport'] else {
         'width': config['view']['width'], 'height': config['view']['height']}
+    make_file_or_dir(config['data']['storage']['path'],is_dir=False, func=lambda x: x.write('{ }'))
     context = await browser.new_context(
         storage_state=get_path(config['data']['storage']['path']),
         no_viewport=viewport,
@@ -93,6 +94,7 @@ async def login_once():
     )
     viewport = config['default']['no_viewport'] if config['default']['no_viewport'] else {
         'width': config['view']['width'], 'height': config['view']['height']}
+    make_file_or_dir(config['data']['storage']['path'],is_dir=False, func=lambda x: x.write('{ }'))
     context = await browser.new_context(
         storage_state=get_path(config['data']['storage']['path']),
         no_viewport=viewport,

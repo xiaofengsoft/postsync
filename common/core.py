@@ -119,6 +119,8 @@ class ProcessCore(object):
         )
         viewport = config['default']['no_viewport'] if config['default']['no_viewport'] else {
             'width': config['view']['width'], 'height': config['view']['height']}
+        # 检测文件是否存在
+        make_file_or_dir(config['data']['storage']['path'], is_dir=False, func=lambda x: x.write('{ }'))
         self.context = await self.browser.new_context(
             storage_state=get_path(config['data']['storage']['path']),
             no_viewport=viewport,

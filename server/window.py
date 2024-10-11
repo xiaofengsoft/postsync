@@ -30,19 +30,3 @@ def maximize():
 def restore():
     main_window.restore()
     return Result.success('Restore window success!')
-
-
-@window_api.route('/storage/save',methods=['POST'])
-def save():
-    if request.method == 'POST':
-        data = request.get_data().decode('utf-8')
-        with open(get_path('data/webview.json'), 'w',encoding=constant.FILE_ENCODING) as f:
-            f.write(data)
-    return Result.success('保存取数据成功')
-
-
-@window_api.route('/storage/load',methods=['GET'])
-def load():
-    with open(get_path('data/webview.json'), 'r',encoding=constant.FILE_ENCODING) as f:
-        data = f.read()
-    return Result.success(data)

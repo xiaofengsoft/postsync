@@ -111,11 +111,6 @@ const fetchLoginStatuses = async () => {
       loginStatuses.value = JSON.parse(localStorage.getItem('loginStatuses') || '[]').filter((item: LoginStatus) => item.status === 'False' || item.status === false);
       return;
     }
-    const storageResp = await windowApi.getStorage();
-    if (storageResp.data.code === 0) {
-      localStorage.setItem('loginStatuses', storageResp.data.data);
-      return;
-    }
     const response = await dashboardApi.checkLogin();
     if (response && response.data && Array.isArray(response.data.data)) {
       loginStatuses.value = response.data.data
@@ -123,13 +118,7 @@ const fetchLoginStatuses = async () => {
       loginStatuses.value = loginStatuses.value.filter((item: LoginStatus) =>
         item.status === 'False' || item.status === false
       );
-      windowApi.saveStorage(data).then((response) => {
-        if (response.data.code === 0) {
-          localStorage.setItem('loginStatuses', data);
-        } else {
-          MessagePlugin.error('保存数据失败');
-        }
-      });
+      localStorage.setItem('loginStatuses', data);
     } else {
       console.error('Unexpected response format:', response);
     }
@@ -145,15 +134,9 @@ const handleLoginOnce = (loginStatus: LoginStatus) => {
     if (response.data.code === 0) {
       loginStatus.status = 'True';
       const data = JSON.stringify(loginStatuses.value);
-      windowApi.saveStorage(data).then((response) => {
-        if (response.data.code === 0) {
-          localStorage.setItem('loginStatuses', data);
-          MessagePlugin.success('登录成功');
-          fetchLoginStatuses();
-        } else {
-          MessagePlugin.error('保存数据失败');
-        }
-      });
+      localStorage.setItem('loginStatuses', data);
+      MessagePlugin.success('登录成功');
+      fetchLoginStatuses();
     } else {
       MessagePlugin.error('登录失败');
     }
