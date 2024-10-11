@@ -147,7 +147,7 @@ class Community(object):
             code = data.status
             try:
                 data = await data.body()
-                data = json.loads(data.decode(constant.FILE_ENCODING))
+                data = json.loads(data.decode(encoding=constant.FILE_ENCODING))
             except BrowserError:
                 # 说明没有返回信息
                 pass
