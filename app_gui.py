@@ -4,6 +4,7 @@ from flask import Flask
 from common import constant as c
 import webview
 from server.dashboard import dashboard_api
+from utils.file import get_path
 
 
 def flask_run():
@@ -31,11 +32,13 @@ if __name__ == "__main__":
         url=f'{c.APP_HTTP}://{c.APP_HOST}:{c.APP_PORT}',
         frameless=True,
         zoomable=False,
-        draggable=False,
+        draggable=True,
         resizable=True,
+        easy_drag=False,
         width=c.config['view']['width'],
         height=c.config['view']['height'],
     )
     c.main_window = main_window
-    threading.Thread(target=flask_run,daemon=True).start()
-    webview.start(debug=bool(c.config['app']['debug']))
+    threading.Thread(target=flask_run, daemon=True).start()
+
+    webview.start(debug=bool(c.config['app']['debug']), storage_path=get_path(r'data/webview.json'))

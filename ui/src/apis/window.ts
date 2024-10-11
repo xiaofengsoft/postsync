@@ -16,9 +16,19 @@ export const closeWindow = () => {
   return request.get("/window/close");
 };
 
+export const saveStorage = (data: string) => {
+  return request.post("/window/storage/save", data);
+};
+
+export const getStorage = () => {
+  return request.get("/window/storage/load");
+};
+
 export default {
   minimizeWindow,
   maximizeWindow,
   restoreWindow,
   closeWindow,
+  saveStorage,
+  getStorage,
 };

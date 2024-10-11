@@ -9,7 +9,7 @@ const routes = [
       {
         path: "",
         name: "Home",
-        component: () => import("@/views/Dashboard.vue"),
+        redirect: "/dashboard",
       },
       {
         path: "dashboard",

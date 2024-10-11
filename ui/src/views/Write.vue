@@ -9,8 +9,7 @@ const content = ref('');
 const title = ref('');
 const type = ref('md');
 
-const handleSave = (newContent: string) => {
-  content.value = newContent;
+const handleSave = () => {
   postApi.savePostFile({
     title: title.value,
     content: content.value,
@@ -52,7 +51,7 @@ const handleUpload = () => {
 </script>
 
 <template>
-  <t-card title="文档编辑">
+  <t-card title="文档编辑" style="width: 100%;">
     <template #actions>
       <t-button type="primary" @click="handleSave">保存</t-button>
       <t-button type="info" style="margin-left: 10px;" @click="handleUpload">上传</t-button>
