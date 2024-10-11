@@ -14,7 +14,7 @@ if __name__ == '__main__':
     for spec in specs:
         # 定义命令
         # 修改config.yaml中的debug为False
-        c.config['debug'] = False
+        c.config['app']['debug'] = False
         with open(get_path('/config.yaml'), 'w', encoding='utf-8') as file:
             yaml.dump(c.config, file, default_flow_style=False, encoding='utf-8', Dumper=Dumper, sort_keys=False,
                       allow_unicode=True)
