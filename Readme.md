@@ -19,22 +19,16 @@
 #### GUI版本
 
 1. 打开PostSyncGUI.exe文件
+2. 根据提示登录相关平台
+3. 选择需要同步的文章输入相关参数上传
 
 #### 命令行版本
 
-1. 打开config.yaml文件，配置你的浏览器信息、浏览器用户数据目录、可执行浏览器路径
-   ```yaml
-   executable:
-     path: C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe # 浏览器可执行文件路径
-   default:
-     browser: msedge # 选择使用的浏览器 (msedge,chrome,firefox)
-   ```
-   &gt; 可以联网查找浏览器数据目录所在位置
-2. 运行PostSync.exe文件命令行
+1. 运行PostSync.exe文件命令行
    根据需要上传的平台类型手动登录
    系统会自动检测是否登录成功
    成功后会自动保存登录信息并关闭页面
-3. 再次运行命令行
+2. 再次运行命令行即可
 
 ### 开发
 

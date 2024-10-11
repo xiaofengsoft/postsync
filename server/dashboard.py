@@ -3,19 +3,15 @@ import asyncio
 import json
 import os
 from importlib import import_module
-
-import nest_asyncio
 from flask import Blueprint, request
-from playwright.async_api import async_playwright
+import utils.browser
 from utils.file import get_file_name_without_ext
-import entity.community
 from common.constant import config
 from common.error import BrowserExceptionGroup
 from utils.data import convert_html_content_img_path_to_abs_path
-from utils.file import convert_md_to_html,make_file_or_dir
+from utils.file import convert_md_to_html, make_file_or_dir
 from utils.load import get_path
 from common.result import Result
-from common import constant as c
 
 dashboard_api = Blueprint('dashboard_api', __name__, url_prefix='/api/dashboard')
 
@@ -31,24 +27,7 @@ def readme():
 
 @dashboard_api.route('/login/check', methods=['GET'])
 async def check_login():
-    nest_asyncio.apply()
-    asp = async_playwright()
-    ap = await asp.start()
-    browser = await ap.chromium.launch(
-        channel=config['default']['browser'],
-        headless=True,
-        args=['--start-maximized --disable-blink-features=AutomationControlled'],
-        devtools=bool(config['default']['devtools']),
-        timeout=int(config['default']['timeout']),
-    )
-    viewport = config['default']['no_viewport'] if config['default']['no_viewport'] else {
-        'width': config['view']['width'], 'height': config['view']['height']}
-    make_file_or_dir(config['data']['storage']['path'],is_dir=False, func=lambda x: x.write('{ }'))
-    context = await browser.new_context(
-        storage_state=get_path(config['data']['storage']['path']),
-        no_viewport=viewport,
-        user_agent=config['default']['user_agent'],
-    )
+    browser, context,asp = await utils.browser.create_context(headless=False)
     tasks = []
 
     async def one_check_task(one_site):
@@ -82,24 +61,7 @@ async def check_login():
 
 @dashboard_api.route('/login/once', methods=['POST'])
 async def login_once():
-    nest_asyncio.apply()
-    asp = async_playwright()
-    ap = await asp.start()
-    browser = await ap.chromium.launch(
-        channel=config['default']['browser'],
-        headless=False,
-        args=['--start-maximized --disable-blink-features=AutomationControlled'],
-        devtools=bool(config['default']['devtools']),
-        timeout=int(config['default']['timeout']),
-    )
-    viewport = config['default']['no_viewport'] if config['default']['no_viewport'] else {
-        'width': config['view']['width'], 'height': config['view']['height']}
-    make_file_or_dir(config['data']['storage']['path'],is_dir=False, func=lambda x: x.write('{ }'))
-    context = await browser.new_context(
-        storage_state=get_path(config['data']['storage']['path']),
-        no_viewport=viewport,
-        user_agent=config['default']['user_agent'],
-    )
+    browser,context,asp = await utils.browser.create_context(headless=False)
     site = json.loads(request.get_data().decode('utf-8'))['name']
     site_cls = import_module('entity.' + site.strip())
     site_instance = getattr(site_cls, site.strip().capitalize())
@@ -112,7 +74,9 @@ async def login_once():
     try:
         ret = await site_instance.login()
     except BrowserExceptionGroup as e:
+        await asp.__aexit__()
         return Result.error(message=str(e))
+    await asp.__aexit__()
     return Result.success(message='登录成功', data=ret)
 
 
@@ -121,6 +85,8 @@ async def post_list():
     file_paths = []
     for root, dirs, files_in_dir in os.walk(config['data']['posts']['path']):
         for file in files_in_dir:
+            if not file.endswith('.md') and not file.endswith('.html') and not file.endswith('.docx'):
+                continue
             file_paths.append(os.path.join(root, file))
     files = [get_file_name_without_ext(str(file_path)) for file_path in file_paths]
     data = [{'name': name, 'path': path} for name, path in zip(files, file_paths)]

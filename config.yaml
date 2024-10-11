@@ -1,6 +1,6 @@
 app:
   author: 张一风
-  debug: True
+  debug: true
   description: 一个开源且跨平台的博客同步工具
   epilog: 请使用 -h 查看帮助信息
   name: PosySync
@@ -8,16 +8,15 @@ app:
 data:
   executable:
     path: C:\Program Files\Google\Chrome\Application\chrome.exe
+  path: D:\Documents\PostSync
+  posts:
+    path: C:\Users\xiaof\Desktop
   storage:
     path: D:\Documents\PostSync\data\storage.json
-  posts:
-    path: D:\Documents\PostSync\posts
   webview:
     path: D:\Documents\PostSync\webview
-  path: D:\Documents\PostSync
 default:
   author: 张一风
-  browser: chrome
   category: 后端
   columns:
   - Python文章

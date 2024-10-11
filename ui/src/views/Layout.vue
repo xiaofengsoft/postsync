@@ -60,7 +60,7 @@ onMounted(() => {
 <template>
   <t-layout style="height: 100vh;">
     <t-header :class="['layout-header', 'pywebview-drag-region']">
-      <t-head-menu value="item1">
+      <t-head-menu value="item1" :class="['pywebview-drag-region']">
         <template #logo>
           <img width="136" class="logo" src="@/assets/imgs/logo-landscape.png" alt="logo" />
         </template>

@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 from playwright._impl._async_base import AsyncEventInfo
 from common.apis import Post, StorageData
-from common.constant import config
+from common.constant import config, INFINITE_TIMEOUT
 import asyncio
 from playwright.async_api import Page, Locator
 from playwright.async_api import BrowserContext, Browser, Response
@@ -133,6 +133,9 @@ class Community(object):
         :return:
         """
         await before_func(self)
+        self.page.set_default_timeout(
+            INFINITE_TIMEOUT
+        )
         await self.page.goto(login_url)
         response: t.Union[AsyncEventInfo["Response"], Response]
         wait_random_time()

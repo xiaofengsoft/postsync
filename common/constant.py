@@ -69,3 +69,5 @@ main_window: t.Optional[Window] = None
 
 # Flask应用
 server_app: t.Optional[Flask] = None
+
+
