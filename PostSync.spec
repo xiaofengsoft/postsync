@@ -13,7 +13,6 @@ a = Analysis(
         ('entity', 'entity'),
         ('common', 'common'),
         ('static', 'static'),
-        ('data', 'data'),
         ('utils', 'utils')
     ],
     hiddenimports=['bs4','pyperclip'],  # 遇到No module named xxx 等问题，添加依赖库到这里
