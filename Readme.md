@@ -89,7 +89,7 @@ python make.py
 作者本人目前就读于中原工学院，是一名超级热爱编程的本科生
 喜欢各种运动和各种音乐
 - 邮箱：<xiaofengs@yeah.net>
-- 网站: <https: yunyicloud.cn="">
+- 网站: <https://yunyicloud.cn>
 
 公众号: 
 
