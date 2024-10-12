@@ -1,6 +1,6 @@
 app:
   author: 张一风
-  debug: False
+  debug: false
   description: 一个开源且跨平台的博客同步工具
   epilog: 请使用 -h 查看帮助信息
   name: PosySync
@@ -86,7 +86,7 @@ default:
   digest:
     length: 100
   headless: false
-  no_viewport: true
+  no_viewport: false
   tags:
   - Python
   timeout: 40000

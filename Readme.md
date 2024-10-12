@@ -41,6 +41,7 @@
 ``` bash
 python make.py
 ```
+> 打包时会自动将`config.yaml`中的相关参数设置为产品环境
 
 ### 注意事项
 

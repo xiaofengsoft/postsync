@@ -47,11 +47,11 @@ class ProcessCore(object):
         """
         contents: PostContents = {}
         try:
-            self.args.topic = config['default']['topic'] if self.args.topic is None else self.args.topic
-            self.args.category = config['default']['category'] if self.args.category is None else self.args.category
-            self.args.cover = config['default']['cover'] if self.args.cover is None else self.args.cover
-            self.args.tags = config['default']['tags'] if self.args.tags is None else self.args.tags
-            self.args.columns = config['default']['columns'] if self.args.columns is None else self.args.columns
+            self.args.topic = config['default']['topic'] if not self.args.topic else self.args.topic
+            self.args.category = config['default']['category'] if not self.args.category else self.args.category
+            self.args.cover = config['default']['cover'] if not self.args.cover else self.args.cover
+            self.args.tags = config['default']['tags'] if not self.args.tags else self.args.tags
+            self.args.columns = config['default']['columns'] if not self.args.columns else self.args.columns
         except KeyError as e:
             raise ConfigurationLackError('缺少配置项 {}'.format(e))
         if self.args.sites is None or self.args.sites == [] or len(self.args.sites) == 0:

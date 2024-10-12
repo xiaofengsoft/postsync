@@ -12,7 +12,7 @@ def load_yaml(path: str, encoding='utf-8') -> dict:
     """
     import yaml
     with open(path, 'r', encoding=encoding) as f:
-        yaml_data = yaml.load(stream=f, Loader=yaml.FullLoader)
+        yaml_data = yaml.safe_load(stream=f)
         return yaml_data
 
 

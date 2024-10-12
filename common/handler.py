@@ -2,6 +2,8 @@
 import sys
 import json
 
+import yaml
+
 
 def handle_global_exception(e):
     return handle_global_exception_with_exception(*sys.exc_info())
