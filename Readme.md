@@ -30,6 +30,16 @@
    成功后会自动保存登录信息并关闭页面
 2. 再次运行命令行即可
 
+#### GUI界面
+
+![仪表盘](static/imgs/screenshot-dashboard.png?=200x150)
+
+![新文章](static/imgs/screenshot-write.png?=200x150)
+
+![上传文章](static/imgs/screenshot-upload.png?=200x150)
+
+![设置](static/imgs/screenshot-setting.png?=200x150)
+
 #### 注意事项
 
 - 使用标签分类等功能请确保您在相关平台上已经创建相应的标签分类
@@ -61,6 +71,7 @@ python make.py
 
 ### 优化任务🕐
 
+- [ ] 撰写文章图片显示问题
 - [ ] 搭配图床接口
 - [ ] 算法处理内容提取摘要和标签
 - [ ] 记录失败日志
