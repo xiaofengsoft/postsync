@@ -18,8 +18,8 @@ if __name__ == '__main__':
         yaml.dump(c.config, file, default_flow_style=False, encoding='utf-8', Dumper=Dumper, sort_keys=False,
                   allow_unicode=True)
 
-    # for spec in specs:
-    #     # 定义命令
-    #     command = ['pyinstaller', '-y', spec]
-    #     # 执行命令
-    #     subprocess.run(command)
+    for spec in specs:
+        # 定义命令
+        command = ['pyinstaller', '-y', spec]
+        # 执行命令
+        subprocess.run(command)

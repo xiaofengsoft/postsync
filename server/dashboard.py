@@ -18,7 +18,7 @@ dashboard_api = Blueprint('dashboard_api', __name__, url_prefix='/api/dashboard'
 
 @dashboard_api.route('/login/check', methods=['GET'])
 async def check_login():
-    browser, context,asp = await utils.browser.create_context(headless=False)
+    browser, context,asp = await utils.browser.create_context(headless=True)
     tasks = []
 
     async def one_check_task(one_site):

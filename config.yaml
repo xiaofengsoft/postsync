@@ -85,7 +85,7 @@ default:
   devtools: false
   digest:
     length: 100
-  headless: false
+  headless: true
   no_viewport: false
   tags:
   - Python
