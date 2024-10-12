@@ -3,8 +3,9 @@
     ```yaml
     wordpress:
       enable: True  # 是否启用WordPress同步
+      domain: yunyicloud.cn  # WordPress用户名
       url: https://yunyicloud.cn  # WordPress博客地址
     ```
-    > 请将 `url` 改为你的WordPress博客地址
-3. 保存并关闭 `config.yaml` 文件
-4. 重新运行即可
+    > 请将 `url` 改为你的WordPress博客地址  
+   > 或者在GUI界面中点击设置修改 `wordpress.enable` `wordpress.domain` `wordpress.url` 选项
+3. 保存文件或者点击保存按钮

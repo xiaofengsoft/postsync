@@ -16,15 +16,6 @@ from common.result import Result
 dashboard_api = Blueprint('dashboard_api', __name__, url_prefix='/api/dashboard')
 
 
-@dashboard_api.route('/readme', methods=['GET'])
-def readme():
-    return Result.success(
-        message='返回成功',
-        data=convert_html_content_img_path_to_abs_path(
-            convert_md_to_html(get_path('Readme.md'), is_written=False),
-            os.path.dirname(get_path('Readme.md'))))
-
-
 @dashboard_api.route('/login/check', methods=['GET'])
 async def check_login():
     browser, context,asp = await utils.browser.create_context(headless=False)
