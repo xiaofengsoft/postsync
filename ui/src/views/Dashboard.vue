@@ -1,7 +1,7 @@
 <template>
   <div style="width: 100%;overflow-x: hidden;">
     <t-alert v-for="loginStatus in loginStatuses" :key="loginStatus.name"
-      style="margin: 1vh 0;box-shadow: var(--td-shadow-1);" theme="warning" title="登录状态"
+      style="margin: 1vh 1vw;box-shadow: var(--td-shadow-1);" theme="warning" title="登录状态"
       :message="`${loginStatus.name}未登录`" close>
       <template #operation>
         <span @click="handleLoginOnce(loginStatus)">点击登录</span>
@@ -12,7 +12,7 @@
         <t-col :span="6">
           <t-card style="height: 50vh;overflow-y: scroll;">
             <template #content>
-              <t-list split size="large" :scroll="{ type: 'virtual' }" style="height: 100%;">
+              <t-list v-if="postList.length > 0" split size="large" :scroll="{ type: 'virtual' }" style="height: 100%;">
                 <t-list-item style="margin: 1.3vh; box-shadow: var(--td-shadow-1);border-radius: 10px;"
                   v-for="(post, index) in postList" :key="index">
                   <template #action>
@@ -24,6 +24,7 @@
                   <t-list-item-meta :title="post.name" :description="post.path" style="overflow-x: hidden;" />
                 </t-list-item>
               </t-list>
+              <t-empty v-else title="暂无文章" style="margin: 15vh 10vw;" />
             </template>
           </t-card>
         </t-col>
@@ -112,6 +113,7 @@ const fetchLoginStatuses = async () => {
       loginStatuses.value = JSON.parse(localStorage.getItem('loginStatuses') || '[]').filter((item: LoginStatus) => item.status === 'False' || item.status === false);
       return;
     }
+    MessagePlugin.loading('检查登录状态...');
     const response = await dashboardApi.checkLogin();
     if (response && response.data && Array.isArray(response.data.data)) {
       loginStatuses.value = response.data.data
@@ -120,6 +122,7 @@ const fetchLoginStatuses = async () => {
         item.status === 'False' || item.status === false
       );
       localStorage.setItem('loginStatuses', data);
+      MessagePlugin.closeAll();
     } else {
       console.error('Unexpected response format:', response);
     }
@@ -199,7 +202,7 @@ onMounted(() => {
 });
 </script>
 
-<style>
+<style scoped>
 .dashboard-card {
   text-align: center;
   display: flex;

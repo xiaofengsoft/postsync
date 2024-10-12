@@ -1,11 +1,11 @@
 <template>
-  <MdEditor v-model="localContent" style="cursor:text;" :onUploadImg="handleUploadImg" @onSave="handleSave" />
+  <MdEditor v-model="localContent" style="cursor:text;" noUploadImg @onSave="handleSave" />
 </template>
 
 <script>
 import { MdEditor } from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
-
+import writeApi from '../apis/write';
 export default {
   components: {
     MdEditor
@@ -28,7 +28,9 @@ export default {
   },
   methods: {
     handleUploadImg(file) {
-      console.log(file);
+      writeApi.selectImage().then(res => {
+        rev(res)
+      });
     },
     handleSave() {
       this.$emit('save', this.localContent);

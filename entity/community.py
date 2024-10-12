@@ -69,7 +69,6 @@ class Community(object):
         """
         检查登录状态
         """
-        await self.page.goto(self.url)
         if not config['data']['storage']['path']:
             raise ConfigNotConfiguredError("请设置存储路径")
         file_path = get_path(config['data']['storage']['path'])

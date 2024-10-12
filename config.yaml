@@ -10,9 +10,9 @@ data:
     path: C:\Program Files\Google\Chrome\Application\chrome.exe
   path: D:\Documents\PostSync
   posts:
-    path: C:\Users\xiaof\Desktop
+    path: D:\Documents\PostSync\posts
   storage:
-    path: D:\Documents\PostSync\data\storage.json
+    path: D:\Documents\PostSync\storage.json
   webview:
     path: D:\Documents\PostSync\webview
 default:
