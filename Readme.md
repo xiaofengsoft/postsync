@@ -32,13 +32,13 @@
 
 #### GUI界面
 
-![仪表盘] (static/imgs/screenshot-dashboard.png?=200x150)
+![仪表盘](static/imgs/screenshot-dashboard.png?=200x150)
 
-![新文章] (static/imgs/screenshot-write.png?=200x150)
+![新文章](static/imgs/screenshot-write.png?=200x150)
 
-![上传文章] (static/imgs/screenshot-upload.png?=200x150)
+![上传文章](static/imgs/screenshot-upload.png?=200x150)
 
-![设置] (static/imgs/screenshot-setting.png?=200x150)
+![设置](static/imgs/screenshot-setting.png?=200x150)
 
 #### 注意事项
 
