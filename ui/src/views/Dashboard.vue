@@ -30,17 +30,18 @@
         <t-col :span="6">
           <t-card title="PostSync介绍" description="作者：张一风" hover-shadow style=" height: 50vh;overflow-y: scroll;">
             <t-typography-paragraph>
-              这是一个开源的同步文章的软件，你可以使用它来同步你的文章到多个平台。<br>
+              这是一个开源的同步文章的软件，你可以使用它来编辑并同步你的文章到多个平台。<br>
               目前支持的平台有掘金、CSDN、知乎、公众号、哔哩哔哩、博客园、个人WordPress平台。<br>
               支持GUI界面或者命令行界面来使用该软件。<br>
               <br>
-              自动同步文章到掘金、CSDN、知乎、公众号、哔哩哔哩、博客园、个人WordPress平台并返回生成文章链接<br>
-              支持多协程，异步上传文章<br>
-              支持包含查找，大小写模糊匹配<br>
-              支持md,html,docx文件<br>
-              支持自定义默认配置<br>
-              支持命令行界面，GUI界面<br>
-              自定义标题、标签、分类、专栏、封面、摘要
+              自动同步文章到掘金、CSDN、知乎、公众号、哔哩哔哩、博客园、个人WordPress平台并返回生成文章链接<br />
+              支持多协程，异步上传文章 <br />
+              支持包含查找，大小写模糊匹配 <br />
+              支持md,html,docx文件上传，并实现自动转换<br />
+              支持自定义默认配置<br />
+              支持命令行界面，GUI界面<br />
+              自定义标题、标签、分类、专栏、封面、摘要<br />
+              撰写markdown文章<br />
             </t-typography-paragraph>
 
             <template #actions>
