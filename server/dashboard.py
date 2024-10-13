@@ -76,7 +76,7 @@ async def post_list():
     file_paths = []
     for root, dirs, files_in_dir in os.walk(config['data']['posts']['path']):
         for file in files_in_dir:
-            if not file.endswith('.md') and not file.endswith('.html') and not file.endswith('.docx'):
+            if not file.endswith('.md'):
                 continue
             file_paths.append(os.path.join(root, file))
     files = [get_file_name_without_ext(str(file_path)) for file_path in file_paths]

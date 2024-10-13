@@ -23,6 +23,7 @@ UNKNOWN_SITE_ALIAS = 'unknown'
 APP_PORT = 54188
 APP_HOST = 'localhost'
 APP_HTTP = 'http'
+APP_URL = f'{APP_HTTP}://{APP_HOST}:{APP_PORT}'
 
 SITE_ALIAS = (
     "bilibili",

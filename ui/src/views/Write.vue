@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import Editor from '@/components/Editor.vue';
 import postApi from '../apis/post';
 import { MessagePlugin } from 'tdesign-vue-next';
-import { useRouter } from 'vue-router';
-
+import { useRouter, useRoute } from 'vue-router';
+import writeApi from '../apis/write';
 const content = ref('');
 const title = ref('');
 const type = ref('md');
@@ -48,6 +48,17 @@ const handleUpload = () => {
   });
 
 };
+const route = useRoute();
+onMounted(() => {
+  const path = route.query.path as string;
+  if (path) {
+    writeApi.loadPostFile(path).then((res: any) => {
+      title.value = res.data.data.title;
+      content.value = res.data.data.content;
+    });
+  }
+});
+
 </script>
 
 <template>

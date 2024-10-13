@@ -15,6 +15,10 @@ data:
     path: D:\Documents\PostSync\storage.json
   webview:
     path: D:\Documents\PostSync\webview
+  temp:
+    path: D:\Documents\PostSync\temp
+  log:
+    path: D:\Documents\PostSync\log
 default:
   author: 张一风
   category: 后端

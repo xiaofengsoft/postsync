@@ -8,6 +8,7 @@ import yaml
 from yaml import Dumper
 from utils.load import get_root_path
 from common import constant as c
+import platform
 
 # 需要打包的spec文件
 specs = ['PostSync.spec', 'PostSyncGUI.spec']
@@ -21,10 +22,20 @@ if __name__ == '__main__':
     config_backup = copy.deepcopy(c.config)
     c.config['default']['headless'] = True
     c.config['app']['debug'] = False
-    c.config['data']['path'] = r'C:\PostSync'
-    c.config['data']['posts']['path'] = r'C:\PostSync\posts'
-    c.config['data']['webview']['path'] = r'C:\PostSync\webview'
-    c.config['data']['storage']['path'] = r'C:\PostSync\storage.json'
+    if platform.system() == 'Windows':
+        c.config['data']['path'] = r'C:\PostSync'
+        c.config['data']['posts']['path'] = r'C:\PostSync\posts'
+        c.config['data']['webview']['path'] = r'C:\PostSync\webview'
+        c.config['data']['storage']['path'] = r'C:\PostSync\storage.json'
+        c.config['data']['temp']['path'] = r'C:\PostSync\temp'
+        c.config['data']['log']['path'] = r'C:\PostSync\log'
+    else:
+        c.config['data']['path'] = r'/home/PostSync'
+        c.config['data']['posts']['path'] = r'/home/PostSync/posts'
+        c.config['data']['webview']['path'] = r'/home/PostSync/webview'
+        c.config['data']['storage']['path'] = r'/home/PostSync/storage.json'
+        c.config['data']['temp']['path'] = r'/home/PostSync/temp'
+        c.config['data']['log']['path'] = r'/home/PostSync/log'
     with open(get_root_path() + '/config.yaml', 'w', encoding='utf-8') as file:
         yaml.dump(c.config, file, default_flow_style=False, encoding='utf-8', Dumper=Dumper, sort_keys=False,
                   allow_unicode=True)

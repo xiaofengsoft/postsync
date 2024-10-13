@@ -46,8 +46,10 @@ def save_file():
     if not os.path.exists(os.path.dirname(file_path)):
         os.makedirs(os.path.dirname(file_path))
     with open(file_path, 'w', encoding='utf-8') as f:
-        f.write(data['content'])
-    return Result.success(message='保存成功',data={'path':file_path})
+        # 找到所有Localhost:54188的链接替换为真实链接
+        content = data['content'].replace(c.APP_URL+'/temp', config['data']['temp']['path'])
+        f.write(content)
+    return Result.success(message='保存成功', data={'path': file_path})
 
 
 @post_api.route('/upload', methods=['POST'])

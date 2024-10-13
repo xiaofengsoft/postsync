@@ -10,9 +10,8 @@
 
 ### 介绍📖
 
-这是一个开源的同步文章的软件，你可以使用它来编辑并同步你的文章到多个平台。  
-目前支持的平台有掘金、CSDN、知乎、公众号、哔哩哔哩、博客园、个人WordPress平台。  
-支持GUI界面或者命令行界面来使用该软件。
+PostSync是一款开源的跨平台文章同步工具，可以同步你的文章到多个平台。      
+一次编写，多处同步，同时上传标签，分类，栏目，封面等参数。  
 
 ### 使用🎭
 
@@ -32,13 +31,9 @@
 
 #### GUI界面
 
-![仪表盘](static/imgs/screenshot-dashboard.png?=200x150)
-
 ![新文章](static/imgs/screenshot-write.png?=200x150)
 
 ![上传文章](static/imgs/screenshot-upload.png?=200x150)
-
-![设置](static/imgs/screenshot-setting.png?=200x150)
 
 #### 注意事项
 

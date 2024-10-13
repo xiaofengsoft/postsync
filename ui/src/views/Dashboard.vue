@@ -18,6 +18,8 @@
                   <template #action>
                     <t-link theme="success" hover="color" @click="handleUpload(post)" style="margin-left: 1vw"> 上传
                     </t-link>
+                    <t-link theme="warning" hover="color" @click="handleEdit(post)" style="margin-left: 1vw"> 编辑
+                    </t-link>
                     <t-link theme="danger" hover="color" @click="handleDelete(post)" style="margin-left: 1vw"> 删除
                     </t-link>
                   </template>
@@ -31,10 +33,11 @@
         <t-col :span="6">
           <t-card title="PostSync介绍" description="作者：张一风" hover-shadow style=" height: 50vh;overflow-y: scroll;">
             <t-typography-paragraph>
-              这是一个开源的同步文章的软件，你可以使用它来编辑并同步你的文章到多个平台。<br>
-              目前支持的平台有掘金、CSDN、知乎、公众号、哔哩哔哩、博客园、个人WordPress平台。<br>
-              支持GUI界面或者命令行界面来使用该软件。<br>
+              <h3>介绍</h3>
+              PostSync是一款开源的跨平台文章同步工具，可以同步你的文章到多个平台。<br />
+              一次编写，多处同步，同时上传标签，分类，栏目，封面等参数。
               <br>
+              <h3>功能</h3>
               自动同步文章到掘金、CSDN、知乎、公众号、哔哩哔哩、博客园、个人WordPress平台并返回生成文章链接<br />
               支持多协程，异步上传文章 <br />
               支持包含查找，大小写模糊匹配 <br />
@@ -60,7 +63,6 @@
         </t-card>
         <div style="flex: 1;"></div>
       </t-row>
-
     </t-space>
   </div>
 </template>
@@ -167,6 +169,13 @@ const handleUpload = (post: Post) => {
   router.push({
     path: '/upload',
     query: { postFile: JSON.stringify(post) }
+  });
+};
+
+const handleEdit = (post: Post) => {
+  router.push({
+    path: '/write',
+    query: { path: post.path }
   });
 };
 
