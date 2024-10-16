@@ -28,6 +28,7 @@ pillow = "^10.4.0"
 flask = "^3.0.3"
 pywebview = "^5.2"
 asgiref = "^3.8.1"
+snownlp = "^0.12.3"
 
 
 [[tool.poetry.source]]

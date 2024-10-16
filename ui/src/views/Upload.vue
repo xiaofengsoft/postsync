@@ -62,10 +62,28 @@ const uploadPost = () => {
     }
   });
 };
+
+const extractPost = () => {
+  postApi.extractPost(post.value.file).then((res) => {
+    if (res.data.code == -1) {
+      MessagePlugin.error({ content: res.data.message })
+    } else {
+      post.value.tags = res.data.data.tags
+      post.value.digest = res.data.data.digest
+    }
+
+    console.log(res)
+  })
+}
 </script>
 
 <template>
   <t-card title="上传文章">
+    <template #actions>
+      <t-button @click="extractPost">
+        提取摘要标签
+      </t-button>
+    </template>
     <t-form labelAlign="left">
       <t-form-item label="文件路径" name="file">
         <t-input placeholder="请选择文件" v-model="post.file" style="margin-right: 10px;" />

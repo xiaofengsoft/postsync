@@ -1541,6 +1541,21 @@ url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 reference = "mirrors"
 
 [[package]]
+name = "snownlp"
+version = "0.12.3"
+description = "Python library for processing Chinese text"
+optional = false
+python-versions = "*"
+files = [
+    {file = "snownlp-0.12.3.tar.gz", hash = "sha256:c92accd025b70dd16706a10690f556ac9204bb6189f7dc68ece5c207c9bc27d8"},
+]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+reference = "mirrors"
+
+[[package]]
 name = "soupsieve"
 version = "2.5"
 description = "A modern CSS selector implementation for Beautiful Soup."
@@ -1648,4 +1663,4 @@ reference = "mirrors"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.13"
-content-hash = "527b16736e03df6c8ed094994d565dcc3e1518d671735057c455ca4bdf04a422"
+content-hash = "ef5b09300dd8bfa57fbc280c8bdc768c87405c4c5def9333032bfb763ce3bf90"

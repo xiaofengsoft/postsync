@@ -30,9 +30,17 @@ export const uploadPost = (data: {
   return request.post("/post/upload", data);
 };
 
+export const extractPost = (file: string) => {
+  return request.post("/post/extract", {
+    file,
+    tags_num: 3,
+  });
+};
+
 export default {
   choosePost,
   chooseCover,
   uploadPost,
   savePostFile,
+  extractPost,
 };

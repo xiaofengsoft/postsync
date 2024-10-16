@@ -75,3 +75,27 @@ def upload_post():
         else:
             ret = handle_global_exception(e)
             return Result.build(ret['code'], ret['data'], ret['message'])
+
+
+@post_api.route('/extract', methods=['POST'])
+def extract_post():
+    from snownlp import SnowNLP
+    data = json.loads(request.get_data().decode('utf-8'))
+    file = data.get('file')
+    if not os.path.exists(file):
+        return Result.error(message='文件不存在')
+    with open(file, 'r', encoding='utf-8') as f:
+        content = f.read()
+    tags_num = data.get('tags_num', 3)
+    if not content:
+        return Result.error(message='内容不能为空')
+    s = SnowNLP(content)
+    tags = s.keywords(tags_num)
+    digest = s.summary(1)
+    return Result.success(data={
+        'digest': digest,
+        'tags': tags
+    }, message='提取成功')
+
+
+
