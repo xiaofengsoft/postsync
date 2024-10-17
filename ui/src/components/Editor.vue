@@ -1,7 +1,7 @@
 <template>
   <div class="editor-container">
-    <MdEditor v-model="localContent" previewTheme="github" style="cursor:text;" :toolbars="toolbars" noUploadImg
-      @onSave="handleSave">
+    <MdEditor v-model="localContent" previewTheme="github" :style="{ cursor: 'text', height }" :toolbars="toolbars"
+      noUploadImg @onSave="handleSave">
       <template #defToolbars>
         <NormalToolbar title="选择图片" @onClick="handleSelectImg">
           <template #trigger>
@@ -25,6 +25,10 @@ const props = defineProps({
   content: {
     type: String,
     default: ''
+  },
+  height: {
+    type: String,
+    default: '60vh'
   }
 });
 
@@ -55,8 +59,6 @@ const toolbars = ref<ToolbarNames[]>([
   'next',
   'save',
   '=',
-  'pageFullscreen',
-  'fullscreen',
   'preview',
   'previewOnly',
   'htmlPreview',
@@ -93,10 +95,6 @@ const handleSave = () => {
 
 <style scoped>
 :root {
-  all: initial;
-}
-
-* {
   all: initial;
 }
 

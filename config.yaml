@@ -1,6 +1,6 @@
 app:
   author: 张一风
-  debug: false
+  debug: true
   description: 一个开源且跨平台的博客同步工具
   epilog: 请使用 -h 查看帮助信息
   name: PosySync
@@ -21,68 +21,67 @@ data:
     path: D:\Documents\PostSync\log
 default:
   author: 张一风
-  category: 后端
+  category:
   columns:
-  - Python文章
-  - Java文章
+  -
   community:
     bilibili:
       category: 科技
       columns:
-      - Python文章
-      cover: null
-      tags: Python
+      -
+      cover:
+      tags:
       timeout: 40000
-      topic: 编程
+      topic:
     cnblog:
       category: Python
       columns:
-      - Python文章
+      -
       cover: null
       tags:
-      - Python
+      -
       timeout: 20000
-      topic: null
+      topic:
     csdn:
-      category: null
+      category:
       columns:
-      - Python文章
-      cover: null
+      -
+      cover:
       tags:
-      - Python
+      -
       timeout: 20000
-      topic: 知识
+      topic:
     juejin:
-      category: 后端
+      category:
       columns:
-      - Python文章
+      -
       cover: null
       tags:
-      - Python
+      -
       timeout: 40000
-      topic: 知识
+      topic:
     wechat:
-      category: 后端
+      category:
       columns:
-      - PHP文章
-      cover: null
-      tags: python
+      -
+      cover:
+      tags:
       timeout: 20000
-      topic: null
+      topic:
     wordpress:
       category: null
       columns: null
       cover: null
       tags:
-      - Python
+      -
       timeout: 40000
       topic: null
     zhihu:
-      category: Python
+      category:
       columns:
-      - Python
+      -
       cover: null
-      tags: Python
+      tags:
       timeout: 20000
       topic: null
   cover: static/imgs/default-cover.png
@@ -92,9 +91,9 @@ default:
   headless: true
   no_viewport: false
   tags:
-  - Python
+  -
   timeout: 40000
-  topic: 知识
+  topic:
   url: null
   user_agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
     like Gecko) Chrome/128.0.0.0 Safari/537.36

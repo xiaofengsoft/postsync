@@ -116,8 +116,8 @@ onMounted(() => {
 .layout-header {
   box-shadow: var(--td-shadow-1);
   margin-bottom: var(--td-comp-margin-xs);
-  padding: 1vh 0;
-  background: var(--td-brand-color);
+  padding: 0.8vh 0;
+  background: var(--td-success-color-8);
 }
 
 .layout-header .t-menu {
@@ -158,5 +158,6 @@ onMounted(() => {
 .layout-footer {
   background-color: var(--td-brand-color-1);
   height: 1vh;
+  line-height: 1vh;
 }
 </style>

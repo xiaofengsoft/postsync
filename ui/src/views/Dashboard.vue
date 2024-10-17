@@ -1,7 +1,7 @@
 <template>
   <div style="width: 100%;overflow-x: hidden;">
     <t-alert v-for="loginStatus in loginStatuses" :key="loginStatus.name"
-      style="margin: 1vh 1vw;box-shadow: var(--td-shadow-1);" theme="warning" title="登录状态"
+      style="margin: 1vh 0.3vw;box-shadow: var(--td-shadow-1);" theme="error" title="登录状态"
       :message="`${loginStatus.name}未登录`" close>
       <template #operation>
         <span @click="handleLoginOnce(loginStatus)">点击登录</span>

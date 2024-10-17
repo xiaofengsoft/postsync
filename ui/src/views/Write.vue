@@ -70,6 +70,6 @@ onMounted(() => {
     <t-form-item label="文档标题">
       <t-input v-model="title" />
     </t-form-item>
-    <Editor v-model:content="content" @save="handleSave" />
+    <Editor v-model:content="content" @save="handleSave" height="60vh" />
   </t-card>
 </template>
