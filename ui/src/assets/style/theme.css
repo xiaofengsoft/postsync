@@ -59,7 +59,7 @@
   --td-success-color-8: #005247;
   --td-success-color-9: #003b33;
   --td-success-color-10: #002721;
-  --td-success-color: var(--td-success-color-5);
+  --td-success-color: var(--td-success-color-7);
   --td-success-color-hover: var(--td-success-color-4);
   --td-success-color-focus: var(--td-success-color-2);
   --td-success-color-active: var(--td-success-color-6);

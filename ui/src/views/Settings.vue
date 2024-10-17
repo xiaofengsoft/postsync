@@ -2,81 +2,13 @@
 import { ref, onMounted } from 'vue';
 import SettingApi from '../apis/setting';
 import { MessagePlugin } from 'tdesign-vue-next';
-
-interface InputItem {
-  label: string;
-  path: string;
-  type: string;
-}
-
-interface NestedObject {
-  [key: string]: NestedObject | any;
-}
-
+import InputSetting from '../components/InputSetting.vue';
+import Helper from '../utils/helper';
 interface Settings {
   [key: string]: any;
 }
 const settings = ref<Settings>({});
-const inputs = ref<InputItem[]>([]);
 const labelList = ref<string[]>([]);
-const createInputs = (data: any, path = '') => {
-  const keys = Object.keys(data);
-  keys.forEach((key) => {
-    if (key === 'desc') {
-      return;
-    }
-    const fullPath = path ? `${path}.${key}` : key;
-    if (Array.isArray(data[key])) {
-      inputs.value.push({
-        label: fullPath,
-        path: fullPath,
-        type: 'array'
-      });
-    } else if (typeof data[key] === 'object' && data[key] !== null) {
-      // 创建新的 div，并加入 label
-      inputs.value.push({
-        label: data[key].desc,
-        path: fullPath,
-        type: 'object'  // 可以添加该类型来标记为对象
-      });
-      labelList.value.push(data[key].desc);
-      createInputs(data[key], fullPath); // 递归调用
-    } else {
-      inputs.value.push({
-        label: fullPath,
-        path: fullPath,
-        type: 'input'
-      });
-    }
-  });
-};
-
-const getNestedValue = (obj: any, path: string) => {
-  const ret = path.split('.').reduce((acc, part) => {
-    if (!acc) return null; // 如果 acc 为 null 或 undefined，返回 null
-    // 检查当前 acc 是否是数组
-    if (Array.isArray(acc) && acc.length == 0) {
-      return []
-    }
-    return acc[part]; // 否则返回对象中对应的属性值
-  }, obj);
-  return ret;
-};
-
-
-
-
-const setNestedValue = (obj: any, path: string, value: any) => {
-  const parts = path.split('.');
-  const last = parts.pop();
-  const target = parts.reduce((acc, part) => (acc[part] = acc[part] || {}, acc), obj);
-  if (last) target[last] = value;
-};
-
-
-const handleInputChange = (path: string, value: string | string[]) => {
-  setNestedValue(settings.value, path, value);
-};
 
 const saveSettings = () => {
   console.log(settings.value);
@@ -87,19 +19,23 @@ const saveSettings = () => {
     MessagePlugin.error('保存失败');
   });
 };
-
-const fetchSettings = async () => {
-  try {
-    const response = await SettingApi.getSettings();
-    settings.value = response.data.data;
-    createInputs(settings.value);
-  } catch (error) {
-    console.error('获取设置失败:', error);
+const getLabels = (value: any = settings.value) => {
+  if (Helper.isObject(value)) {
+    if (value.desc) {
+      labelList.value.push(value.desc);
+    }
+    Object.keys(value).forEach((key) => {
+      getLabels(value[key]);
+    });
   }
 };
-const handleAnchorClick = (e: MouseEvent) => {
-  e.preventDefault();
-}
+const fetchSettings = () => {
+  SettingApi.getSettings().then((res) => {
+    settings.value = res.data.data;
+    getLabels();
+    console.log(settings.value);
+  });
+};
 
 onMounted(() => {
   fetchSettings();
@@ -112,22 +48,12 @@ onMounted(() => {
       <t-button @click="saveSettings">保存</t-button>
     </template>
     <t-row>
-      <t-col :span="6" style="overflow-y: scroll;height: 70vh;">
-        <div v-for="(input, index) in inputs" :key="index">
-          <div v-if="input.type === 'object'" :id="input.label">
-            <b>{{ input.label }}</b>
-          </div>
-          <t-form-item v-else :label="input.label">
-            <t-input :value="getNestedValue(settings, input.path)"
-              @change="(val: string) => handleInputChange(input.path, val)" v-if="input.type === 'input'" />
-            <t-tag-input :value="getNestedValue(settings, input.path)"
-              @change="(val: string[]) => handleInputChange(input.path, val)" v-else-if="input.type === 'array'" />
-          </t-form-item>
-        </div>
+      <t-col :span="7" style="overflow-y: scroll;height: 70vh;">
+        <InputSetting v-model:value="settings" label="设置" :path="''" />
       </t-col>
-      <t-col :span="5" style="margin-left: 2vw;">
-        <t-anchor :affix-props="{ offsetTop: 150 }" width="200" @click="handleAnchorClick">
-          <t-anchor-item v-for="label in labelList" :href="'#' + label" :title="label" />
+      <t-col :span="4" style="margin-left: 2vw;">
+        <t-anchor>
+          <t-anchor-item v-for="label in labelList" :href="`#${label}`" :title="label" />
         </t-anchor>
       </t-col>
     </t-row>
@@ -135,3 +61,10 @@ onMounted(() => {
 
   </t-card>
 </template>
+<style>
+.t-anchor__item a {
+  all: unset;
+  font-size: 2vh;
+  margin: 0.1vh;
+}
+</style>

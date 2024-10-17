@@ -107,7 +107,8 @@ async def create_context(headless:bool=False,**kwargs) -> t.Tuple[Browser, Brows
         browser = await ap.chromium.launch(
             channel='msedge' if 'edge' in executable else 'chrome',
             headless=headless,
-            args=['--start-maximized --disable-blink-features=AutomationControlled'],
+            args=['--start-maximized --disable-blink-features=AutomationControlled --disable-web-security '
+                  '--disable-site-isolation-trials'],
             devtools=bool(c.config['default']['devtools']),
             timeout=int(c.config['default']['timeout']),
             **kwargs

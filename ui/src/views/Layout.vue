@@ -102,7 +102,9 @@ onMounted(() => {
       </t-aside>
       <t-layout>
         <t-content class="layout-content">
-          <router-view />
+          <keep-alive>
+            <router-view />
+          </keep-alive>
         </t-content>
         <t-footer class="layout-footer">
           Copyright @ 2024-{{ new Date().getFullYear() }} XFS. All Rights

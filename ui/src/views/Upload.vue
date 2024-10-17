@@ -36,7 +36,6 @@ onMounted(() => {
     post.value.title = postFile.name;
   }
 });
-
 const chooseFilePost = () => {
   postApi.choosePost().then(res => {
     console.log(res);
@@ -117,7 +116,8 @@ const extractPost = () => {
         initialData="['juejin', 'csdn', 'zhihu', 'cnblog', 'bilibili', 'wechat', 'wordpress']">
         <t-select v-model="post.sites" :options="siteAlias" placeholder="请选择要上传的网站" multiple />
       </t-form-item>
-      <t-button @click="uploadPost" style="margin-top: 20px;" block variant="outline">点击上传</t-button>
+      <t-button @click="uploadPost" style="margin-top: 20px;background-color: var(--td-success-color);"
+        block>点击上传</t-button>
     </t-form>
   </t-card>
 </template>

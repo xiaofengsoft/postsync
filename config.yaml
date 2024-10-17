@@ -1,5 +1,5 @@
 app:
-  author: 张一风
+  author: 张一风aaaa
   debug: true
   desc: 软件设置
   description: 一个开源且跨平台的博客同步工具
@@ -30,67 +30,62 @@ data:
 default:
   author: 张一风
   category: null
-  columns:
-  - null
+  columns: []
   community:
     bilibili:
       category: 科技
-      columns:
-      - null
+      columns: []
       cover: null
-      tags: null
+      desc: 哔哩哔哩
+      tags: []
       timeout: 40000
       topic: null
     cnblog:
       category: Python
-      columns:
-      - null
+      columns: []
       cover: null
-      tags:
-      - null
+      desc: 博客园
+      tags: []
       timeout: 20000
       topic: null
     csdn:
       category: null
-      columns:
-      - null
+      columns: []
       cover: null
-      tags:
-      - null
+      desc: CSDN
+      tags: []
       timeout: 20000
       topic: null
     juejin:
       category: null
-      columns:
-      - null
+      columns: []
       cover: null
-      tags:
-      - null
+      desc: 掘金
+      tags: []
       timeout: 40000
       topic: null
     wechat:
       category: null
-      columns:
-      - null
+      columns: []
       cover: null
-      tags: null
+      desc: 微信公众号
+      tags: []
       timeout: 20000
       topic: null
     wordpress:
       category: null
-      columns: null
+      columns: []
       cover: null
-      tags:
-      - null
+      desc: WordPress
+      tags: []
       timeout: 40000
       topic: null
     zhihu:
       category: null
-      columns:
-      - null
+      columns: []
       cover: null
-      tags:
-      - null
+      desc: 知乎
+      tags: []
       timeout: 20000
       topic: null
   cover: static/imgs/default-cover.png
@@ -99,10 +94,9 @@ default:
   digest:
     desc: 文章摘要
     length: 100
-  headless: true
+  headless: false
   no_viewport: false
-  tags:
-  - null
+  tags: []
   timeout: 40000
   topic: null
   url: null
