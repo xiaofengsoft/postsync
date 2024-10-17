@@ -1,106 +1,119 @@
 app:
   author: 张一风
   debug: true
+  desc: 软件设置
   description: 一个开源且跨平台的博客同步工具
   epilog: 请使用 -h 查看帮助信息
   name: PosySync
   version: 1.0.0
 data:
+  desc: 软件数据目录
   executable:
+    desc: 可执行程序路径
     path: C:\Program Files\Google\Chrome\Application\chrome.exe
+  log:
+    desc: 日志文件目录
+    path: D:\Documents\PostSync\log
   path: D:\Documents\PostSync
   posts:
+    desc: 文章目录
     path: D:\Documents\PostSync\posts
   storage:
+    desc: 软件数据存储文件
     path: D:\Documents\PostSync\storage.json
-  webview:
-    path: D:\Documents\PostSync\webview
   temp:
+    desc: 临时文件目录
     path: D:\Documents\PostSync\temp
-  log:
-    path: D:\Documents\PostSync\log
+  webview:
+    desc: 软件视图存放目录
+    path: D:\Documents\PostSync\webview
 default:
   author: 张一风
-  category:
+  category: null
   columns:
-  -
+  - null
   community:
     bilibili:
       category: 科技
       columns:
-      -
-      cover:
-      tags:
+      - null
+      cover: null
+      tags: null
       timeout: 40000
-      topic:
+      topic: null
     cnblog:
       category: Python
       columns:
-      -
+      - null
       cover: null
       tags:
-      -
+      - null
       timeout: 20000
-      topic:
+      topic: null
     csdn:
-      category:
+      category: null
       columns:
-      -
-      cover:
-      tags:
-      -
-      timeout: 20000
-      topic:
-    juejin:
-      category:
-      columns:
-      -
+      - null
       cover: null
       tags:
-      -
-      timeout: 40000
-      topic:
-    wechat:
-      category:
-      columns:
-      -
-      cover:
-      tags:
+      - null
       timeout: 20000
-      topic:
+      topic: null
+    juejin:
+      category: null
+      columns:
+      - null
+      cover: null
+      tags:
+      - null
+      timeout: 40000
+      topic: null
+    wechat:
+      category: null
+      columns:
+      - null
+      cover: null
+      tags: null
+      timeout: 20000
+      topic: null
     wordpress:
       category: null
       columns: null
       cover: null
       tags:
-      -
+      - null
       timeout: 40000
       topic: null
     zhihu:
-      category:
+      category: null
       columns:
-      -
+      - null
       cover: null
       tags:
+      - null
       timeout: 20000
       topic: null
   cover: static/imgs/default-cover.png
+  desc: 默认设置
   devtools: false
   digest:
+    desc: 文章摘要
     length: 100
   headless: true
   no_viewport: false
   tags:
-  -
+  - null
   timeout: 40000
-  topic:
+  topic: null
   url: null
   user_agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
     like Gecko) Chrome/128.0.0.0 Safari/537.36
 view:
+  desc: 软件视图设置
   height: 860
   width: 1440
 wordpress:
+  desc: WordPress设置
   domain: yunyicloud.cn
   enable: true
   url: https://yunyicloud.cn
