@@ -1,6 +1,6 @@
 import typing as t
 
-from common.apis import StorageType
+from common.apis import StorageType, Post
 from entity.community import Community
 from bs4 import BeautifulSoup
 import json
@@ -25,15 +25,14 @@ class Csdn(Community):
     login_url = "https://passport.csdn.net/login?code=applets"
 
     async def login(self, *args, **kwargs):
-        if not self.is_login:
-            return await super().login(
-                self.login_url,
-                re.compile(
-                    r"^https?:\/\/passport\.csdn\.net\/v1\/login\/user\/cert\/collect\/state"),
-                lambda login_data: int(login_data['code']) == 0)
-        return True
+        return await super().login(
+            self.login_url,
+            re.compile(
+                r"^https?:\/\/passport\.csdn\.net\/v1\/login\/user\/cert\/collect\/state"),
+            lambda login_data: int(login_data['code']) == 0)
 
-    async def upload(self) -> t.AnyStr:
+    async def upload(self,post: Post) -> t.AnyStr:
+        await self.before_upload(post)
         # 打开发布页面
         await self.page.goto(self.url_post_new)
         await self.page.locator(".editor__inner").fill("")

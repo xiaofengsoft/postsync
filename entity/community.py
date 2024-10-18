@@ -18,6 +18,7 @@ from common.apis import StorageType
 from utils.storage import get_page_local_storage
 
 
+# TODO 单例模式
 class Community(object):
     """
     根社区类
@@ -27,43 +28,18 @@ class Community(object):
     site_storage_mark: t.List[StorageType]
     url = ""
 
-    def __init__(self, browser: "Browser", context: "BrowserContext", post: Post,is_started: bool = True):
+    def __init__(self, browser: "Browser", context: "BrowserContext", **kwargs):
         """
         初始化
         可以用来按照模板步骤上传文章
         也可以判断是否已经登录
         :param browser:
         :param context:
-        :param post:
-        :param is_started: 是否立刻启动
         """
+        self.post = None
         self.browser = browser
         self.context = context
-        self.post = post
         self.page: "Page" = asyncio.run(self.context.new_page())
-        self.is_login = False
-        if is_started:
-            self.start()
-
-    def start(self):
-        """
-        启动社区
-        """
-        self.is_login = asyncio.run(self.check_login_state())
-        self.process_args()
-
-    def process_args(self):
-        """
-        处理参数
-        """
-        self.page.set_default_timeout(
-            int(config['default']['community'][self.site_alias]['timeout'])
-            or int(config['default']['timeout'])
-        )
-        self.post['columns'] = self.post['columns'] or config['default']["community"][self.site_alias]['columns']
-        self.post['tags'] = self.post['tags'] or config['default']["community"][self.site_alias]['tags']
-        self.post['category'] = self.post['category'] or config['default']["community"][self.site_alias]['category']
-        self.post['cover'] = self.post['cover'] or config['default']["community"][self.site_alias]['cover']
 
     async def check_login_state(self) -> bool:
         """
@@ -129,7 +105,7 @@ class Community(object):
         :param login_url: 登录链接
         :param resp_url: 登录响应链接,支持正则
         :param check_func: 登录成功的检查函数
-        :return:
+        :return: 是否登录成功
         """
         await before_func(self)
         self.page.set_default_timeout(
@@ -158,7 +134,22 @@ class Community(object):
                 return True
         return False
 
-    async def upload(self) -> t.AnyStr:
+    async def before_upload(self, post: Post):
+        """
+        处理参数
+        """
+        self.post = post
+        self.page.set_default_timeout(
+            int(config['default']['community'][self.site_alias]['timeout'])
+            or int(config['default']['timeout'])
+        )
+        self.post['columns'] = self.post['columns'] or config['default']["community"][self.site_alias]['columns']
+        self.post['tags'] = self.post['tags'] or config['default']["community"][self.site_alias]['tags']
+        self.post['category'] = self.post['category'] or config['default']["community"][self.site_alias]['category']
+        self.post['cover'] = self.post['cover'] or config['default']["community"][self.site_alias]['cover']
+
+
+    async def upload(self, post: Post) -> t.AnyStr:
         """
         异步上传新文章
         :return: 上传后的文章链接

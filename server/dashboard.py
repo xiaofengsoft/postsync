@@ -2,15 +2,11 @@
 import asyncio
 import json
 import os
-from importlib import import_module
 from flask import Blueprint, request
 import utils.browser
 from utils.file import get_file_name_without_ext
 from common.constant import config
 from common.error import BrowserExceptionGroup
-from utils.data import convert_html_content_img_path_to_abs_path
-from utils.file import convert_md_to_html, make_file_or_dir
-from utils.load import get_path
 from common.result import Result
 
 dashboard_api = Blueprint('dashboard_api', __name__, url_prefix='/api/dashboard')
@@ -22,15 +18,7 @@ async def check_login():
     tasks = []
 
     async def one_check_task(one_site):
-        site_cls = import_module('entity.' + one_site.strip())
-        site_instance = getattr(site_cls, one_site.strip().capitalize())
-        site_instance = site_instance(
-            browser=browser,
-            context=context,
-            post=None,
-            is_started=False
-        )
-
+        site_instance = utils.browser.get_community_instance(one_site, browser, context)
         try:
             ret = await site_instance.check_login_state()
         except Exception:
@@ -54,14 +42,7 @@ async def check_login():
 async def login_once():
     browser,context,asp = await utils.browser.create_context(headless=False)
     site = json.loads(request.get_data().decode('utf-8'))['name']
-    site_cls = import_module('entity.' + site.strip())
-    site_instance = getattr(site_cls, site.strip().capitalize())
-    site_instance = site_instance(
-        browser=browser,
-        context=context,
-        post=None,
-        is_started=False
-    )
+    site_instance = utils.browser.get_community_instance(site,browser,context)
     try:
         ret = await site_instance.login()
     except BrowserExceptionGroup as e:

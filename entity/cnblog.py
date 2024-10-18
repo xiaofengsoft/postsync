@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from common.apis import StorageType
+from common.apis import StorageType, Post
 from entity.community import Community
 from bs4 import BeautifulSoup
 import json
@@ -23,14 +23,13 @@ class Cnblog(Community):
     }]
 
     async def login(self, *args, **kwargs):
-        if not self.is_login:
-            return await super().login(
-                self.login_url,
-                re.compile(r"account\.cnblogs\.com/user/userinfo"),
-                lambda login_data: login_data['spaceUserId'])  # 发送用户ID说明登录成功
-        return True
+        return await super().login(
+            self.login_url,
+            re.compile(r"account\.cnblogs\.com/user/userinfo"),
+            lambda login_data: login_data['spaceUserId'])  # 发送用户ID说明登录成功
 
-    async def upload(self) -> t.AnyStr:
+    async def upload(self, post: Post) -> t.AnyStr:
+        await self.before_upload(post)
         # 打开发布页面
         await self.page.goto(self.url_post_new, wait_until='domcontentloaded')
         wait_random_time()

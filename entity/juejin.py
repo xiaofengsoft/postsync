@@ -1,7 +1,7 @@
 import json
 import re
 import typing as t
-from common.apis import StorageType
+from common.apis import StorageType, Post
 from utils.helper import wait_random_time
 from entity.community import Community
 
@@ -25,15 +25,13 @@ class Juejin(Community):
     url = "https://www.juejin.cn"
 
     async def login(self, *args, **kwargs):
-        if not self.is_login:
-            return await super().login(
-                self.login_url,
-                re.compile(r"^https?:\/\/api\.juejin\.cn\/user_api\/v1\/sys\/token"),
-                lambda login_data: 0 == 0)
-        return True
+        return await super().login(
+            self.login_url,
+            re.compile(r"^https?:\/\/api\.juejin\.cn\/user_api\/v1\/sys\/token"),
+            lambda login_data: 0 == 0)
 
-    async def upload(self) -> t.AnyStr:
-
+    async def upload(self, post: Post) -> t.AnyStr:
+        await self.before_upload(post)
         # 打开发布页面
         await self.page.goto(self.url_post_new)
         # 处理图片路径

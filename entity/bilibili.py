@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import typing as t
-from common.apis import StorageType
+from common.apis import StorageType, Post
 from entity.community import Community
 import json
 import re
@@ -28,14 +28,13 @@ class Bilibili(Community):
     }]
 
     async def login(self, *args, **kwargs):
-        if not self.is_login:
-            await super().login(
-                self.url,
-                "https://passport.bilibili.com/x/passport-login/web/login",
-                lambda login_data: login_data['code'] == 0)
-        return True
+        return await super().login(
+            self.url,
+            "https://passport.bilibili.com/x/passport-login/web/login",
+            lambda login_data: login_data['code'] == 0)
 
-    async def upload(self) -> t.AnyStr:
+    async def upload(self, post: Post) -> t.AnyStr:
+        await self.before_upload(post)
         # 打开发布页面
         await self.page.goto(self.url_post_new, wait_until='load')
         wait_random_time()

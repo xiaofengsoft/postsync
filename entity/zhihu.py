@@ -28,21 +28,20 @@ class Zhihu(Community):
     }]
     url = "https://www.zhihu.com"
 
-    def __init__(self, browser: "Browser", context: "BrowserContext", post: Post, **kwargs):
-        super().__init__(browser, context, post, **kwargs)
+    def __init__(self, browser: "Browser", context: "BrowserContext", **kwargs):
+        super().__init__(browser, context, **kwargs)
         self.pic_nums = 0  # 正在处理的图片数量
         self.origin_src = None
 
-    async def login(self,*args,**kwargs):
-        if not self.is_login:
-            return await super().login(
-                self.login_url,
-                re.compile(r"www\.zhihu\.com\/api\/v3\/oauth\/sign_in"),
-                lambda login_data: 0 == 0
-            )
-        return True
+    async def login(self, *args, **kwargs):
+        return await super().login(
+            self.login_url,
+            re.compile(r"www\.zhihu\.com\/api\/v3\/oauth\/sign_in"),
+            lambda login_data: 0 == 0
+        )
 
-    async def upload(self) -> t.AnyStr:
+    async def upload(self, post : Post) -> t.AnyStr:
+        await self.before_upload(post)
         await self.page.goto(self.url_post_new)
         # 上传图片
         await self.page.get_by_label("图片").click()
@@ -95,6 +94,7 @@ class Zhihu(Community):
             inner_upload_tag,
             inner_upload_tag
         )
+
         # 选择专栏
 
         async def inner_upload_column(column):
@@ -108,7 +108,7 @@ class Zhihu(Community):
             inner_upload_column
         )
         esc_alert = self.page.locator(
-                "body > div:nth-child(31) > div > div > div > div.Modal.Modal--fullPage.DraftHistoryModal > button"
+            "body > div:nth-child(31) > div > div > div > div.Modal.Modal--fullPage.DraftHistoryModal > button"
         )
         wait_random_time()
         if await esc_alert.is_visible():

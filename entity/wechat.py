@@ -22,20 +22,19 @@ class Wechat(Community):
     url = "https://mp.weixin.qq.com/"
     login_url = "https://mp.weixin.qq.com/"
 
-    def __init__(self, browser: "Browser", context: "BrowserContext", post: Post, **kwargs):
-        super().__init__(browser, context, post, **kwargs)
+    def __init__(self, browser: "Browser", context: "BrowserContext", **kwargs):
+        super().__init__(browser, context, **kwargs)
         self.origin_src = None
 
     async def login(self, *args, **kwargs) -> bool:
-        if not self.is_login:
-            return await super().login(
-                self.login_url,
-                re.compile(r"^https?:\/\/mp\.weixin\.qq\.com\/cgi-bin\/bizlogin\?action=login"),
-                lambda login_data: 0 == 0,
-            )
-        return True
+        return await super().login(
+            self.login_url,
+            re.compile(r"^https?:\/\/mp\.weixin\.qq\.com\/cgi-bin\/bizlogin\?action=login"),
+            lambda login_data: 0 == 0,
+        )
 
-    async def upload(self) -> t.AnyStr:
+    async def upload(self, post:Post) -> t.AnyStr:
+        await self.before_upload(post)
         await self.page.goto(Wechat.url_post_new)
         async with self.context.expect_page() as new_page:
             await self.page.locator("#app > div.main_bd_new > div:nth-child(3) > div.weui-desktop-panel__bd > div > "

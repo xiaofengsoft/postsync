@@ -5,9 +5,10 @@
 import os
 import platform
 import typing as t
+from importlib import import_module
 
 import yaml
-from playwright.async_api import async_playwright, Browser,BrowserContext, PlaywrightContextManager
+from playwright.async_api import async_playwright, Browser, BrowserContext, PlaywrightContextManager
 import nest_asyncio
 from yaml import Dumper
 
@@ -60,6 +61,7 @@ def find_browser_executable() -> t.Optional[t.List[tuple[str, str]]]:
             "/usr/local/bin/microsoft-edge",
         ]
     }
+
     # 使用 shutil.which 查找路径
 
     def find_browser_in_paths(paths):
@@ -67,6 +69,7 @@ def find_browser_executable() -> t.Optional[t.List[tuple[str, str]]]:
             if os.path.exists(path):
                 return path
         return None
+
     # 查找浏览器
     browser_executable = {
         'Chrome': find_browser_in_paths(chrome_paths.get(system, [])),
@@ -81,7 +84,8 @@ def find_browser_executable() -> t.Optional[t.List[tuple[str, str]]]:
     return ret if ret else None
 
 
-async def create_context(headless:bool=False,**kwargs) -> t.Tuple[Browser, BrowserContext,PlaywrightContextManager]:
+async def create_context(headless: bool = False, **kwargs) -> t.Tuple[
+    Browser, BrowserContext, PlaywrightContextManager]:
     """
     创建浏览器上下文
     :param headless:
@@ -130,3 +134,21 @@ async def create_context(headless:bool=False,**kwargs) -> t.Tuple[Browser, Brows
         user_agent=c.config['default']['user_agent'],
     )
     return browser, context, asp
+
+
+def get_community_instance(site: str, browser: Browser, context: BrowserContext):
+    """
+    得到社区实例
+    :param site:
+    :param browser:
+    :param context:
+    :return:
+    """
+    site_cls = import_module('entity.' + site.strip())
+    site_instance = getattr(site_cls, site.strip().capitalize())
+    site_instance = site_instance(
+        browser=browser,
+        context=context,
+    )
+    c.site_instances[site] = site_instance
+    return site_instance

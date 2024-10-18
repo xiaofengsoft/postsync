@@ -61,7 +61,6 @@ def upload_post():
         nest_asyncio.apply()
         # 初始化
         process_core = ProcessCore(
-            is_pass_args_by_cmd=False,
             args=data
         )
         # 处理数据

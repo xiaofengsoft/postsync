@@ -1,18 +1,50 @@
-from common.core import ProcessCore
-from common.handler import handle_global_exception
+import threading
 # 加载配置
-from common.constant import config
+from flask import Flask
+from common import constant as c
+import webview
+from server.dashboard import dashboard_api
+from server.write import write_api
 
 
-if __name__ == '__main__':
-    try:
-        # 初始化
-        process_core = ProcessCore()
-        print(process_core.results.message)
-        for one_res in process_core.results.data:
-            print(one_res[0] + ":" + one_res[1])
-    except BaseException as e:
-        if 'True' == str(config['app']['debug']):
-            raise e
-        else:
-            handle_global_exception(e)
+def flask_run():
+    app = Flask(__name__, static_folder='ui/dist', static_url_path='')
+    c.server_app = app
+    from server.window import window_api
+    from server.post import post_api
+    from server.setting import setting_api
+    app.register_blueprint(window_api)
+    app.register_blueprint(post_api)
+    app.register_blueprint(setting_api)
+    app.register_blueprint(dashboard_api)
+    app.register_blueprint(write_api)
+    from server import static  # 静态文件托管，不可删除
+    app.run(
+        debug=c.config['app']['debug'],
+        port=c.APP_PORT,
+        host=c.APP_HOST,
+        use_reloader=False
+    )
+
+
+if __name__ == "__main__":
+    main_window = webview.create_window(
+        "PostSync",
+        url=f'{c.APP_HTTP}://{c.APP_HOST}:{c.APP_PORT}',
+        frameless=True,
+        zoomable=False,
+        draggable=True,
+        resizable=True,
+        easy_drag=False,
+        width=c.config['view']['width'],
+        height=c.config['view']['height'],
+    )
+    c.main_window = main_window
+    threading.Thread(target=flask_run, daemon=True).start()
+
+    webview.start(
+        debug=bool(c.config['app']['debug']),
+        private_mode=False,
+        gui='edgechromium',
+        storage_path=c.config['data']['webview']['path']
+    )

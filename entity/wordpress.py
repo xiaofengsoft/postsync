@@ -16,7 +16,7 @@ from utils.file import get_file_name_without_ext
 class Wordpress(Community):
     site_name = "Wordpress"
     site_alias = "wordpress"
-    site_storage_mark:t.List[StorageType] = [{
+    site_storage_mark: t.List[StorageType] = [{
         "type": "cookie",
         "name": "wordpress_logged_in",
         "domain": get_domain(config['wordpress']['url']),
@@ -27,26 +27,25 @@ class Wordpress(Community):
     login_url = config['wordpress']['url'] + "/wp-login.php"
     url_redirect_login = config['wordpress']['url'] + "/user"
 
-    def __init__(self, browser: "Browser", context: "BrowserContext", post: Post, **kwargs):
-        super().__init__(browser, context, post, **kwargs)
+    def __init__(self, browser: "Browser", context: "BrowserContext", **kwargs):
+        super().__init__(browser, context, **kwargs)
         if not bool(config['wordpress']['enable']):
             return
         self.url = config['wordpress']['url'] + "/wp-admin/post-new.php"
         self.upload_url = config['wordpress']['url'] + "/wp-admin/upload.php"
 
     async def login(self, *args, **kwargs):
-        if not self.is_login:
-            return await super().login(
-                self.login_url,
-                re.compile(
-                    (join_url_paths(config['wordpress']['domain'],
-                                    ["wp-admin", "admin-ajax.php"]) + "$")
-                    .replace('.', r'\.')),
-                lambda login_data: 0 == 0,
-            )
-        return True
+        return await super().login(
+            self.login_url,
+            re.compile(
+                (join_url_paths(config['wordpress']['domain'],
+                                ["wp-admin", "admin-ajax.php"]) + "$")
+                .replace('.', r'\.')),
+            lambda login_data: 0 == 0,
+        )
 
-    async def upload(self) -> t.AnyStr:
+    async def upload(self, post: Post) -> t.AnyStr:
+        await self.before_upload(post)
         await self.login()
         await self.page.goto(self.url, wait_until='domcontentloaded')
         # 处理参数
@@ -148,4 +147,3 @@ class Wordpress(Community):
         for img in img_tags:
             img['src'] = await self.upload_img(img['src'])
         return str(soup)
-

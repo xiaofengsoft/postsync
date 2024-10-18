@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
-
-from bs4 import BeautifulSoup
+from collections import defaultdict
 from flask import Flask
 from htmldocx import HtmlToDocx
 from markdown import Markdown
@@ -70,5 +69,8 @@ main_window: t.Optional[Window] = None
 
 # Flask应用
 server_app: t.Optional[Flask] = None
+
+# 社区实例
+site_instances = defaultdict()
 
 

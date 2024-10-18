@@ -11,7 +11,7 @@ from common import constant as c
 import platform
 
 # 需要打包的spec文件
-specs = ['PostSync.spec', 'PostSyncGUI.spec']
+specs = ['PostSync.spec']
 
 if __name__ == '__main__':
     # 切换到UI目录打包前端

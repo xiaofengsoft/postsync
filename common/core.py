@@ -1,6 +1,4 @@
 from types import SimpleNamespace
-from playwright.async_api import async_playwright
-
 import utils.browser
 from utils.file import get_file_name_ext, convert_html_to_md, convert_md_to_docx, convert_docx_to_html, \
     convert_docx_to_md
@@ -11,10 +9,8 @@ import asyncio
 from importlib import import_module
 from common.error import FileNotReferencedError, BrowserError, CommunityNotExistError, BrowserExceptionGroup, \
     FileNotSupportedError, ConfigurationLackError
-from utils.file import get_path
+from common import constant as c
 from utils.data import convert_html_img_path_to_abs_path, convert_md_img_path_to_abs_path
-import argparse
-from typing import List
 from common.apis import Post, PostPaths, PostArguments, PostContents
 from common.constant import *
 import typing as t
@@ -24,17 +20,12 @@ from playwright.async_api import BrowserContext, Browser
 # 执行所有操作的总流程
 
 class ProcessCore(object):
-    def __init__(self, is_pass_args_by_cmd: bool = True, args: PostArguments = None):
+    def __init__(self, args: PostArguments = None):
         # 加载配置
         self.context: t.Optional[BrowserContext] = None
         self.browser: t.Optional[Browser] = None
         self.results: t.Optional[Result] = None
-        if is_pass_args_by_cmd:
-            parser = PostArgumentParser()
-            self.args = parser.parse_args()
-        else:
-            self.args = SimpleNamespace(**args)
-
+        self.args = SimpleNamespace(**args)
         self.file_paths = self.process_files()
         self.args: PostArguments
         self.post = self.process_args()
@@ -128,17 +119,12 @@ class ProcessCore(object):
         """
         同步上传文本到指定站点
         通过反射技术，根据社区名称反射获取类名，调用接口相应方法上传
+        如果已经有实例化的社区类，则直接调用实例化的类的方法上传
         :return: 上传的文本链接
         """
-        site_cls = import_module('entity.' + site.strip())
-        site_instance = getattr(site_cls, site.strip().capitalize())
-        site_instance = site_instance(
-            browser=self.browser,
-            context=self.context,
-            post=self.post,
-        )
+        site_instance = utils.browser.get_community_instance(site, self.browser, self.context)
         try:
-            post_new_url = await site_instance.upload()
+            post_new_url = await site_instance.upload(self.post)
         except BrowserError:
             if config['app']['debug']:
                 raise
@@ -147,79 +133,3 @@ class ProcessCore(object):
         else:
             return site_instance.site_name, post_new_url
 
-
-class PostArgumentParser(argparse.ArgumentParser):
-    """
-    继承自argparse.ArgumentParser，重写exit方法，防止打印额外内容
-    """
-
-    def __init__(self, **kwargs):
-        super().__init__(
-            prog=config['app']['name'],
-            description=config['app']['description'],
-            epilog=config['app']['epilog'],
-            exit_on_error=True,
-            **kwargs)  # 禁止自动捕获异常
-        self.add_optional_arguments([
-            ('-ti', '--title', '文档标题', str),
-            ('-d', '--digest', '文档的摘要', str),
-            ('-ca', '--category', '文档的分类', str),
-            ('-co', '--cover', '文档的封面', str),
-            ('-to', '--topic', '文档的话题', str)
-        ])
-        self.add_number_arguments([
-            ('-t', '--tags', '文档的标签', str),
-            ('-cl', '--columns', '文档的专栏', str)
-        ])
-        self.add_argument(
-            '-f', '--file',
-            help='需要同步的文件路径',
-            type=str,
-            required=True
-        )
-        self.add_argument(
-            '-s', '--sites',
-            help='要上传的网站列表，必须从给定的网站列表中选择 %(choices)s，默认全部上传',
-            type=str,
-            choices=config['default']['community'].keys(),
-            nargs='*'
-        )
-        self.add_argument(
-            '-v', '--version',
-            action='version',
-            version='%(prog)s ' + config['app']['version'],
-            help='查看版本号'
-        )
-
-    def add_optional_arguments(self, optional_arguments: List[tuple[str, str, str, type]]):
-        """
-        批量添加可选参数
-        :param optional_arguments: 可选参数列表
-        :return:
-        """
-        self.add_arguments(optional_arguments, nargs='?')
-
-    def add_number_arguments(self, arguments: List[tuple[str, str, str, type]]):
-        """
-        批量添加参数
-        :param arguments: 参数列表
-        :return:
-        """
-        self.add_arguments(arguments, nargs='*')
-
-    def add_arguments(self, arguments: List[tuple[str, str, str, type]], **kwargs):
-        """
-        批量添加参数
-        :param arguments: 参数列表
-        :param kwargs: 参数字典
-        :return:
-        """
-        for arg in arguments:
-            self.add_argument(arg[0], arg[1], help=arg[2], type=arg[3], **kwargs)
-
-    def error(self, message: str):
-        if config['app']['debug']:
-            super().error(message)
-        else:
-            print(message)
-        self.exit()
