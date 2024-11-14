@@ -8,6 +8,7 @@ import re
 from utils.helper import wait_random_time
 from common.error import BrowserTimeoutError
 from utils.file import get_path
+from utils.data import on_click_by_selector
 
 
 class Csdn(Community):
@@ -50,11 +51,7 @@ class Csdn(Community):
         )
         cover_attr = await cover_img.get_attribute("src")
         if cover_attr.strip() != "":
-            await cover_img.hover()
-            await self.page.locator("body > div.app.app--light > div.modal > div > div.modal__inner-2 > "
-                                    "div.modal__content > div:nth-child(3) > div > div.preview-box > a > i").hover()
-            await self.page.locator("body > div.app.app--light > div.modal > div > div.modal__inner-2 > "
-                                    "div.modal__content > div:nth-child(3) > div > div.preview-box > a > i").click()
+            await on_click_by_selector(self.page, ".btn-remove-coverimg")
         # 封面处理
         async with self.page.expect_file_chooser() as fc_info:
             await self.page.locator(".upload-img-box").click()

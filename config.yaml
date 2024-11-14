@@ -29,7 +29,8 @@ default:
   community:
     bilibili:
       category: 科技
-      columns: []
+      columns:
+      - 解决问题
       cover: null
       desc: 哔哩哔哩
       tags: []
@@ -44,8 +45,9 @@ default:
       timeout: 20000
       topic: null
     csdn:
-      category: null
-      columns: []
+      category: Python
+      columns:
+      - 解决问题
       cover: null
       desc: CSDN
       tags: []

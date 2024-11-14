@@ -222,3 +222,19 @@ async def delete_blank_tags(page: Page, selector: str):
             });
         }
         """, [selector])
+
+
+async def on_click_by_selector(page: Page, selector: str):
+    """
+    点击元素
+    :param page:
+    :param selector:
+    :return:
+    """
+    await page.evaluate("""
+        ([selector]) => {
+            const element = document.querySelector(selector);
+            element.click();
+        }
+        """, [selector])
+
