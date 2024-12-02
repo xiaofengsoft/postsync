@@ -1,12 +1,15 @@
 <template>
   <div style="width: 100%;overflow-x: hidden;">
-    <t-alert v-for="loginStatus in loginStatuses" :key="loginStatus.name"
+    <div v-for="loginStatus in loginStatuses" :key="loginStatus.name">
+      
+    <t-alert  v-if="loginStatus.status === 'False' || loginStatus.status === false"
       style="margin: 1vh 0.3vw;box-shadow: var(--td-shadow-1);" theme="error" title="登录状态"
       :message="`${loginStatus.name}未登录`" close>
       <template #operation>
-        <span @click="handleLoginOnce(loginStatus)">点击登录</span>
+        <span @click.prevent="handleLoginOnce(loginStatus)">点击登录</span>
       </template>
     </t-alert>
+    </div>
     <t-space align="center" direction="vertical" style="width: 100%;">
       <t-row :gutter="16">
         <t-col :span="6">
@@ -109,13 +112,8 @@ const options = ref<any[]>([
   },
 ]);
 
-const fetchLoginStatuses = async () => {
-  try {
-    if (localStorage.getItem('loginStatuses')) {
-      loginStatuses.value = JSON.parse(localStorage.getItem('loginStatuses') || '[]').filter((item: LoginStatus) => item.status === 'False' || item.status === false);
-      return;
-    }
-    MessagePlugin.loading('检查登录状态...');
+const checkLoginState = async () => {
+  MessagePlugin.loading('检查登录状态...');
     const response = await dashboardApi.checkLogin();
     if (response && response.data && Array.isArray(response.data.data)) {
       loginStatuses.value = response.data.data
@@ -124,10 +122,22 @@ const fetchLoginStatuses = async () => {
         item.status === 'False' || item.status === false
       );
       localStorage.setItem('loginStatuses', data);
-      MessagePlugin.closeAll();
-    } else {
-      console.error('Unexpected response format:', response);
+}
+}
+
+const fetchLoginStatuses = async () => {
+  let response = null
+  try {
+
+    console.log('fetchLoginStatuses',localStorage.getItem('loginStatuses'));
+    if (localStorage.getItem('loginStatuses')) {
+      response = await dashboardApi.getLoginStates();
+      loginStatuses.value = response.data.data
+      localStorage.setItem('loginStatuses', JSON.stringify(loginStatuses.value));
+      return;
     }
+      await checkLoginState();
+      MessagePlugin.closeAll();
   } catch (error) {
     console.error('Error fetching login statuses:', error);
   }
@@ -136,7 +146,6 @@ const fetchLoginStatuses = async () => {
 const handleLoginOnce = (loginStatus: LoginStatus) => {
   console.log(`登录社区: ${loginStatus.name}`);
   dashboardApi.loginOnce(loginStatus.alias).then((response) => {
-    console.log(response.data.data);
     if (response.data.code === 0) {
       loginStatus.status = 'True';
       const data = JSON.stringify(loginStatuses.value);

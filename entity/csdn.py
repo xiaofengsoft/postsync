@@ -32,7 +32,7 @@ class Csdn(Community):
                 r"^https?:\/\/passport\.csdn\.net\/v1\/login\/user\/cert\/collect\/state"),
             lambda login_data: int(login_data['code']) == 0)
 
-    async def upload(self,post: Post) -> t.AnyStr:
+    async def upload(self, post: Post) -> t.AnyStr:
         await self.before_upload(post)
         # 打开发布页面
         await self.page.goto(self.url_post_new)
@@ -54,7 +54,11 @@ class Csdn(Community):
             await on_click_by_selector(self.page, ".btn-remove-coverimg")
         # 封面处理
         async with self.page.expect_file_chooser() as fc_info:
-            await self.page.locator(".upload-img-box").click()
+            try:
+                await self.page.locator(".preview-box").click()
+            except BrowserTimeoutError:
+                await on_click_by_selector(self.page, ".btn-remove-coverimg")
+                await self.page.locator(".preview-box").click()
             file_chooser = await fc_info.value
             await file_chooser.set_files(self.post['cover'])
         # 输入摘要
@@ -64,7 +68,8 @@ class Csdn(Community):
         wait_random_time()
         await self.page.locator(".mark_selection_title_el_tag > .tag__btn-tag").click()
         tag_input = self.page.locator(".el-input--suffix > .el-input__inner")
-        column_selector = self.page.locator(".el-autocomplete-suggestion__list")
+        column_selector = self.page.locator(
+            ".el-autocomplete-suggestion__list")
 
         for tag in self.post['tags']:
             await tag_input.fill(tag)

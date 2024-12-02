@@ -88,7 +88,8 @@ class Bilibili(Community):
         )
 
         async def inner_upload_category(category: str):
-            button = category_zone.locator("div", has_text=re.compile(category))
+            button = category_zone.locator(
+                "div", has_text=re.compile(category))
             await button.click()
             await category_zone.locator("li:nth-child(1)").click()
 

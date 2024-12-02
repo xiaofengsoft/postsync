@@ -16,7 +16,7 @@ from html2text import html2text
 
 CONFIG_FILE_PATH = 'config.yaml'
 FILE_ENCODING = 'utf-8'
-INFINITE_TIMEOUT = 1000000000
+INFINITE_TIMEOUT = 10000000
 UNKNOWN_SITE_NAME = '未知社区'
 UNKNOWN_SITE_ALIAS = 'unknown'
 APP_PORT = 54188
@@ -72,5 +72,3 @@ server_app: t.Optional[Flask] = None
 
 # 社区实例
 site_instances = defaultdict()
-
-

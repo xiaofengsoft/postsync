@@ -6,7 +6,7 @@ import os
 import platform
 import typing as t
 from importlib import import_module
-
+from entity.community import Community
 import yaml
 from playwright.async_api import async_playwright, Browser, BrowserContext, PlaywrightContextManager
 import nest_asyncio
@@ -85,7 +85,7 @@ def find_browser_executable() -> t.Optional[t.List[tuple[str, str]]]:
 
 
 async def create_context(headless: bool = False, **kwargs) -> t.Tuple[
-    Browser, BrowserContext, PlaywrightContextManager]:
+        Browser, BrowserContext, PlaywrightContextManager]:
     """
     创建浏览器上下文
     :param headless:
@@ -127,7 +127,8 @@ async def create_context(headless: bool = False, **kwargs) -> t.Tuple[
         )
     viewport = c.config['default']['no_viewport'] if c.config['default']['no_viewport'] else {
         'width': c.config['view']['width'], 'height': c.config['view']['height']}
-    utils.file.make_file_or_dir(c.config['data']['storage']['path'], is_dir=False, func=lambda x: x.write('{ }'))
+    utils.file.make_file_or_dir(
+        c.config['data']['storage']['path'], is_dir=False, func=lambda x: x.write('{ }'))
     context = await browser.new_context(
         storage_state=get_path(c.config['data']['storage']['path']),
         no_viewport=viewport,
@@ -136,7 +137,7 @@ async def create_context(headless: bool = False, **kwargs) -> t.Tuple[
     return browser, context, asp
 
 
-def get_community_instance(site: str, browser: Browser, context: BrowserContext):
+def get_community_instance(site: str, browser: Browser, context: BrowserContext) -> Community:
     """
     得到社区实例
     :param site:

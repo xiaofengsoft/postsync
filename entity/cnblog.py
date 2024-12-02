@@ -42,82 +42,23 @@ class Cnblog(Community):
         await insert_html_content_to_frame(self.page, "#postBodyEditor_ifr", "#tinymce", content)
         await self.page.frame_locator("#postBodyEditor_ifr").locator("#tinymce").click()
         await self.page.locator("#summary").scroll_into_view_if_needed()
-        # 处理合集（专栏）
-        await self.page.locator("div").filter(has_text=re.compile(r"^添加到合集$")).click()
-        column_selector = self.page.locator(
-            "body > cnb-root > cnb-app-layout > div.main > as-split > as-split-area:nth-child(2) > div > div > "
-            "cnb-spinner > div > cnb-posts-entry > cnb-post-editing-v2 > cnb-post-editor > div.panel.panel--main > "
-            "cnb-collection-selector > cnb-collapse-panel > "
-            "div.panel-content.ng-tns-c31-16.ng-trigger.ng-trigger-openClosePanel.cnb-panel-body")
-        for column in self.post['columns']:
-            await column_selector.locator("span", has_text=re.compile(column, re.IGNORECASE)).first.click()
-        # 处理封面
-        await self.page.locator(
-            "body > cnb-root > cnb-app-layout > div.main > as-split > as-split-area:nth-child(2) > div > div > "
-            "cnb-spinner > div > cnb-posts-entry > cnb-post-editing-v2 > cnb-post-editor > div.panel.panel--main > "
-            "cnb-collapse-panel > div.panel-content.ng-tns-c31-6.ng-trigger.ng-trigger-openClosePanel.cnb-panel-body "
-            "> cnb-description-input > div > span > label > cnb-feature-image-input > div > "
-            "div.featured-image-input__actions > div > a").click()
-        async with self.page.expect_file_chooser() as fc_info:
-            await self.page.locator("#modal-upload-featured-image > div > div > div:nth-child(3) > button").click()
-            file_chooser = await fc_info.value
-            await file_chooser.set_files(self.post['cover'])
-        wait_random_time()
-        await self.page.locator(
-            "#cdk-overlay-1 > nz-modal-container > div > div > div.ant-modal-footer.ng-tns-c59-19.ng-star-inserted > "
-            "button.ant-btn.ant-btn-primary.ant-btn-sm.ng-star-inserted").scroll_into_view_if_needed()
-        await self.page.locator(
-            "#cdk-overlay-1 > nz-modal-container > div > div > div.ant-modal-footer.ng-tns-c59-19.ng-star-inserted > "
-            "button.ant-btn.ant-btn-primary.ant-btn-sm.ng-star-inserted").click()
-        # 处理摘要
-        await self.page.locator("#summary").fill(self.post['digest'])
-
         # 处理分类
 
         async def inner_upload_category(category: str):
             await self.page.locator(
-                "body > cnb-root > cnb-app-layout > div.main > as-split > as-split-area:nth-child(2) > div > div > "
-                "cnb-spinner > div > cnb-posts-entry > cnb-post-editing-v2 > cnb-post-editor > "
-                "div.panel.panel--main >"
-                "cnb-category-select-panel > cnb-collapse-panel > "
-                "div.panel-content.ng-tns-c31-9.ng-trigger.ng-trigger-openClosePanel.cnb-panel-body > div > div > "
-                "cnb-post-category-select > cnb-tree-category-select > div > nz-tree-select > div").click()
+                "body > cnb-root > cnb-app-layout > div.main > as-split > as-split-area:nth-child(2) > div > div > cnb-spinner > div > cnb-posts-entry > cnb-post-editing-v2 > cnb-post-editor > div.panel.panel--main > cnb-category-select-panel > cnb-collapse-panel > div.panel-content.ng-tns-c57-9.ng-trigger.ng-trigger-openClosePanel.cnb-panel-body > div > div > cnb-post-category-select > cnb-tree-category-select > div > nz-tree-select > div").click()
             await self.page.locator(
-                "body > cnb-root > cnb-app-layout > div.main > as-split > as-split-area:nth-child(2) > div > div > "
-                "cnb-spinner > div > cnb-posts-entry > cnb-post-editing-v2 > cnb-post-editor > "
-                "div.panel.panel--main >"
-                "cnb-category-select-panel > cnb-collapse-panel > "
-                "div.panel-content.ng-tns-c31-9.ng-trigger.ng-trigger-openClosePanel.cnb-panel-body > div > div > "
-                "cnb-post-category-select > cnb-tree-category-select > div > nz-tree-select > div > "
-                "nz-select-search >"
-                "input").fill(
-                category)
-            await self.page.locator(
-                ".cdk-overlay-connected-position-bounding-box").locator("nz-tree-node").first.click()
-            await self.page.locator(
-                "body > cnb-root > cnb-app-layout > div.main > as-split > as-split-area:nth-child(2) > div > div > "
-                "cnb-spinner > div > cnb-posts-entry > cnb-post-editing-v2 > cnb-post-editor > "
-                "div.panel.panel--main >"
-                "cnb-site-category-selector > cnb-collapse-panel > "
-                "div.cnb-panel-header.ng-tns-c31-11.cnb-panel-header-clickable > span:nth-child(2)").click()
-            await self.page.locator(
-                "body > cnb-root > cnb-app-layout > div.main > as-split > as-split-area:nth-child(2) > div > div "
-                "> cnb-spinner > div > cnb-posts-entry > cnb-post-editing-v2 > cnb-post-editor > "
-                "div.panel.panel--main > cnb-site-category-selector > cnb-collapse-panel > "
-                "div.panel-content.ng-tns-c31-11.ng-trigger.ng-trigger-openClosePanel.cnb-panel-body > "
-                "div").locator(
-                "div", has_text=re.compile(category, re.IGNORECASE)).first.click()
+                "#cdk-overlay-1").locator(
+                "span", has_text=re.compile(category, re.IGNORECASE)).first.click()
 
         await self.double_try_single_data(
             'category',
             inner_upload_category,
             inner_upload_category
         )
-
         await self.page.locator(
             "#tags > div > div > nz-select > nz-select-top-control > nz-select-search > input").click()
         tag_selector = self.page.locator(".cdk-virtual-scroll-content-wrapper")
-
         # 处理标签
 
         async def inner_upload_tag(tag: str):
@@ -130,6 +71,24 @@ class Cnblog(Community):
             inner_upload_tag,
             inner_upload_tag
         )
+        # 处理合集（专栏）
+        await self.page.locator("div").filter(has_text=re.compile(r"^添加到合集$")).click()
+        column_selector = self.page.locator(
+            "body > cnb-root > cnb-app-layout > div.main > as-split > as-split-area:nth-child(2) > div > div > cnb-spinner > div > cnb-posts-entry > cnb-post-editing-v2 > cnb-post-editor > div.panel.panel--main > cnb-collection-selector > cnb-collapse-panel > div.panel-content.ng-tns-c57-16.ng-trigger.ng-trigger-openClosePanel.cnb-panel-body > div")
+        for column in self.post['columns']:
+            await column_selector.locator("span", has_text=re.compile(column, re.IGNORECASE)).first.click()
+        # 处理封面
+        await self.page.locator(
+            ".featured-image-input__actions > div").click()
+        async with self.page.expect_file_chooser() as fc_info:
+            await self.page.locator("#modal-upload-featured-image > div > div > div:nth-child(3) > button").click()
+            file_chooser = await fc_info.value
+            await file_chooser.set_files(self.post['cover'])
+        wait_random_time()
+        await self.page.get_by_role("button", name="确定").first.click()
+        # 处理摘要
+        await self.page.locator("#summary").fill(self.post['digest'])
+
         wait_random_time()
         async with self.page.expect_response("https://i.cnblogs.com/api/posts") as response:
             submit_button = self.page.locator(

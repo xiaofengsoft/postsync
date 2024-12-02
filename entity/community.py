@@ -39,12 +39,15 @@ class Community(object):
         self.post = None
         self.browser = browser
         self.context = context
-        self.page: "Page" = asyncio.run(self.context.new_page())
+        self.page: "Page" = asyncio.run(
+            self.context.new_page()
+        )
 
     async def check_login_state(self) -> bool:
         """
         检查登录状态
         """
+        await self.page.goto(self.url)
         if not config['data']['storage']['path']:
             raise ConfigNotConfiguredError("请设置存储路径")
         file_path = get_path(config['data']['storage']['path'])
@@ -57,9 +60,9 @@ class Community(object):
         for mark in self.site_storage_mark:
             if mark['type'] == 'cookie':
                 if not any(
-                        cookie for cookie in cookies_now
-                        if mark['domain'] in cookie['domain'] and mark['name'] in cookie['name']
-                           and (mark['value'] is None or mark['value'] in cookie['value'])):
+                    cookie for cookie in cookies_now
+                    if mark['domain'] in cookie['domain'] and mark['name'] in cookie['name']
+                        and (mark['value'] is None or mark['value'] in cookie['value'])):
                     # 这里检测到了未登录状态，刷新Storage
                     await self.context.storage_state(path=get_path(config['data']['storage']['path']))
                     format_json_file(config['data']['storage']['path'])
@@ -68,7 +71,7 @@ class Community(object):
                 if not any(
                         1 for local_name, local_value in locals_now.items()
                         if mark['name'] in local_name and (
-                                mark['value'] is None or mark['value'] in local_value
+                            mark['value'] is None or mark['value'] in local_value
                         )):
                     # 这里检测到了未登录状态，刷新Storage
                     await self.context.storage_state(path=get_path(config['data']['storage']['path']))
@@ -82,12 +85,12 @@ class Community(object):
                 if mark['domain'] in origin['origin'] and any(
                     local_storage for local_storage in origin['localStorage']
                     if mark['name'] in local_storage['name'] and (
-                            mark['value'] is None or mark['value'] in local_storage['value'])
+                        mark['value'] is None or mark['value'] in local_storage['value'])
                 )
             )) or (mark['type'] != 'local' and any(
                 cookie for cookie in storage_data['cookies']
                 if mark['domain'] in cookie['domain'] and mark['name'] in cookie['name'] and (
-                        mark['value'] is None or mark['value'] in cookie['value'])
+                    mark['value'] is None or mark['value'] in cookie['value'])
             ))
         ) == len(self.site_storage_mark)
 
@@ -111,7 +114,7 @@ class Community(object):
         self.page.set_default_timeout(
             INFINITE_TIMEOUT
         )
-        await self.page.goto(login_url)
+        await self.page.goto(login_url, wait_until='commit')
         response: t.Union[AsyncEventInfo["Response"], Response]
         wait_random_time()
         async with self.page.expect_response(
@@ -147,7 +150,6 @@ class Community(object):
         self.post['tags'] = self.post['tags'] or config['default']["community"][self.site_alias]['tags']
         self.post['category'] = self.post['category'] or config['default']["community"][self.site_alias]['category']
         self.post['cover'] = self.post['cover'] or config['default']["community"][self.site_alias]['cover']
-
 
     async def upload(self, post: Post) -> t.AnyStr:
         """
@@ -276,4 +278,3 @@ class Community(object):
                 await other_func()
             except second_error:
                 pass
-

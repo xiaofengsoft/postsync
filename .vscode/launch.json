@@ -1,0 +1,31 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "debugpy",
+      "request": "launch",
+      "name": "Launch Flask App",
+      "program": "${workspaceFolder}/app.py",
+      "args": [],
+      "env": {
+        "FLASK_APP": "app.py",
+        "FLASK_ENV": "development"
+      },
+      "console": "integratedTerminal"
+    },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "Launch npm run dev",
+      "command": "npm run dev -- --port 8080", // Add the port number here
+      "cwd": "${workspaceFolder}/ui",
+      "console": "integratedTerminal"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Launch Flask and npm",
+      "configurations": ["Launch Flask App", "Launch npm run dev"]
+    }
+  ]
+}

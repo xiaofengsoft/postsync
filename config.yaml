@@ -13,6 +13,9 @@ data:
   posts:
     desc: 文章目录
     path: D:\Documents\PostSync\posts
+  states:
+    desc: 登录状态文件
+    path: D:\Documents\PostSync\login_state.json
   storage:
     desc: 软件数据存储文件
     path: D:\Documents\PostSync\storage.json
@@ -93,7 +96,8 @@ default:
     length: 100
   headless: false
   no_viewport: false
-  tags: []
+  tags:
+  - Python
   timeout: 40000
   topic: null
   url: null
