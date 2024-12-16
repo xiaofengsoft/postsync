@@ -17,7 +17,7 @@
       "type": "pwa-node",
       "request": "launch",
       "name": "Launch npm run dev",
-      "command": "npm run dev -- --port 8080", // Add the port number here
+      "command": "npm run dev", 
       "cwd": "${workspaceFolder}/ui",
       "console": "integratedTerminal"
     }
