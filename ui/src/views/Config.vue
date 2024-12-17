@@ -4,17 +4,16 @@ import SettingApi from '../apis/setting';
 import { MessagePlugin } from 'tdesign-vue-next';
 import InputSetting from '../components/InputSetting.vue';
 import Helper from '../utils/helper';
-interface Settings {
-  [key: string]: any;
-}
-const settings = ref<Settings>({});
+import { Configuration } from '../types/config';
+import { useConfigStore } from '../store/config';
+const settings = ref<Configuration>({});
 const labelList = ref<string[]>([]);
+const configStore = useConfigStore();
 
 const saveSettings = () => {
-  console.log(settings.value);
   SettingApi.saveSettings(settings.value).then((response) => {
-    console.log(response);
     MessagePlugin.success('保存成功');
+    window.location.reload();
   }).catch((error) => {
     MessagePlugin.error('保存失败');
   });
@@ -30,11 +29,7 @@ const getLabels = (value: any = settings.value) => {
   }
 };
 const fetchSettings = () => {
-  SettingApi.getSettings().then((res) => {
-    settings.value = res.data.data;
-    getLabels();
-    console.log(settings.value);
-  });
+  settings.value = configStore.configurations;
 };
 
 onMounted(() => {

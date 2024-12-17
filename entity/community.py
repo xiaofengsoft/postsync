@@ -95,6 +95,7 @@ class Community(object):
         ) == len(self.site_storage_mark)
 
     async def login_before_func(self):
+        await self._abort_assets_route()
         await insert_anti_detection_script(self.page)
 
     async def login(
@@ -278,3 +279,18 @@ class Community(object):
                 await other_func()
             except second_error:
                 pass
+
+    async def _abort_assets_route(self):
+        """_summary_: 处理图片、样式、字体等资源请求
+
+        Args:
+            route (_type_): _description_
+            request (_type_): _description_
+        """
+        async def route_abort(route, request):
+            if request.resource_type in ["image", "stylesheet", "font"]:
+                await route.abort()
+            else:
+                await route.continue_()
+            return route
+        await self.page.route("**/*", route_abort)

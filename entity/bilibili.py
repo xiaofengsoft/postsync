@@ -28,6 +28,7 @@ class Bilibili(Community):
     }]
 
     async def login(self, *args, **kwargs):
+
         return await super().login(
             self.url,
             "https://passport.bilibili.com/x/passport-login/web/login",

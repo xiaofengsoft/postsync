@@ -27,10 +27,15 @@ const routes = [
         component: () => import("@/views/Upload.vue"),
       },
       {
-        path: "settings",
-        name: "settings",
-        component: () => import("@/views/Settings.vue"),
+        path: "config",
+        name: "config",
+        component: () => import("@/views/Config.vue"),
       },
+      {
+        path: "test",
+        name: "test",
+        component: () => import("@/views/Test.vue"),
+      }
     ],
   },
 ];

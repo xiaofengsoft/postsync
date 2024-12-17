@@ -2,8 +2,8 @@
 import { ref, onMounted, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import windowApi from '../apis/window';
-import { MessagePlugin } from 'tdesign-vue-next';
-
+import { useConfigStore } from '../store/config';
+const configStore = useConfigStore();
 const currentTab = ref('dashboard');
 const isMaximized = ref(false);
 const router = useRouter();
@@ -53,8 +53,8 @@ const closeWindow = () => {
 
 onMounted(() => {
   currentTab.value = route.name as string || 'dashboard';
-  console.log(currentTab.value);
 });
+
 </script>
 
 <template>
@@ -92,11 +92,17 @@ onMounted(() => {
             </template>
             上传文章
           </t-menu-item>
-          <t-menu-item value="settings">
+          <t-menu-item value="config">
             <template #icon>
               <t-icon name="setting" />
             </template>
             设置
+          </t-menu-item>
+          <t-menu-item v-if="(configStore.configurations.app as any).debug" value="test">
+            <template #icon>
+              <t-icon name="setting" />
+            </template>
+            测试
           </t-menu-item>
         </t-menu>
       </t-aside>

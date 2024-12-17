@@ -45,24 +45,7 @@ import path from 'path';
 const siteStore = useSiteStore();
 const postList = ref<Post[]>([]);
 
-const checkLoginState = async () => {
-  if (siteStore.siteStatuses && siteStore.siteStatuses.length > 0) {
-    return;
-  }
 
-  MessagePlugin.loading('检查登录状态...', 0);
-  const response = await dashboardApi.checkLogin();
-  if (response?.data?.data) {
-    const temp = response.data.data.map((site: any) => ({
-      name: site.name,
-      id: site.alias,
-      status: site.status?.toString().toLowerCase() === 'true' ? 1 : 0
-    }));
-    siteStore.$patch({ siteStatuses: temp });
-    MessagePlugin.success('登录状态检查完成');
-  }
-  MessagePlugin.closeAll();
-};
 
 const handleLoginOnce = async (siteStatus: SiteStatus) => {
   MessagePlugin.loading(`正在登录 ${siteStatus.name}...`, 0);
@@ -88,9 +71,6 @@ const fetchPostList = async () => {
     console.error('Error fetching post list:', error);
   }
 };
-onBeforeMount(() => {
-  checkLoginState();
-});
 onMounted(() => {
   fetchPostList();
 });

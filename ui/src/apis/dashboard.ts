@@ -12,14 +12,11 @@ export const getPostList = () => {
 export const deletePostFile = (path: string) => {
   return request.post("dashboard/post/delete", { path });
 };
-export const getLoginStates = () => {
-  return request.get("dashboard/states");
-}
+
 
 export default {
   checkLogin,
   loginOnce,
   getPostList,
   deletePostFile,
-  getLoginStates,
 };

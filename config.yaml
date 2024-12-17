@@ -1,5 +1,5 @@
 app:
-  debug: true
+  debug: false
   desc: 软件设置
 data:
   desc: 软件数据目录

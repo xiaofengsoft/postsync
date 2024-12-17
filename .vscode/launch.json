@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "debugpy",
+      "type": "python",
       "request": "launch",
       "name": "Launch Flask App",
       "program": "${workspaceFolder}/app.py",
@@ -14,10 +14,11 @@
       "console": "integratedTerminal"
     },
     {
-      "type": "pwa-node",
+      "type": "node", 
       "request": "launch",
       "name": "Launch npm run dev",
-      "command": "npm run dev", 
+      "program": "${workspaceFolder}/ui/node_modules/.bin/npm",
+      "args": ["run", "dev"],
       "cwd": "${workspaceFolder}/ui",
       "console": "integratedTerminal"
     }

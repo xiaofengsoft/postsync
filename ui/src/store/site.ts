@@ -6,12 +6,15 @@ export const useSiteStore = defineStore('site', {
     siteStatuses: [] as SiteStatus[],
   }),
   actions: {
+    isEmpty() {
+      return this.siteStatuses.length === 0;
+    },
     addSiteStatus(siteStatus: SiteStatus) {
       this.siteStatuses.push(siteStatus);
     },
-    updateSiteStatus(siteStatus: SiteStatus) {
-      this.siteStatuses = this.siteStatuses.map((item) =>
-        item.id === siteStatus.id ? siteStatus : item
+    updateSiteStatus(id: string, siteStatus: 0 | 1) {
+      this.siteStatuses = this.siteStatuses.map((item: SiteStatus) =>
+        item.id === id ? { ...item, status: siteStatus } : item
       );
     },
   },

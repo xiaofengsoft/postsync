@@ -18,6 +18,10 @@ dashboard_api = Blueprint('dashboard_api', __name__,
 async def check_login():
     browser, context, asp = await create_context(headless=True)
     tasks = []
+    if os.path.exists(config['data']['states']['path']):
+        with open(config['data']['states']['path'], 'r') as f:
+            states = json.load(f)
+        return Result.success(data=states)
 
     async def one_check_task(one_site):
         site_instance = get_community_instance(
@@ -41,16 +45,6 @@ async def check_login():
     await context.close()
     await asp.__aexit__()
     return Result.success(message='登录状态检查成功', data=results)
-
-
-@dashboard_api.route('/states', methods=['GET'])
-async def get_login_states():
-    if not os.path.exists(config['data']['states']['path']):
-        with open(config['data']['states']['path'], 'w') as f:
-            f.write('{}')
-    with open(config['data']['states']['path'], 'r') as f:
-        states = json.load(f)
-    return Result.success(data=states)
 
 
 @dashboard_api.route('/login/once', methods=['POST'])
