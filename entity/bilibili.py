@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
+import time
 import typing as t
 from common.apis import StorageType, Post
 from entity.community import Community
 import json
 import re
+from common.error import BrowserTimeoutError
 from utils.helper import wait_random_time
 from utils.data import insert_html_to_element
 from utils.data import delete_blank_tags
@@ -20,15 +22,9 @@ class Bilibili(Community):
     url_redirect_login = "https://passport.bilibili.com/login"
     url_post_manager = "https://member.bilibili.com/platform/upload-manager/opus"
     url = "https://www.bilibili.com/"
-    site_storage_mark: t.List[StorageType] = [{
-        "type": "cookie",
-        "domain": "bilibili.com",
-        "name": "DedeUserID",
-        "value": ""
-    }]
+    check_login_expect_str = r"passport.bilibili.com*"
 
     async def login(self, *args, **kwargs):
-
         return await super().login(
             self.url,
             "https://passport.bilibili.com/x/passport-login/web/login",

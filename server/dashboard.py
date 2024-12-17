@@ -16,9 +16,10 @@ dashboard_api = Blueprint('dashboard_api', __name__,
 
 @dashboard_api.route('/login/check', methods=['GET'])
 async def check_login():
-    browser, context, asp = await create_context(headless=True)
+    is_force = request.args.get('force') in ['1', 'true']
+    browser, context, asp = await create_context(headless=config['default']['headless'])
     tasks = []
-    if os.path.exists(config['data']['states']['path']):
+    if not is_force and os.path.exists(config['data']['states']['path']):
         with open(config['data']['states']['path'], 'r') as f:
             states = json.load(f)
         return Result.success(data=states)

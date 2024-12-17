@@ -1,3 +1,4 @@
+import re
 from bs4 import BeautifulSoup
 from playwright._impl._async_base import AsyncEventInfo
 from common.apis import Post, StorageData
@@ -23,10 +24,11 @@ class Community(object):
     """
     根社区类
     """
-    site_name: str = constant.UNKNOWN_SITE_NAME
-    site_alias: str = constant.UNKNOWN_SITE_ALIAS
-    site_storage_mark: t.List[StorageType]
-    url = ""
+    site_name: str = constant.UNKNOWN_SITE_NAME  # 站点名称
+    site_alias: str = constant.UNKNOWN_SITE_ALIAS  # 站点别名
+    url_post_new: str = ""  # 新建文章链接
+    check_login_expect_str: t.Pattern | str = ""  # 检测登录跳转URL
+    url = ""  # 站点链接
 
     def __init__(self, browser: "Browser", context: "BrowserContext", **kwargs):
         """
@@ -43,59 +45,25 @@ class Community(object):
             self.context.new_page()
         )
 
-    async def check_login_state(self) -> bool:
+    async def check_login_state(self, abort_assets: t.List[str] = [
+        "image", "font", "media"
+    ], check_login_expect_str: str | t.Pattern = None) -> bool:
         """
         检查登录状态
         """
-        await self.page.goto(self.url)
-        if not config['data']['storage']['path']:
-            raise ConfigNotConfiguredError("请设置存储路径")
-        file_path = get_path(config['data']['storage']['path'])
-        with open(file_path, 'r', encoding=constant.FILE_ENCODING) as f:
-            storage_data: StorageData = json.loads(f.read())
-        if storage_data == {} or storage_data is None:
+        check_login_expect_str = check_login_expect_str or self.check_login_expect_str
+        await self._abort_assets_route(abort_assets)
+        try:
+            async with self.page.expect_navigation(
+                url=re.compile(check_login_expect_str),
+            ):
+                await self.page.goto(self.url_post_new)
             return False
-        cookies_now = await self.context.cookies()
-        locals_now: dict = await get_page_local_storage(self.page)
-        for mark in self.site_storage_mark:
-            if mark['type'] == 'cookie':
-                if not any(
-                    cookie for cookie in cookies_now
-                    if mark['domain'] in cookie['domain'] and mark['name'] in cookie['name']
-                        and (mark['value'] is None or mark['value'] in cookie['value'])):
-                    # 这里检测到了未登录状态，刷新Storage
-                    await self.context.storage_state(path=get_path(config['data']['storage']['path']))
-                    format_json_file(config['data']['storage']['path'])
-                    return False
-            if mark['type'] == 'local':
-                if not any(
-                        1 for local_name, local_value in locals_now.items()
-                        if mark['name'] in local_name and (
-                            mark['value'] is None or mark['value'] in local_value
-                        )):
-                    # 这里检测到了未登录状态，刷新Storage
-                    await self.context.storage_state(path=get_path(config['data']['storage']['path']))
-                    format_json_file(config['data']['storage']['path'])
-                    return False
-        return sum(
-            1
-            for mark in self.site_storage_mark
-            if (mark['type'] == 'local' and any(
-                origin for origin in storage_data['origins']
-                if mark['domain'] in origin['origin'] and any(
-                    local_storage for local_storage in origin['localStorage']
-                    if mark['name'] in local_storage['name'] and (
-                        mark['value'] is None or mark['value'] in local_storage['value'])
-                )
-            )) or (mark['type'] != 'local' and any(
-                cookie for cookie in storage_data['cookies']
-                if mark['domain'] in cookie['domain'] and mark['name'] in cookie['name'] and (
-                    mark['value'] is None or mark['value'] in cookie['value'])
-            ))
-        ) == len(self.site_storage_mark)
+        except BrowserTimeoutError as e:
+            return True
 
     async def login_before_func(self):
-        await self._abort_assets_route()
+        await self._abort_assets_route(['media', 'font'])
         await insert_anti_detection_script(self.page)
 
     async def login(
@@ -280,15 +248,16 @@ class Community(object):
             except second_error:
                 pass
 
-    async def _abort_assets_route(self):
+    async def _abort_assets_route(self, abort_assets: t.List[str] = [
+        "image", "stylesheet", "font", "media"
+    ]):
         """_summary_: 处理图片、样式、字体等资源请求
 
         Args:
-            route (_type_): _description_
-            request (_type_): _description_
+            abort_assets (t.List[str], optional): 需要abort的资源类型. Defaults to ["image", "stylesheet", "font", "media"].
         """
         async def route_abort(route, request):
-            if request.resource_type in ["image", "stylesheet", "font"]:
+            if request.resource_type in abort_assets:
                 await route.abort()
             else:
                 await route.continue_()

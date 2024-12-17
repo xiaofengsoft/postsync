@@ -1,6 +1,9 @@
 import request from "../utils/request";
 
-export const checkLogin = () => {
+export const checkLogin = (is_force: boolean = false) => {
+  if (is_force) {
+    return request.get("dashboard/login/check?force=true");
+  }
   return request.get("dashboard/login/check");
 };
 export const loginOnce = (name: string) => {

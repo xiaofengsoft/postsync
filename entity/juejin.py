@@ -13,21 +13,17 @@ class Juejin(Community):
 
     site_name = "稀土掘金"
     site_alias = "juejin"
-    site_storage_mark: t.List[StorageType] = [{
-        "type": "local",
-        "domain": "juejin.cn",
-        "name": "lastLoginParams",
-        "value": ""
-    }]
     url_post_new = "https://juejin.cn/editor/drafts/new"
     url_redirect_login = "https://juejin.cn/login"
     login_url = "https://juejin.cn/login"
     url = "https://www.juejin.cn"
+    check_login_expect_str = r"juejin.cn/login*"
 
     async def login(self, *args, **kwargs):
         return await super().login(
             self.login_url,
-            re.compile(r"^https?:\/\/api\.juejin\.cn\/user_api\/v1\/sys\/token"),
+            re.compile(
+                r"^https?:\/\/api\.juejin\.cn\/user_api\/v1\/sys\/token"),
             lambda login_data: 0 == 0)
 
     async def upload(self, post: Post) -> t.AnyStr:
@@ -66,7 +62,8 @@ class Juejin(Community):
 
         # 选择标签
         await self.page.get_by_text("请搜索添加标签").click()
-        tag_input = self.page.get_by_role("banner").get_by_role("textbox").nth(1)
+        tag_input = self.page.get_by_role(
+            "banner").get_by_role("textbox").nth(1)
 
         # 逐个搜索添加标签
 
@@ -92,7 +89,8 @@ class Juejin(Community):
         # 点击空白处防止遮挡
         # 选择专栏
         column_selector = self.page.locator(".byte-select-dropdown").last
-        column_input = self.page.get_by_role("banner").get_by_role("textbox").nth(2)
+        column_input = self.page.get_by_role(
+            "banner").get_by_role("textbox").nth(2)
 
         async def inner_upload_column(column: str):
             await column_input.fill(column)
@@ -107,7 +105,8 @@ class Juejin(Community):
         # 选择话题
         if self.post['topic']:
             topic_selector = self.page.locator(".topic-select-dropdown")
-            topic_input = self.page.get_by_role("banner").get_by_role("textbox").nth(3)
+            topic_input = self.page.get_by_role(
+                "banner").get_by_role("textbox").nth(3)
             await topic_input.fill(self.post['topic'])
             await topic_selector.locator("span", has_text=re.compile(self.post['topic'], re.IGNORECASE)).first.click()
         # 点击发布按钮

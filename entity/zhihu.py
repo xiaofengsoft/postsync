@@ -15,18 +15,8 @@ class Zhihu(Community):
     url_redirect_login = "https://www.zhihu.com/signin"
     site_name = "知乎"
     site_alias = "zhihu"
-    site_storage_mark: t.List[StorageType] = [{
-        "type": "local",
-        "domain": "www.zhihu.com",
-        "name": "uhiuhvk_wrnhq",
-        "value": ""
-    }, {
-        "type": "cookie",
-        "domain": "zhihu.com",
-        "name": "z_c0",
-        "value": ""
-    }]
     url = "https://www.zhihu.com"
+    check_login_expect_str = r"zhihu.com/signin"
 
     def __init__(self, browser: "Browser", context: "BrowserContext", **kwargs):
         super().__init__(browser, context, **kwargs)
@@ -40,7 +30,7 @@ class Zhihu(Community):
             lambda login_data: 0 == 0
         )
 
-    async def upload(self, post : Post) -> t.AnyStr:
+    async def upload(self, post: Post) -> t.AnyStr:
         await self.before_upload(post)
         await self.page.goto(self.url_post_new)
         # 上传图片

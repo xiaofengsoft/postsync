@@ -13,14 +13,12 @@ class Wechat(Community):
     url_post_new = "https://mp.weixin.qq.com/"
     site_name = "公众号"
     site_alias = "wechat"
-    site_storage_mark: t.List[StorageType] = [{
-        "type": "cookie",
-        "domain": "mp.weixin.qq.com",
-        "name": "slave_sid",
-        "value": "",
-    }]
     url = "https://mp.weixin.qq.com/"
     login_url = "https://mp.weixin.qq.com/"
+
+    async def check_login_state(self, **kwargs):
+        await self._abort_assets_route(['image', 'font', 'media'])
+        return await self.page.locator("text=请重新登录").count() > 0
 
     def __init__(self, browser: "Browser", context: "BrowserContext", **kwargs):
         super().__init__(browser, context, **kwargs)
@@ -29,11 +27,12 @@ class Wechat(Community):
     async def login(self, *args, **kwargs) -> bool:
         return await super().login(
             self.login_url,
-            re.compile(r"^https?:\/\/mp\.weixin\.qq\.com\/cgi-bin\/bizlogin\?action=login"),
+            re.compile(
+                r"^https?:\/\/mp\.weixin\.qq\.com\/cgi-bin\/bizlogin\?action=login"),
             lambda login_data: 0 == 0,
         )
 
-    async def upload(self, post:Post) -> t.AnyStr:
+    async def upload(self, post: Post) -> t.AnyStr:
         await self.before_upload(post)
         await self.page.goto(Wechat.url_post_new)
         async with self.context.expect_page() as new_page:

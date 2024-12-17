@@ -15,6 +15,9 @@
         </t-col>
         <t-col :span="6">
           <t-card title="登录状态">
+            <template #actions>
+              <t-button theme="default" variant="text" @click="refreshSiteStatuses">刷新</t-button>
+            </template>
             <template #content>
               <t-list v-if="siteStore.siteStatuses.length > 0" split size="large" :scroll="{ type: 'virtual' }"
                 class="list">
@@ -45,13 +48,27 @@ import path from 'path';
 const siteStore = useSiteStore();
 const postList = ref<Post[]>([]);
 
-
+const refreshSiteStatuses = async () => {
+  MessagePlugin.loading('检查登录状态，可能需要1-30s...', 0);
+  const response = await dashboardApi.checkLogin(true);
+  if (response?.data?.data) {
+    const temp = response.data.data.map((site: any) => ({
+      name: site.name,
+      id: site.alias,
+      status: site.status?.toString().toLowerCase() === 'true' ? 1 : 0
+    }));
+    siteStore.$patch({ siteStatuses: temp });
+    MessagePlugin.success('登录状态检查完成');
+  }
+  MessagePlugin.closeAll();
+};
 
 const handleLoginOnce = async (siteStatus: SiteStatus) => {
   MessagePlugin.loading(`正在登录 ${siteStatus.name}...`, 0);
   try {
     const response = await dashboardApi.loginOnce(siteStatus.id);
     if (response.data.code === 0) {
+      siteStore.updateSiteStatus(siteStatus.id, 1);
       MessagePlugin.success('登录成功');
     } else {
       MessagePlugin.error('登录失败');

@@ -15,12 +15,7 @@ class Cnblog(Community):
     site_alias = 'cnblog'
     login_url = 'https://account.cnblogs.com/signin'
     url = 'https://www.cnblogs.com/'
-    site_storage_mark: t.List[StorageType] = [{
-        'type': 'cookie',
-        'domain': 'cnblogs.com',
-        'name': 'XSRF-TOKEN',
-        'value': ''
-    }]
+    check_login_expect_str = r'account.cnblogs.com*'
 
     async def login(self, *args, **kwargs):
         return await super().login(

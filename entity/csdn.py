@@ -16,14 +16,9 @@ class Csdn(Community):
     url_post_new = 'https://editor.csdn.net/md/'
     url_redirect_login = 'https://passport.csdn.net/login'
     site_alias = 'csdn'
-    site_storage_mark: t.List[StorageType] = [{
-        "type": "cookie",
-        "domain": "csdn.net",
-        "name": "UserToken",
-        "value": ""
-    }]
     url = "https://www.csdn.net/"
     login_url = "https://passport.csdn.net/login?code=applets"
+    check_login_expect_str = r"passport.csdn.net/login*"
 
     async def login(self, *args, **kwargs):
         return await super().login(

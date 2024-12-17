@@ -16,16 +16,11 @@ from utils.file import get_file_name_without_ext
 class Wordpress(Community):
     site_name = "Wordpress"
     site_alias = "wordpress"
-    site_storage_mark: t.List[StorageType] = [{
-        "type": "cookie",
-        "name": "wordpress_logged_in",
-        "domain": get_domain(config['wordpress']['url']),
-        "value": ""
-    }]
     url = config['wordpress']['url']
     url_post_new = config['wordpress']['url'] + "/wp-admin/post-new.php"
     login_url = config['wordpress']['url'] + "/wp-login.php"
     url_redirect_login = config['wordpress']['url'] + "/user"
+    check_login_expect_str = rf"{config['wordpress']['domain']}/user-sign*"
 
     def __init__(self, browser: "Browser", context: "BrowserContext", **kwargs):
         super().__init__(browser, context, **kwargs)
