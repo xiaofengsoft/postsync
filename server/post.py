@@ -41,13 +41,15 @@ def save_file():
     data = json.loads(request.get_data().decode('utf-8'))
     if not data.get('content') or not data.get('title'):
         return Result.error(message='标题或者内容不能为空')
-    file_path = os.path.join(get_path(config['data']['posts']['path']), data['title']+'.'+data['type'])
+    file_path = os.path.join(
+        get_path(config['data']['posts']['path']), data['title']+'.'+data['type'])
     # 创建文件夹
     if not os.path.exists(os.path.dirname(file_path)):
         os.makedirs(os.path.dirname(file_path))
     with open(file_path, 'w', encoding='utf-8') as f:
         # 找到所有Localhost:54188的链接替换为真实链接
-        content = data['content'].replace(c.APP_URL+'/temp', config['data']['temp']['path'])
+        content = data['content'].replace(
+            c.APP_URL+'/temp', config['data']['temp']['path'])
         f.write(content)
     return Result.success(message='保存成功', data={'path': file_path})
 
@@ -95,6 +97,3 @@ def extract_post():
         'digest': digest,
         'tags': tags
     }, message='提取成功')
-
-
-

@@ -4,6 +4,7 @@ import postApi from "../apis/post";
 import { MessagePlugin } from 'tdesign-vue-next';
 import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { DialogPlugin } from 'tdesign-vue-next';
 const siteAlias = ref([
   { label: '全选', checkAll: true },
   { label: '稀土掘金', value: 'juejin' },
@@ -11,8 +12,7 @@ const siteAlias = ref([
   { label: '知乎', value: 'zhihu' },
   { label: '博客园', value: 'cnblog' },
   { label: 'Bilibili', value: 'bilibili' },
-  { label: '微信公众号', value: 'wechat' },
-  { label: 'WordPress', value: 'wordpress' }
+  { label: '微信公众号', value: 'wechat' }
 ]);
 
 const post = ref({
@@ -53,11 +53,23 @@ const chooseFileCover = () => {
 const uploadPost = () => {
   console.log(post.value);
   postApi.uploadPost(post.value).then(res => {
-    console.log(res);
     if (res.data.code == 0) {
-      MessagePlugin.success({ content: '上传成功' });
+      const postedList = (res.data.data as Array<any>).map((item) => {
+        return `${item[0]}：${item[1]}`;
+      }).join('\n');
+      DialogPlugin.confirm({
+        header: '提示',
+        body: postedList,
+        onConfirm: () => {
+        }
+      })
     } else {
-      MessagePlugin.error({ content: res.data.message });
+      DialogPlugin.confirm({
+        header: '提示',
+        body: res.data.message,
+        onConfirm: () => {
+        }
+      })
     }
   });
 };
@@ -70,8 +82,6 @@ const extractPost = () => {
       post.value.tags = res.data.data.tags
       post.value.digest = res.data.data.digest
     }
-
-    console.log(res)
   })
 }
 </script>
@@ -112,8 +122,7 @@ const extractPost = () => {
         <t-tagInput clearable v-model="post.columns" />
       </t-form-item>
 
-      <t-form-item label=" 上传网站" name="site"
-        initialData="['juejin', 'csdn', 'zhihu', 'cnblog', 'bilibili', 'wechat', 'wordpress']">
+      <t-form-item label=" 上传网站" name="site" initialData="['juejin', 'csdn', 'zhihu', 'cnblog', 'bilibili', 'wechat']">
         <t-select v-model="post.sites" :options="siteAlias" placeholder="请选择要上传的网站" multiple />
       </t-form-item>
       <t-button @click="uploadPost" style="margin-top: 20px;background-color: var(--td-success-color);"

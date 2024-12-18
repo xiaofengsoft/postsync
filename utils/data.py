@@ -64,7 +64,8 @@ def convert_html_img_path_to_abs_path(html_file_path: str, is_written: bool = Tr
     for img_tag in img_tags:
         img_src = img_tag.get('src')
         if not img_src.startswith('http'):
-            img_tag['src'] = os.path.join(os.path.dirname(html_file_path), img_src)
+            img_tag['src'] = os.path.join(
+                os.path.dirname(html_file_path), img_src)
     if is_written:
         with open(html_file_path, 'w', encoding='utf-8') as f:
             f.write(str(soup))
@@ -101,7 +102,8 @@ def convert_md_img_path_to_abs_path(md_file_path: str, is_written: bool = True):
     for img_path in img_paths:
         if not img_path.startswith('http'):
             if not os.path.isabs(img_path):
-                md_content = md_content.replace(img_path, os.path.join(os.path.dirname(md_file_path), img_path))
+                md_content = md_content.replace(img_path, os.path.join(
+                    os.path.dirname(md_file_path), img_path))
     if is_written:
         with open(md_file_path, 'w', encoding=c.FILE_ENCODING) as f:
             f.write(md_content)
@@ -148,7 +150,8 @@ def convert_html_content_images_base64_to_local(html_content: str, img_dir_path:
     :return: 转换后的HTML内容
     """
     # 将base64编码的图片转化为本地图片
-    base64_strings = re.findall(r'<img.*?src="data:image\/png;base64,(.*?)"', html_content, re.DOTALL)
+    base64_strings = re.findall(
+        r'<img.*?src="data:image\/png;base64,(.*?)"', html_content, re.DOTALL)
     if base64_strings:
         for index, base64_string in enumerate(base64_strings):
             img_dir_path = os.path.join(img_dir_path, 'imgs')
@@ -156,7 +159,8 @@ def convert_html_content_images_base64_to_local(html_content: str, img_dir_path:
                 os.makedirs(img_dir_path)
             img_path = img_dir_path + f"{os.path.sep}img{index}.png"
             convert_base64_to_local_img(base64_string, img_path, img_format)
-            html_content = html_content.replace(f'src="data:image/png;base64,{base64_string}"', f'src="{img_path}"')
+            html_content = html_content.replace(
+                f'src="data:image/png;base64,{base64_string}"', f'src="{img_path}"')
             return html_content
 
 
@@ -185,6 +189,7 @@ async def insert_html_content_to_frame(page: Page, frame_selector: str, content_
     :param html_content:  HTML内容
     :return:
     """
+    await page.wait_for_selector(frame_selector)
     await page.evaluate("""
     ([frame_selector,content_selector,html_content]) => {
     const frameElement = document.querySelector(frame_selector);
@@ -237,4 +242,3 @@ async def on_click_by_selector(page: Page, selector: str):
             element.click();
         }
         """, [selector])
-

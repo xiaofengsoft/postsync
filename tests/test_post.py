@@ -32,9 +32,7 @@ class TestPost:
     @pytest.mark.parametrize(
         'file,category,columns,tags,sites,cover_img',
         [
-            # ('tests/assets/posts/PostSync介绍.md', 'Python', 'Python文章', 'python blog 同步 自动化',
-            #  'wordpress bilibili zhihu csdn juejin cnblog wechat', 'tests/assets/imgs/logo.png'),
-            ('tests/assets/posts/PostSync介绍.docx','Python','解决问题','python adguard',
+            ('tests/assets/posts/PostSync介绍.docx', 'Python', '解决问题', 'python adguard',
              'bilibili', 'tests/assets/imgs/wp.png'),
             # (r'"C:\Users\xiaof\Desktop\module collections has no attribute Hashable PyDocx 库报错.md"', 'Python', '解决',
             #  'PyDocx Hash', 'cnblog', r'')
@@ -45,7 +43,8 @@ class TestPost:
         单次测试所有参数的发布
         :return:
         """
-        order = f'python app.py -f {file} -s {sites} -ca {category} -co {cover_img} -cl {columns} -t {tags} '
+        order = f'python app.py -f {file} -s {sites} -ca {
+            category} -co {cover_img} -cl {columns} -t {tags} '
         print(order)
         run_command(order)
 

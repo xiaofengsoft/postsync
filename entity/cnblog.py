@@ -80,7 +80,7 @@ class Cnblog(Community):
             file_chooser = await fc_info.value
             await file_chooser.set_files(self.post['cover'])
         wait_random_time()
-        await self.page.get_by_role("button", name="确定").first.click()
+        await self.page.get_by_role("button", name="取消").last.click()
         # 处理摘要
         await self.page.locator("#summary").fill(self.post['digest'])
 

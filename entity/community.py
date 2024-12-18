@@ -95,14 +95,14 @@ class Community(object):
             try:
                 data = await data.body()
                 data = json.loads(data.decode(encoding=constant.FILE_ENCODING))
-            except BrowserError:
-                # 说明没有返回信息
+            except json.JSONDecodeError as e:
+                return False
+            except BrowserError as e:
                 pass
             if code in constant.HTTP_SUCCESS_STATUS_CODES and check_func(data):
                 await self.context.storage_state(path=get_path(config['data']['storage']['path']))
                 format_json_file(config['data']['storage']['path'])
                 await self.page.close()
-                print(f"{self.site_name}登录成功，已关闭{self.site_name}页面")
                 return True
         return False
 
@@ -115,10 +115,12 @@ class Community(object):
             int(config['default']['community'][self.site_alias]['timeout'])
             or int(config['default']['timeout'])
         )
-        self.post['columns'] = self.post['columns'] or config['default']["community"][self.site_alias]['columns']
-        self.post['tags'] = self.post['tags'] or config['default']["community"][self.site_alias]['tags']
-        self.post['category'] = self.post['category'] or config['default']["community"][self.site_alias]['category']
-        self.post['cover'] = self.post['cover'] or config['default']["community"][self.site_alias]['cover']
+        self.post['columns'] = self.post['columns'] or config['default']["community"][self.site_alias]['columns'] or config['default']['columns']
+        self.post['tags'] = self.post['tags'] or config['default']["community"][self.site_alias]['tags'] or config['default']['tags']
+        self.post['category'] = self.post['category'] or config['default']["community"][self.site_alias]['category'] or config['default'][
+            'category']
+        self.post['cover'] = self.post['cover'] or config['default']["community"][self.site_alias]['cover'] or config['default']['cover']
+        await self._abort_assets_route(['image', 'font', 'media'])
 
     async def upload(self, post: Post) -> t.AnyStr:
         """

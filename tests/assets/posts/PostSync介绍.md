@@ -10,7 +10,7 @@
 
 ### 使用
 
-打开浏览器，登录各个平台的账号，掘金、CSDN、知乎、公众号、哔哩哔哩、博客园、个人WordPress
+打开浏览器，登录各个平台的账号，掘金、CSDN、知乎、公众号、哔哩哔哩、博客园
 
 打开config.yaml文件，配置你的浏览器信息以及浏览器用户数据目录
 
@@ -20,11 +20,11 @@
 
 ### 开发
 
-####  _配置debug_
+#### _配置debug_
 
 打开config.yaml文件,将app/debug设置为True
 
-####  _打包_
+#### _打包_
 
 pyinstaller PostSync.spec  
 
@@ -40,7 +40,7 @@ pyinstaller PostSync.spec
 
 ### 功能
 
-自动同步文章到掘金、CSDN、知乎、公众号、哔哩哔哩、博客园、个人WordPress平台并返回生成文章链接
+自动同步文章到掘金、CSDN、知乎、公众号、哔哩哔哩、博客园平台并返回生成文章链接
 
 支持多协程，异步上传文章
 
@@ -105,4 +105,3 @@ nest-asyncio
 pyinstaller
 
 customtkinter
-

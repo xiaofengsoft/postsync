@@ -10,12 +10,24 @@ import { defineProps } from 'vue';
 import { SiteStatus } from '../types/site';
 import dashboardApi from '../apis/dashboard';
 import { useSiteStore } from '../store/site';
+import { MessagePlugin } from 'tdesign-vue-next';
 const props = defineProps<{ item: SiteStatus }>();
 const siteStore = useSiteStore();
-const handleLogin = () => {
-  dashboardApi.loginOnce(props.item.id).then(() => {
-    siteStore.updateSiteStatus(props.item.id, 1);
-  })
+const handleLogin = async () => {
+  MessagePlugin.loading(`正在登录 ${props.item.name}...`, 0);
+  try {
+    const response = await dashboardApi.loginOnce(props.item.id);
+    console.log(response.data);
+    if (response.data.code === 0) {
+      siteStore.updateSiteStatus(props.item.id, 1);
+      MessagePlugin.success('登录成功');
+    } else {
+      MessagePlugin.error('登录失败');
+    }
+  } catch {
+    MessagePlugin.error('登录失败');
+  }
+  MessagePlugin.closeAll();
 };
 </script>
 

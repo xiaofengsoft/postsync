@@ -1,5 +1,5 @@
 app:
-  debug: false
+  debug: true
   desc: 软件设置
 data:
   desc: 软件数据目录
@@ -27,13 +27,14 @@ data:
     path: D:\Documents\PostSync\webview
 default:
   author: 张一风
-  category: null
-  columns: []
+  category: Python
+  columns:
+  - Python
   community:
     bilibili:
       category: 科技
       columns:
-      - 解决问题
+      - Python
       cover: null
       desc: 哔哩哔哩
       tags: []

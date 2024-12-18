@@ -37,14 +37,6 @@ class ProcessCore(object):
         :return: 返回处理后的参数
         """
         contents: PostContents = {}
-        try:
-            self.args.topic = config['default']['topic'] if not self.args.topic else self.args.topic
-            self.args.category = config['default']['category'] if not self.args.category else self.args.category
-            self.args.cover = config['default']['cover'] if not self.args.cover else self.args.cover
-            self.args.tags = config['default']['tags'] if not self.args.tags else self.args.tags
-            self.args.columns = config['default']['columns'] if not self.args.columns else self.args.columns
-        except KeyError as e:
-            raise ConfigurationLackError('缺少配置项 {}'.format(e))
         if self.args.sites is None or self.args.sites == [] or len(self.args.sites) == 0:
             self.args.sites = config['default']['community'].keys()
         for site in self.args.sites:
@@ -54,7 +46,8 @@ class ProcessCore(object):
             contents['html'] = f.read()
         with open(self.file_paths['md'], 'r', encoding='utf-8') as f:
             contents['md'] = f.read()
-        digest = self.args.digest or contents['md'][0:config['default']['digest']['length']]
+        digest = self.args.digest or contents['md'][0:
+                                                    config['default']['digest']['length']]
         return {
             'title': self.args.title,
             'paths': self.file_paths,
@@ -101,14 +94,15 @@ class ProcessCore(object):
         """
         异步上传文件
         """
-        self.browser, self.context,asp = await utils.browser.create_context(headless=config['default']['headless'])
+        self.browser, self.context, asp = await utils.browser.create_context(headless=config['default']['headless'])
         # 读取存储文件
         tasks = []
         for site in self.post['sites']:
             task = self.upload_post_one_site(site)
             tasks.append(task)
         results = await asyncio.gather(*tasks, return_exceptions=config['app']['debug'])
-        exceptions = [result for result in results if isinstance(result, Exception)]
+        exceptions = [
+            result for result in results if isinstance(result, Exception)]
         if exceptions:
             raise BrowserExceptionGroup(exceptions)
         await self.context.close()
@@ -122,7 +116,8 @@ class ProcessCore(object):
         如果已经有实例化的社区类，则直接调用实例化的类的方法上传
         :return: 上传的文本链接
         """
-        site_instance = utils.browser.get_community_instance(site, self.browser, self.context)
+        site_instance = utils.browser.get_community_instance(
+            site, self.browser, self.context)
         try:
             post_new_url = await site_instance.upload(self.post)
         except BrowserError:
@@ -132,4 +127,3 @@ class ProcessCore(object):
                 return site_instance.site_name, "发生错误"
         else:
             return site_instance.site_name, post_new_url
-

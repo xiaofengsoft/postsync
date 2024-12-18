@@ -60,6 +60,16 @@ async def login_once():
         await asp.__aexit__()
         return Result.error(message=str(e))
     await asp.__aexit__()
+    if not ret:
+        return Result.error(message='登录失败')
+    with open(config['data']['states']['path'], 'r') as f:
+        states = json.load(f)
+    for state in states:
+        if state['alias'] == site:
+            state['status'] = 'true' if ret else 'false'
+            break
+    with open(config['data']['states']['path'], 'w') as f:
+        json.dump(states, f)
     return Result.success(message='登录成功', data=ret)
 
 

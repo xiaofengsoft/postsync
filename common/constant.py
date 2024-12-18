@@ -30,8 +30,7 @@ SITE_ALIAS = (
     "zhihu",
     "wechat",
     "csdn",
-    "cnblog",
-    "wordpress"
+    "cnblog"
 )
 HTML_EXTENSIONS = (
     'html',

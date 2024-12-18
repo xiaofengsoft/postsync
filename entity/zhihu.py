@@ -52,7 +52,7 @@ class Zhihu(Community):
         data = json.loads(resp_body.decode('utf-8'))
         await self.page.goto("https://zhuanlan.zhihu.com/p/" + str(data['id']) + "/edit")
         # 输入标题
-        await self.page.get_by_placeholder("请输入标题（最多 100 个字）").fill(self.post['title'])
+        await self.page.get_by_placeholder("请输入标题（最多 100 个字）").type(self.post['title'])
         # 上传封面
         async with self.page.expect_file_chooser() as fc_info:
             await self.page.locator("label").filter(has_text="添加文章封面").click()
@@ -85,11 +85,12 @@ class Zhihu(Community):
             inner_upload_tag
         )
 
-        # 选择专栏
-
         async def inner_upload_column(column):
-            await self.page.locator("#Popover22-toggle").click()
-            await self.page.locator(f"//button[contains(text(),'{column}')]").first.click()
+            await self.page.locator("#root > div > main > div > div.WriteIndexLayout-main.WriteIndex.css-1losy9j > div.css-1so3nbl > div.PostEditor-wrapper > div.css-13mrzb0 > div:nth-child(6) > div > div.Popover.ddLajxN_Q0AuobBZjX9m.css-dlnfsc").click()
+            # 构建正则表达式
+            pattern = re.compile(f".*{re.escape(column)}.*", re.IGNORECASE)
+            # 使用正则表达式匹配
+            await self.page.get_by_role("option", name=pattern).click()
 
         await self.page.locator("label").filter(has_text=re.compile(r"^发布到专栏$")).click()
         await self.double_try_first_index(
@@ -100,9 +101,12 @@ class Zhihu(Community):
         esc_alert = self.page.locator(
             "body > div:nth-child(31) > div > div > div > div.Modal.Modal--fullPage.DraftHistoryModal > button"
         )
+
         wait_random_time()
         if await esc_alert.is_visible():
             await esc_alert.click()
+
+        await self.page.get_by_placeholder("请输入标题（最多 100 个字）").type(self.post['title'])
 
         # 发布文章
         await self.page.locator(

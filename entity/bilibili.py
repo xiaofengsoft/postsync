@@ -148,13 +148,13 @@ class Bilibili(Community):
         await self.page.locator(
             "#app > div > div.web-editor__wrap > div.b-read-editor > div.b-read-editor__settings.mt-m > div > "
             "div:nth-child(7) > div.bre-settings__sec__ctn > div.bre-settings__list > button").click()
+
         column_zone = self.page.locator(
-            "body > div.bre-modal.bre-list-modal > div > div.bre-modal__content > div.bre-list-modal__content.mt-m > "
-            "div.bre-radio-group.bre-list-modal__items"
-        )
+            "body > div.bre-modal.bre-list-modal > div")
 
         async def inner_upload_column(column: str):
-            await column_zone.locator("div", has_text=re.compile(column)).first.click()
+            pattern = re.compile(f".*{re.escape(column)}.*", re.IGNORECASE)
+            await column_zone.get_by_text(text=pattern).first.click()
 
         await self.double_try_first_index(
             'columns',
