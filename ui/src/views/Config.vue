@@ -12,8 +12,7 @@ const configStore = useConfigStore();
 
 const saveSettings = () => {
   SettingApi.saveSettings(settings.value).then((response) => {
-    MessagePlugin.success('保存成功');
-    window.location.reload();
+    MessagePlugin.success('保存成功，重启软件后生效');
   }).catch((error) => {
     MessagePlugin.error('保存失败');
   });
