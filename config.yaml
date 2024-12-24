@@ -73,14 +73,6 @@ default:
       tags: []
       timeout: 20000
       topic: null
-    wordpress:
-      category: null
-      columns: []
-      cover: null
-      desc: WordPress
-      tags: []
-      timeout: 40000
-      topic: null
     zhihu:
       category: null
       columns: []
@@ -108,8 +100,3 @@ view:
   desc: 软件视图设置
   height: 860
   width: 1440
-wordpress:
-  desc: WordPress设置
-  domain: yunyicloud.cn
-  enable: true
-  url: https://yunyicloud.cn

@@ -113,7 +113,7 @@ onMounted(() => {
           </keep-alive>
         </t-content>
         <t-footer class="layout-footer">
-          Copyright @ 2024-{{ new Date().getFullYear() }} XFS. All Rights
+          Copyright @ 2024-{{ new Date().getFullYear() }} 张一风. All Rights
           Reserved</t-footer>
       </t-layout>
     </t-layout>

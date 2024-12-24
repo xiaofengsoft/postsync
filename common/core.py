@@ -121,9 +121,6 @@ class ProcessCore(object):
         try:
             post_new_url = await site_instance.upload(self.post)
         except BrowserError:
-            if config['app']['debug']:
-                raise
-            else:
-                return site_instance.site_name, "发生错误"
+            return site_instance.site_name, "发生错误"
         else:
             return site_instance.site_name, post_new_url

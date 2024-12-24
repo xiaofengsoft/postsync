@@ -57,10 +57,11 @@ const uploadPost = () => {
       const postedList = (res.data.data as Array<any>).map((item) => {
         return `${item[0]}：${item[1]}`;
       }).join('\n');
-      DialogPlugin.confirm({
+      const dialogPlugin = DialogPlugin.confirm({
         header: '提示',
         body: postedList,
         onConfirm: () => {
+          dialogPlugin.hide();
         }
       })
     } else {

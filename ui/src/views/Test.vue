@@ -6,6 +6,7 @@
 </template>
 
 <script setup>
+import { DialogPlugin } from 'tdesign-vue-next';
 import { onMounted } from 'vue';
 
 function readFile() {
@@ -32,5 +33,13 @@ function readFile() {
 }
 onMounted(() => {
   document.querySelector("#avatar").addEventListener("change", readFile);
+
+  const dialogP = DialogPlugin.confirm({
+    header: '测试',
+    body: '测试内容',
+    onConfirm: () => {
+      dialogP.hide();
+    }
+  })
 })
 </script>

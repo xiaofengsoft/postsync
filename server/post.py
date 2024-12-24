@@ -71,6 +71,12 @@ def upload_post():
             process_core.results.message
         )
     except BaseException as e:
+        if process_core.results.data is not None and len(process_core.results.data) > 0:
+            print(e)
+            return Result.success(
+                [one_res for one_res in process_core.results.data],
+                process_core.results.message
+            )
         if 'True' == str(config['app']['debug']):
             raise e
         else:

@@ -30,6 +30,8 @@ const getLabels = (value: any = settings.value) => {
 };
 const fetchSettings = () => {
   settings.value = configStore.configurations;
+  labelList.value = [];
+  getLabels(settings.value);
 };
 
 onMounted(() => {

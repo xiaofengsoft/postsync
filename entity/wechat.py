@@ -19,7 +19,8 @@ class Wechat(Community):
     async def check_login_state(self, **kwargs):
         await self._abort_assets_route(['image', 'font', 'media'])
         await self.page.goto(self.url_post_new)
-        return await self.page.get_by_text("请重新登录").count() == 0
+        return (await self.page.get_by_text("请重新登录").count() == 0
+                and await self.page.get_by_text("使用账号登录").count() == 0)
 
     def __init__(self, browser: "Browser", context: "BrowserContext", **kwargs):
         super().__init__(browser, context, **kwargs)

@@ -10,7 +10,7 @@
 
 ### 介绍📖
 
-PostSync是一款开源的跨平台文章同步工具，可以同步你的文章到多个平台。      
+PostSync是一款开源的跨平台文章同步工具，可以同步你的文章到多个平台。
 一次编写，多处同步，同时上传标签，分类，栏目，封面等参数。  
 
 ### 使用🎭
@@ -40,6 +40,7 @@ PostSync是一款开源的跨平台文章同步工具，可以同步你的文章
 ``` bash
 python make.py
 ```
+
 > 打包时会自动将`config.yaml`中的相关参数设置为产品环境
 
 ### 功能📲
@@ -57,7 +58,6 @@ python make.py
 
 - [ ] 撰写文章图片显示问题
 - [ ] 搭配图床接口
-- [ ] 算法处理内容提取摘要和标签
 - [ ] 记录失败日志
 - [ ] 公众号直接发布
 - [ ] 包含查找优化为近似查找
@@ -72,10 +72,11 @@ python make.py
 
 作者本人目前就读于中原工学院，是一名超级热爱编程的本科生
 喜欢各种运动和各种音乐
+
 - 邮箱：<xiaofengs@yeah.net>
 - 网站: <https://yunyicloud.cn>
 
-公众号: 
+公众号:
 
 ![云奕科软公众号二维码](static/imgs/official-account.jpg?=100x100)
 
@@ -86,5 +87,6 @@ python make.py
 ![微信支付](static/imgs/reward-wechat.jpg?=100x100)
 
 ### 鸣谢🍻
+
 - 感谢JetBrains公司提供的免费学生许可证
 - 感谢FittenCode AI智能代码辅助助手的大力相助</https:></xiaofengs@yeah.net>

@@ -67,7 +67,6 @@ const handleLoginOnce = async (siteStatus: SiteStatus) => {
   MessagePlugin.loading(`正在登录 ${siteStatus.name}...`, 0);
   try {
     const response = await dashboardApi.loginOnce(siteStatus.id);
-    console.log(response.data);
     if (response.data.code === 0) {
       siteStore.updateSiteStatus(siteStatus.id, 1);
       MessagePlugin.success('登录成功');
