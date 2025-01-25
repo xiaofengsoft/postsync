@@ -3,12 +3,14 @@ import asyncio
 import json
 import os
 from flask import Blueprint, request
+import yaml
 from utils.browser import get_community_instance, create_context
 
 from utils.file import get_file_name_without_ext
 from common.constant import config
 from common.error import BrowserExceptionGroup
 from common.result import Result
+from utils.load import get_root_path
 
 dashboard_api = Blueprint('dashboard_api', __name__,
                           url_prefix='/api/dashboard')
@@ -16,35 +18,13 @@ dashboard_api = Blueprint('dashboard_api', __name__,
 
 @dashboard_api.route('/login/check', methods=['GET'])
 async def check_login():
-    is_force = request.args.get('force') in ['1', 'true']
-    browser, context, asp = await create_context(headless=config['default']['headless'])
-    tasks = []
-    if not is_force and os.path.exists(config['data']['states']['path']):
-        with open(config['data']['states']['path'], 'r') as f:
-            states = json.load(f)
-        return Result.success(data=states)
-
-    async def one_check_task(one_site):
-        site_instance = get_community_instance(
-            one_site, browser, context)
-        try:
-            ret = await site_instance.check_login_state()
-        except Exception:
-            ret = False
-        return {
-            'name': site_instance.site_name,
-            'alias': one_site,
-            'status': ret
-        }
-
-    for site in config['default']['community'].keys():
-        task = one_check_task(site)
-        tasks.append(task)
-    results = await asyncio.gather(*tasks, return_exceptions=False)
-    with open(config['data']['states']['path'], 'w') as f:
-        json.dump(results, f)
-    await context.close()
-    await asp.__aexit__()
+    results = []
+    for item in config['default']['community'].keys():
+        results.append({
+            'alias': item,
+            'name': config['default']['community'][item]['desc'],
+            'status': config['default']['community'][item]['is_login']
+        })
     return Result.success(message='登录状态检查成功', data=results)
 
 
@@ -56,20 +36,16 @@ async def login_once():
         site, browser, context)
     try:
         ret = await site_instance.login()
+        config['default']['community'][site_instance.site_alias]['is_login'] = ret
+        with open(get_root_path() + '/config.yaml', 'w', encoding='utf-8') as file:
+            yaml.dump(config, file, default_flow_style=False, encoding='utf-8',
+                      Dumper=yaml.SafeDumper, sort_keys=False, allow_unicode=True)
     except BrowserExceptionGroup as e:
         await asp.__aexit__()
         return Result.error(message=str(e))
     await asp.__aexit__()
     if not ret:
         return Result.error(message='登录失败')
-    with open(config['data']['states']['path'], 'r') as f:
-        states = json.load(f)
-    for state in states:
-        if state['alias'] == site:
-            state['status'] = 'true' if ret else 'false'
-            break
-    with open(config['data']['states']['path'], 'w') as f:
-        json.dump(states, f)
     return Result.success(message='登录成功', data=ret)
 
 

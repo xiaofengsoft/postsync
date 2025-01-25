@@ -17,6 +17,7 @@ from utils.data import format_json_file
 from common.error import BrowserTimeoutError
 from common.apis import StorageType
 from utils.storage import get_page_local_storage
+import webview
 
 
 # TODO 单例模式
@@ -27,7 +28,6 @@ class Community(object):
     site_name: str = constant.UNKNOWN_SITE_NAME  # 站点名称
     site_alias: str = constant.UNKNOWN_SITE_ALIAS  # 站点别名
     url_post_new: str = ""  # 新建文章链接
-    check_login_expect_str: t.Pattern | str = ""  # 检测登录跳转URL
     url = ""  # 站点链接
 
     def __init__(self, browser: "Browser", context: "BrowserContext", **kwargs):
@@ -45,26 +45,88 @@ class Community(object):
             self.context.new_page()
         )
 
-    async def check_login_state(self, abort_assets: t.List[str] = [
-        "image", "font", "media"
-    ], check_login_expect_str: str | t.Pattern = None) -> bool:
+    async def check_login_state(self, *args, **kwargs) -> bool:
         """
         检查登录状态
+        :return: 是否登录
         """
-        check_login_expect_str = check_login_expect_str or self.check_login_expect_str
-        await self._abort_assets_route(abort_assets)
-        try:
-            async with self.page.expect_navigation(
-                url=re.compile(check_login_expect_str),
-            ):
-                await self.page.goto(self.url_post_new)
-            return False
-        except BrowserTimeoutError as e:
-            return True
+        return config['default']['community'][self.site_alias]['is_login']
 
     async def login_before_func(self):
         await self._abort_assets_route(['media', 'font'])
         await insert_anti_detection_script(self.page)
+
+    async def _inject_confirm_button(self):
+        """注入可拖动的确认按钮"""
+        js_code = """
+        (async () => {
+            const button = document.createElement('button');
+            button.innerHTML = '确认登录成功';
+            button.id = 'confirmLoginBtn';
+            button.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                z-index: 2147483647;
+                padding: 10px 20px;
+                background: #4CAF50;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: move;
+                font-size: 14px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+                user-select: none;
+                pointer-events: auto;
+            `;
+            
+            document.body.appendChild(button);
+            
+            let isDragging = false;
+            let currentX;
+            let currentY;
+            let initialX;
+            let initialY;
+            let dragStartTime;
+            
+            button.addEventListener('mousedown', function(e) {
+                e.preventDefault();
+                isDragging = true;
+                dragStartTime = Date.now();
+                initialX = e.clientX - button.offsetLeft;
+                initialY = e.clientY - button.offsetTop;
+            });
+            
+            document.addEventListener('mousemove', function(e) {
+                if (isDragging) {
+                    e.preventDefault();
+                    currentX = e.clientX - initialX;
+                    currentY = e.clientY - initialY;
+                    
+                    // 确保按钮不会拖出可视区域
+                    currentX = Math.min(Math.max(0, currentX), window.innerWidth - button.offsetWidth);
+                    currentY = Math.min(Math.max(0, currentY), window.innerHeight - button.offsetHeight);
+                    
+                    button.style.left = currentX + 'px';
+                    button.style.top = currentY + 'px';
+                }
+            });
+            
+            return await new Promise((resolve) => {
+                button.addEventListener('click', function(e) {
+                    if (Date.now() - dragStartTime < 200) {
+                        button.remove();
+                        resolve(true);
+                    }
+                });
+                
+                document.addEventListener('mouseup', function() {
+                    isDragging = false;
+                });
+            });
+        })()
+        """
+        return await self.page.evaluate(js_code)
 
     async def login(
             self, login_url: str, resp_url: t.Union[t.Pattern, str],
@@ -80,30 +142,16 @@ class Community(object):
         :return: 是否登录成功
         """
         await before_func(self)
-        self.page.set_default_timeout(
-            INFINITE_TIMEOUT
-        )
-        await self.page.goto(login_url, wait_until='commit')
-        response: t.Union[AsyncEventInfo["Response"], Response]
-        wait_random_time()
-        async with self.page.expect_response(
-                resp_url,
-                timeout=constant.INFINITE_TIMEOUT
-        ) as response:
-            data = await response.value
-            code = data.status
-            try:
-                data = await data.body()
-                data = json.loads(data.decode(encoding=constant.FILE_ENCODING))
-            except json.JSONDecodeError as e:
-                return False
-            except BrowserError as e:
-                pass
-            if code in constant.HTTP_SUCCESS_STATUS_CODES and check_func(data):
-                await self.context.storage_state(path=get_path(config['data']['storage']['path']))
-                format_json_file(config['data']['storage']['path'])
-                await self.page.close()
-                return True
+
+        # 注入确认按钮
+        await self.page.goto(login_url)
+        confirmation = await self._inject_confirm_button()
+
+        if confirmation:
+            self.page.set_default_timeout(
+                INFINITE_TIMEOUT
+            )
+            return True
         return False
 
     async def before_upload(self, post: Post):

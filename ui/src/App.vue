@@ -14,7 +14,7 @@ const checkLoginState = async () => {
     return;
   }
 
-  MessagePlugin.loading('检查登录状态，可能需要1-30s...', 0);
+  MessagePlugin.loading('检查登录状态', 0);
   const response = await dashboardApi.checkLogin();
   if (response?.data?.data) {
     const temp = response.data.data.map((site: any) => ({

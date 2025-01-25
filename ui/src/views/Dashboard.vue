@@ -49,7 +49,7 @@ const siteStore = useSiteStore();
 const postList = ref<Post[]>([]);
 
 const refreshSiteStatuses = async () => {
-  MessagePlugin.loading('检查登录状态，可能需要1-30s...', 0);
+  MessagePlugin.loading('检查登录状态', 0);
   const response = await dashboardApi.checkLogin(true);
   if (response?.data?.data) {
     const temp = response.data.data.map((site: any) => ({
