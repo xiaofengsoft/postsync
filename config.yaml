@@ -42,7 +42,8 @@ default:
       topic: null
     cnblog:
       category: Python
-      columns: []
+      columns:
+      - Python
       cover: null
       desc: 博客园
       tags: []
