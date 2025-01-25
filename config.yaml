@@ -37,7 +37,7 @@ default:
       tags: []
       timeout: 40000
       topic: null
-      is_login: false
+      is_login: true
     cnblog:
       category: Python
       columns:

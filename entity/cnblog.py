@@ -15,13 +15,6 @@ class Cnblog(Community):
     site_alias = 'cnblog'
     login_url = 'https://account.cnblogs.com/signin'
     url = 'https://www.cnblogs.com/'
-    check_login_expect_str = r'account.cnblogs.com*'
-
-    async def login(self, *args, **kwargs):
-        return await super().login(
-            self.login_url,
-            re.compile(r"account\.cnblogs\.com/user/userinfo"),
-            lambda login_data: login_data['spaceUserId'])  # 发送用户ID说明登录成功
 
     async def upload(self, post: Post) -> t.AnyStr:
         await self.before_upload(post)

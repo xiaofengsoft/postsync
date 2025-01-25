@@ -16,7 +16,6 @@
         <t-col :span="6">
           <t-card title="登录状态">
             <template #actions>
-              <t-button theme="default" variant="text" @click="refreshSiteStatuses">刷新</t-button>
             </template>
             <template #content>
               <t-list v-if="siteStore.siteStatuses.length > 0" split size="large" :scroll="{ type: 'virtual' }"
@@ -65,17 +64,7 @@ const refreshSiteStatuses = async () => {
 
 const handleLoginOnce = async (siteStatus: SiteStatus) => {
   MessagePlugin.loading(`正在登录 ${siteStatus.name}...`, 0);
-  try {
-    const response = await dashboardApi.loginOnce(siteStatus.id);
-    if (response.data.code === 0) {
-      siteStore.updateSiteStatus(siteStatus.id, 1);
-      MessagePlugin.success('登录成功');
-    } else {
-      MessagePlugin.error('登录失败');
-    }
-  } catch {
-    MessagePlugin.error('登录失败');
-  }
+  const response = await dashboardApi.loginOnce(siteStatus.id);
 };
 
 const fetchPostList = async () => {

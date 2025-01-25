@@ -4,7 +4,7 @@ import typing as t
 from pydocx import PyDocX
 from common.constant import *
 import os
-from utils.data import convert_md_img_path_to_abs_path,convert_html_img_path_to_abs_path
+from utils.data import convert_md_img_path_to_abs_path, convert_html_img_path_to_abs_path
 
 
 def get_path(path: str) -> str:
@@ -108,7 +108,7 @@ def make_file_or_dir(path: str, is_dir: bool = False, func: t.Callable[[t.IO], N
     return False
 
 
-def convert_md_to_html(md_file_path: str, html_file_path: str = None,is_written:bool=True) -> str:
+def convert_md_to_html(md_file_path: str, html_file_path: str = None, is_written: bool = True) -> str:
     """
     将Markdown文件转换为HTML
     :param md_file_path: Markdown文件路径
@@ -117,7 +117,8 @@ def convert_md_to_html(md_file_path: str, html_file_path: str = None,is_written:
     :return: HTML文件路径或者HTML内容
     """
     if html_file_path is None:
-        dst_file_path = check_file_same_name_exists(md_file_path, HTML_EXTENSIONS)
+        dst_file_path = check_file_same_name_exists(
+            md_file_path, HTML_EXTENSIONS)
         if dst_file_path:
             return dst_file_path
         else:
@@ -151,7 +152,8 @@ def convert_html_to_docx(html_file_path: str, docx_file_path: t.Optional[str] = 
     :return: DOCX文件路径
     """
     if docx_file_path is None:
-        dst_file_path = check_file_same_name_exists(html_file_path, DOC_EXTENSIONS)
+        dst_file_path = check_file_same_name_exists(
+            html_file_path, DOC_EXTENSIONS)
         if dst_file_path:
             return dst_file_path
         else:
@@ -160,7 +162,8 @@ def convert_html_to_docx(html_file_path: str, docx_file_path: t.Optional[str] = 
         dst_file_path = docx_file_path
     # 转换图片路径为绝对路径
     convert_html_img_path_to_abs_path(html_file_path)
-    html_docx_parser.parse_html_file(html_file_path, get_file_path_without_ext(dst_file_path))
+    html_docx_parser.parse_html_file(
+        html_file_path, get_file_path_without_ext(dst_file_path))
     return dst_file_path
 
 
@@ -172,7 +175,8 @@ def convert_md_to_docx(md_file_path: str, docx_file_path: str = None) -> str:
     :return: DOCX文件内容
     """
     if docx_file_path is None:
-        dst_file_path = check_file_same_name_exists(md_file_path, DOC_EXTENSIONS)
+        dst_file_path = check_file_same_name_exists(
+            md_file_path, DOC_EXTENSIONS)
         if dst_file_path:
             return dst_file_path
         else:
@@ -197,7 +201,8 @@ def convert_docx_to_html(docx_file_path: str, html_file_path: str = None) -> str
     :return: HTML文件路径
     """
     if html_file_path is None:
-        dst_file_path = check_file_same_name_exists(docx_file_path, HTML_EXTENSIONS)
+        dst_file_path = check_file_same_name_exists(
+            docx_file_path, HTML_EXTENSIONS)
         if dst_file_path:
             return dst_file_path
         else:
@@ -208,7 +213,8 @@ def convert_docx_to_html(docx_file_path: str, html_file_path: str = None) -> str
     html_content = PyDocX.to_html(get_path(docx_file_path))
 
     with open(dst_file_path, 'w', encoding=FILE_ENCODING) as f:
-        convert_html_content_images_base64_to_local(html_content, os.path.dirname(dst_file_path))
+        convert_html_content_images_base64_to_local(
+            html_content, os.path.dirname(dst_file_path))
         f.write(html_content)
     return dst_file_path
 
@@ -221,7 +227,8 @@ def convert_html_to_md(html_file_path: str, md_file_path: str = None) -> str:
     :return: Markdown内容
     """
     if md_file_path is None:
-        dst_file_path = check_file_same_name_exists(html_file_path, MD_EXTENSIONS)
+        dst_file_path = check_file_same_name_exists(
+            html_file_path, MD_EXTENSIONS)
         if dst_file_path:
             return dst_file_path
         else:
@@ -244,14 +251,16 @@ def convert_docx_to_md(docx_file_path: str, md_file_path: str = None) -> str:
     :return: Markdown文件路径
     """
     if md_file_path is None:
-        dst_file_path = check_file_same_name_exists(docx_file_path, MD_EXTENSIONS)
+        dst_file_path = check_file_same_name_exists(
+            docx_file_path, MD_EXTENSIONS)
         if dst_file_path:
             return dst_file_path
         else:
             dst_file_path = replace_file_ext(docx_file_path, 'md')
     else:
         dst_file_path = md_file_path
-    html_file_path = check_file_same_name_exists(docx_file_path, HTML_EXTENSIONS)
+    html_file_path = check_file_same_name_exists(
+        docx_file_path, HTML_EXTENSIONS)
     if not html_file_path:
         html_file_path = convert_docx_to_html(docx_file_path, md_file_path)
     convert_html_to_md(html_file_path, md_file_path)
@@ -277,7 +286,8 @@ def check_file_same_name_exists(path: str, exts: t.Union[str, t.List[str]]) -> t
     if isinstance(exts, str):
         exts = [exts]
     for ext in exts:
-        real_path_with_ext = get_path(".".join([get_file_path_without_ext(path), ext]))
+        real_path_with_ext = get_path(
+            ".".join([get_file_path_without_ext(path), ext]))
         if os.path.exists(real_path_with_ext):
             return real_path_with_ext
     return False

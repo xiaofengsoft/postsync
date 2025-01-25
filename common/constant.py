@@ -71,3 +71,5 @@ server_app: t.Optional[Flask] = None
 
 # 社区实例
 site_instances = defaultdict()
+
+# 浏览器上下文

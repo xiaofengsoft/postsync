@@ -17,14 +17,6 @@ class Juejin(Community):
     url_redirect_login = "https://juejin.cn/login"
     login_url = "https://juejin.cn/login"
     url = "https://www.juejin.cn"
-    check_login_expect_str = r"juejin.cn/login*"
-
-    async def login(self, *args, **kwargs):
-        return await super().login(
-            self.login_url,
-            re.compile(
-                r"^https?:\/\/api\.juejin\.cn\/user_api\/v1\/sys\/token"),
-            lambda login_data: 0 == 0)
 
     async def upload(self, post: Post) -> t.AnyStr:
         await self.before_upload(post)

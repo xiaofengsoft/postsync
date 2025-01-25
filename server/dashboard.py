@@ -4,13 +4,15 @@ import json
 import os
 from flask import Blueprint, request
 import yaml
+from utils.storage import storage_config
 from utils.browser import get_community_instance, create_context
-
+import common.constant as c
 from utils.file import get_file_name_without_ext
 from common.constant import config
 from common.error import BrowserExceptionGroup
 from common.result import Result
 from utils.load import get_root_path
+
 
 dashboard_api = Blueprint('dashboard_api', __name__,
                           url_prefix='/api/dashboard')
@@ -28,25 +30,37 @@ async def check_login():
     return Result.success(message='登录状态检查成功', data=results)
 
 
+@dashboard_api.route('/login/reset', methods=['POST'])
+async def reset_login():
+    site = json.loads(request.get_data().decode('utf-8'))['name']
+    config['default']['community'][site]['is_login'] = False
+    storage_config()
+    return Result.success(message='重置成功')
+
+
 @dashboard_api.route('/login/once', methods=['POST'])
 async def login_once():
     browser, context, asp = await create_context(headless=False)
     site = json.loads(request.get_data().decode('utf-8'))['name']
+    c.login_site_context = context
     site_instance = get_community_instance(
         site, browser, context)
+    from playwright._impl._errors import TargetClosedError
     try:
-        ret = await site_instance.login()
-        config['default']['community'][site_instance.site_alias]['is_login'] = ret
-        with open(get_root_path() + '/config.yaml', 'w', encoding='utf-8') as file:
-            yaml.dump(config, file, default_flow_style=False, encoding='utf-8',
-                      Dumper=yaml.SafeDumper, sort_keys=False, allow_unicode=True)
-    except BrowserExceptionGroup as e:
-        await asp.__aexit__()
-        return Result.error(message=str(e))
+        await site_instance.login()
+    except TargetClosedError as e:
+        pass
     await asp.__aexit__()
-    if not ret:
-        return Result.error(message='登录失败')
-    return Result.success(message='登录成功', data=ret)
+    return Result.success(message='')
+
+
+@dashboard_api.route('/login/confirm', methods=['POST'])
+async def login_confirm():
+    site_alias = json.loads(request.get_data().decode('utf-8'))['name']
+    config['default']['community'][site_alias]['is_login'] = True
+    storage_config()
+    await c.site_instances[site_alias].storage_state(path=c.config['data']['storage']['path'])
+    return Result.success(message='登录成功')
 
 
 @dashboard_api.route('/post/list', methods=['GET'])

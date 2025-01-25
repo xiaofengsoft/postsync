@@ -18,14 +18,6 @@ class Csdn(Community):
     site_alias = 'csdn'
     url = "https://www.csdn.net/"
     login_url = "https://passport.csdn.net/login?code=applets"
-    check_login_expect_str = r"passport.csdn.net/login*"
-
-    async def login(self, *args, **kwargs):
-        return await super().login(
-            self.login_url,
-            re.compile(
-                r"^https?:\/\/passport\.csdn\.net\/v1\/login\/user\/cert\/collect\/state"),
-            lambda login_data: int(login_data['code']) == 0)
 
     async def upload(self, post: Post) -> t.AnyStr:
         await self.before_upload(post)

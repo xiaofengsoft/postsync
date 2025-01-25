@@ -16,10 +16,20 @@ export const deletePostFile = (path: string) => {
   return request.post("dashboard/post/delete", { path });
 };
 
+export const resetLogin = (name: string) => {
+  return request.post("dashboard/login/reset", { name });
+};
+
+export const confirmLogin = (name: string) => {
+  return request.post("dashboard/login/confirm", { name });
+}
+
 
 export default {
   checkLogin,
   loginOnce,
   getPostList,
   deletePostFile,
+  resetLogin,
+  confirmLogin
 };

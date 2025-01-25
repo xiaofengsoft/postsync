@@ -16,23 +16,9 @@ class Wechat(Community):
     url = "https://mp.weixin.qq.com/"
     login_url = "https://mp.weixin.qq.com/"
 
-    async def check_login_state(self, **kwargs):
-        await self._abort_assets_route(['image', 'font', 'media'])
-        await self.page.goto(self.url_post_new)
-        return (await self.page.get_by_text("请重新登录").count() == 0
-                and await self.page.get_by_text("使用账号登录").count() == 0)
-
     def __init__(self, browser: "Browser", context: "BrowserContext", **kwargs):
         super().__init__(browser, context, **kwargs)
         self.origin_src = None
-
-    async def login(self, *args, **kwargs) -> bool:
-        return await super().login(
-            self.login_url,
-            re.compile(
-                r"^https?:\/\/mp\.weixin\.qq\.com\/cgi-bin\/bizlogin\?action=login"),
-            lambda login_data: 0 == 0,
-        )
 
     async def upload(self, post: Post) -> t.AnyStr:
         await self.before_upload(post)

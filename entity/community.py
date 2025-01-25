@@ -1,4 +1,5 @@
 import re
+import time
 from bs4 import BeautifulSoup
 from playwright._impl._async_base import AsyncEventInfo
 from common.apis import Post, StorageData
@@ -17,7 +18,7 @@ from utils.data import format_json_file
 from common.error import BrowserTimeoutError
 from common.apis import StorageType
 from utils.storage import get_page_local_storage
-import webview
+from playwright._impl._errors import TargetClosedError
 
 
 # TODO 单例模式
@@ -28,6 +29,7 @@ class Community(object):
     site_name: str = constant.UNKNOWN_SITE_NAME  # 站点名称
     site_alias: str = constant.UNKNOWN_SITE_ALIAS  # 站点别名
     url_post_new: str = ""  # 新建文章链接
+    login_url: str = ""  # 登录链接
     url = ""  # 站点链接
 
     def __init__(self, browser: "Browser", context: "BrowserContext", **kwargs):
@@ -56,103 +58,29 @@ class Community(object):
         await self._abort_assets_route(['media', 'font'])
         await insert_anti_detection_script(self.page)
 
-    async def _inject_confirm_button(self):
-        """注入可拖动的确认按钮"""
-        js_code = """
-        (async () => {
-            const button = document.createElement('button');
-            button.innerHTML = '确认登录成功';
-            button.id = 'confirmLoginBtn';
-            button.style.cssText = `
-                position: fixed;
-                top: 20px;
-                left: 20px;
-                z-index: 2147483647;
-                padding: 10px 20px;
-                background: #4CAF50;
-                color: white;
-                border: none;
-                border-radius: 5px;
-                cursor: move;
-                font-size: 14px;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-                user-select: none;
-                pointer-events: auto;
-            `;
-            
-            document.body.appendChild(button);
-            
-            let isDragging = false;
-            let currentX;
-            let currentY;
-            let initialX;
-            let initialY;
-            let dragStartTime;
-            
-            button.addEventListener('mousedown', function(e) {
-                e.preventDefault();
-                isDragging = true;
-                dragStartTime = Date.now();
-                initialX = e.clientX - button.offsetLeft;
-                initialY = e.clientY - button.offsetTop;
-            });
-            
-            document.addEventListener('mousemove', function(e) {
-                if (isDragging) {
-                    e.preventDefault();
-                    currentX = e.clientX - initialX;
-                    currentY = e.clientY - initialY;
-                    
-                    // 确保按钮不会拖出可视区域
-                    currentX = Math.min(Math.max(0, currentX), window.innerWidth - button.offsetWidth);
-                    currentY = Math.min(Math.max(0, currentY), window.innerHeight - button.offsetHeight);
-                    
-                    button.style.left = currentX + 'px';
-                    button.style.top = currentY + 'px';
-                }
-            });
-            
-            return await new Promise((resolve) => {
-                button.addEventListener('click', function(e) {
-                    if (Date.now() - dragStartTime < 200) {
-                        button.remove();
-                        resolve(true);
-                    }
-                });
-                
-                document.addEventListener('mouseup', function() {
-                    isDragging = false;
-                });
-            });
-        })()
-        """
-        return await self.page.evaluate(js_code)
-
-    async def login(
-            self, login_url: str, resp_url: t.Union[t.Pattern, str],
-            check_func: t.Callable[[t.AnyStr], bool],
-            before_func: t.Callable = login_before_func
-    ) -> bool:
+    async def login(self, *args, **kwargs) -> bool:
         """
         登录社区
-        :param before_func:
-        :param login_url: 登录链接
-        :param resp_url: 登录响应链接,支持正则
-        :param check_func: 登录成功的检查函数
-        :return: 是否登录成功
         """
-        await before_func(self)
+        await self.login_before_func()
+        self.page.set_default_timeout(
+            INFINITE_TIMEOUT
+        )
+        await self.page.goto(self.login_url, wait_until='networkidle')
+        await self.page.wait_for_timeout(INFINITE_TIMEOUT)
 
-        # 注入确认按钮
-        await self.page.goto(login_url)
-        confirmation = await self._inject_confirm_button()
+    async def storage_state(self, path: str):
+        """
+        存储登录状态
+        """
+        await self.context.storage_state(path=path)
 
-        if confirmation:
-            self.page.set_default_timeout(
-                INFINITE_TIMEOUT
-            )
-            return True
-        return False
+    async def close(self):
+        """
+        关闭
+        :return:
+        """
+        await self.context.close()
 
     async def before_upload(self, post: Post):
         """

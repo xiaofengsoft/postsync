@@ -16,19 +16,11 @@ class Zhihu(Community):
     site_name = "知乎"
     site_alias = "zhihu"
     url = "https://www.zhihu.com"
-    check_login_expect_str = r"zhihu.com/signin"
 
     def __init__(self, browser: "Browser", context: "BrowserContext", **kwargs):
         super().__init__(browser, context, **kwargs)
         self.pic_nums = 0  # 正在处理的图片数量
         self.origin_src = None
-
-    async def login(self, *args, **kwargs):
-        return await super().login(
-            self.login_url,
-            re.compile(r"www\.zhihu\.com\/api\/v3\/oauth\/sign_in"),
-            lambda login_data: 0 == 0
-        )
 
     async def upload(self, post: Post) -> t.AnyStr:
         await self.before_upload(post)

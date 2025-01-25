@@ -22,13 +22,7 @@ class Bilibili(Community):
     url_redirect_login = "https://passport.bilibili.com/login"
     url_post_manager = "https://member.bilibili.com/platform/upload-manager/opus"
     url = "https://www.bilibili.com/"
-    check_login_expect_str = r"passport.bilibili.com*"
-
-    async def login(self, *args, **kwargs):
-        return await super().login(
-            self.url,
-            "https://passport.bilibili.com/x/passport-login/web/login",
-            lambda login_data: login_data['code'] == 0)
+    login_url = "https://passport.bilibili.com/login"
 
     async def upload(self, post: Post) -> t.AnyStr:
         await self.before_upload(post)
