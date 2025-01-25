@@ -8,6 +8,8 @@ const currentTab = ref('dashboard');
 const isMaximized = ref(false);
 const router = useRouter();
 const route = useRoute();
+
+
 const watchRoute = watch(route, (newVal) => {
   currentTab.value = newVal.name as string || 'dashboard';
 });
@@ -16,6 +18,8 @@ const handleMenuChange = (value: string) => {
   currentTab.value = value;
   router.push(value);
 };
+
+
 
 const minimizeWindow = () => {
   windowApi.minimizeWindow().then((data) => {
@@ -59,8 +63,9 @@ onMounted(() => {
 
 <template>
   <t-layout style="height: 100vh;">
-    <t-header :class="['layout-header', 'pywebview-drag-region']">
-      <t-head-menu value="item1" :class="['pywebview-drag-region']">
+
+    <t-header :class="['layout-header']">
+      <t-head-menu value="item1">
         <template #logo>
           <img width="136" class="logo" src="@/assets/imgs/logo-landscape.png" alt="logo" />
         </template>

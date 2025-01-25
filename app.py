@@ -7,6 +7,14 @@ from server.dashboard import dashboard_api
 from server.write import write_api
 
 
+class WindowApi():
+    def __init__(self, window: webview.Window):
+        self.window = window
+
+    def moveWindow(self, x: float, y: float):
+        self.window.move(x, y)
+
+
 def flask_run():
     app = Flask(__name__, static_folder='ui/dist', static_url_path='')
     c.server_app = app
@@ -39,6 +47,7 @@ if __name__ == "__main__":
         width=c.config['view']['width'],
         height=c.config['view']['height'],
     )
+    webview.DRAG_REGION_SELECTOR = '#app > section > header'
     c.main_window = main_window
     threading.Thread(target=flask_run, daemon=True).start()
 
