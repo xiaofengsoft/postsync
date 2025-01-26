@@ -19,9 +19,12 @@ from common.error import BrowserTimeoutError
 from common.apis import StorageType
 from utils.storage import get_page_local_storage
 from playwright._impl._errors import TargetClosedError
+from utils.storage import storage_config
 
 
 # TODO 单例模式
+
+
 class Community(object):
     """
     根社区类
@@ -61,13 +64,25 @@ class Community(object):
     async def login(self, *args, **kwargs) -> bool:
         """
         登录社区
+        :return: 登录是否成功
         """
         await self.login_before_func()
-        self.page.set_default_timeout(
-            INFINITE_TIMEOUT
-        )
         await self.page.goto(self.login_url, wait_until='networkidle')
-        await self.page.wait_for_timeout(INFINITE_TIMEOUT)
+        # 等待用户确认登录
+        while True:
+            if constant.is_confirmed.empty():
+                await asyncio.sleep(1)
+                continue
+            confirmation = constant.is_confirmed.get()
+            if confirmation == -1:
+                return False
+            if confirmation == self.site_alias:
+                constant.config['default']['community'][self.site_alias]['is_login'] = True
+                storage_config()
+                await self.storage_state(path=get_path(config['data']['storage']['path']))
+                return True
+            # 如果确认值不匹配，继续等待
+            await asyncio.sleep(1)
 
     async def storage_state(self, path: str):
         """

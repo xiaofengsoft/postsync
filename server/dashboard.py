@@ -12,7 +12,7 @@ from common.constant import config
 from common.error import BrowserExceptionGroup
 from common.result import Result
 from utils.load import get_root_path
-
+import queue
 
 dashboard_api = Blueprint('dashboard_api', __name__,
                           url_prefix='/api/dashboard')
@@ -47,19 +47,20 @@ async def login_once():
         site, browser, context)
     from playwright._impl._errors import TargetClosedError
     try:
-        await site_instance.login()
+        ret = await site_instance.login()
+        if not ret:
+            return Result.error(message='登录失败')
     except TargetClosedError as e:
         pass
-    await asp.__aexit__()
+    finally:
+        await asp.__aexit__()
     return Result.success(message='')
 
 
 @dashboard_api.route('/login/confirm', methods=['POST'])
 async def login_confirm():
     site_alias = json.loads(request.get_data().decode('utf-8'))['name']
-    config['default']['community'][site_alias]['is_login'] = True
-    storage_config()
-    await c.site_instances[site_alias].storage_state(path=c.config['data']['storage']['path'])
+    c.is_confirmed.put(site_alias)
     return Result.success(message='登录成功')
 
 

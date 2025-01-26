@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import queue
 import os
 from collections import defaultdict
 from flask import Flask
@@ -72,4 +73,5 @@ server_app: t.Optional[Flask] = None
 # 社区实例
 site_instances = defaultdict()
 
-# 浏览器上下文
+# 登录状态确认队列,收到-1表示结束
+is_confirmed = queue.Queue()
