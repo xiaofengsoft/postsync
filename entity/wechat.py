@@ -15,6 +15,7 @@ class Wechat(Community):
     site_alias = "wechat"
     url = "https://mp.weixin.qq.com/"
     login_url = "https://mp.weixin.qq.com/"
+    desc = "微信公众号官方插件"
 
     def __init__(self, browser: "Browser", context: "BrowserContext", **kwargs):
         super().__init__(browser, context, **kwargs)

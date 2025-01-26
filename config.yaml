@@ -57,7 +57,7 @@ default:
       tags: []
       timeout: 20000
       topic: null
-      is_login: false
+      is_login: true
     juejin:
       category: null
       columns: []
@@ -81,6 +81,15 @@ default:
       columns: []
       cover: null
       desc: 知乎
+      tags: []
+      timeout: 20000
+      topic: null
+      is_login: false
+    test:
+      category: null
+      columns: []
+      cover: null
+      desc: 测试
       tags: []
       timeout: 20000
       topic: null

@@ -17,5 +17,10 @@ export const useSiteStore = defineStore('site', {
         item.id === id ? { ...item, status: siteStatus } : item
       );
     },
+    deleteSiteStatus(id: string) {
+      this.siteStatuses = this.siteStatuses.filter(
+        (item: SiteStatus) => item.id !== id
+      );
+    }
   },
 });

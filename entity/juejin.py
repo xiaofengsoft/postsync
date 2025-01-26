@@ -17,6 +17,7 @@ class Juejin(Community):
     url_redirect_login = "https://juejin.cn/login"
     login_url = "https://juejin.cn/login"
     url = "https://www.juejin.cn"
+    desc = "稀土掘金官方插件"
 
     async def upload(self, post: Post) -> t.AnyStr:
         await self.before_upload(post)

@@ -16,6 +16,7 @@ class Zhihu(Community):
     site_name = "知乎"
     site_alias = "zhihu"
     url = "https://www.zhihu.com"
+    desc = "知乎官方插件"
 
     def __init__(self, browser: "Browser", context: "BrowserContext", **kwargs):
         super().__init__(browser, context, **kwargs)

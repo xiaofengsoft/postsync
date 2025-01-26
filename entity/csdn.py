@@ -18,6 +18,7 @@ class Csdn(Community):
     site_alias = 'csdn'
     url = "https://www.csdn.net/"
     login_url = "https://passport.csdn.net/login?code=applets"
+    desc = 'CSDN官方插件'
 
     async def upload(self, post: Post) -> t.AnyStr:
         await self.before_upload(post)

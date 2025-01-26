@@ -1,7 +1,10 @@
 from importlib import import_module
+import importlib
 import common.constant as c
+from common.core import Community
 from common.error import BrowserError
 import os
+import inspect
 from utils.load import get_path
 import ast
 from utils.file import get_file_name_without_ext
@@ -35,6 +38,31 @@ def get_plugins():
         for file in files:
             if file.endswith(".py") and is_first_class_inherits_community(os.path.join(root, file)):
                 module_name = get_file_name_without_ext(file)
-                if module_name in c.config['default']['community'].keys():
-                    module_names.append(module_name)
+                module = importlib.import_module(f"entity.{module_name}")
+                community_class = next(
+                    (cls for name, cls in inspect.getmembers(module, inspect.isclass)
+                     if issubclass(cls, Community) and cls != Community),
+                    None
+                )
+                desc = getattr(community_class, 'desc', '未知描述')
+                name = getattr(community_class, 'site_name', '未知名称')
+                module_names.append((module_name, {
+                    "desc": desc,
+                    "name": name
+                }))
     return module_names
+
+
+def plugin_uninstall(plugin_name: str) -> bool:
+    try:
+        # 获取插件文件路径
+        plugin_path = os.path.join(get_path('entity'), f"{plugin_name}.py")
+        # 检查文件是否存在
+        if os.path.exists(plugin_path):
+            # 删除文件
+            os.remove(plugin_path)
+            return True
+        return False
+    except Exception as e:
+        print(f"Error uninstalling plugin: {str(e)}")
+        return False

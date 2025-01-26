@@ -25,14 +25,6 @@ APP_HOST = 'localhost'
 APP_HTTP = 'http'
 APP_URL = f'{APP_HTTP}://{APP_HOST}:{APP_PORT}'
 
-SITE_ALIAS = (
-    "bilibili",
-    "juejin",
-    "zhihu",
-    "wechat",
-    "csdn",
-    "cnblog"
-)
 HTML_EXTENSIONS = (
     'html',
     'htm',

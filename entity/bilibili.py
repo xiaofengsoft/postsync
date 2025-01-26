@@ -23,6 +23,7 @@ class Bilibili(Community):
     url_post_manager = "https://member.bilibili.com/platform/upload-manager/opus"
     url = "https://www.bilibili.com/"
     login_url = "https://passport.bilibili.com/login"
+    desc = "B站官方插件"
 
     async def upload(self, post: Post) -> t.AnyStr:
         await self.before_upload(post)

@@ -5,15 +5,17 @@ import { MessagePlugin } from 'tdesign-vue-next';
 import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { DialogPlugin } from 'tdesign-vue-next';
-const siteAlias = ref([
-  { label: '全选', checkAll: true },
-  { label: '稀土掘金', value: 'juejin' },
-  { label: 'CSDN', value: 'csdn' },
-  { label: '知乎', value: 'zhihu' },
-  { label: '博客园', value: 'cnblog' },
-  { label: 'Bilibili', value: 'bilibili' },
-  { label: '微信公众号', value: 'wechat' }
-]);
+import { useSiteStore } from '../store/site';
+const siteStore = useSiteStore();
+
+
+
+const siteAlias = ref([...siteStore.siteStatuses].map((site) => {
+  return {
+    label: site.name,
+    value: site.id
+  }
+}))
 
 const post = ref({
   file: '',

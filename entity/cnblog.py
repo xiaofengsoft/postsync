@@ -15,6 +15,7 @@ class Cnblog(Community):
     site_alias = 'cnblog'
     login_url = 'https://account.cnblogs.com/signin'
     url = 'https://www.cnblogs.com/'
+    desc = '博客园官方插件'
 
     async def upload(self, post: Post) -> t.AnyStr:
         await self.before_upload(post)

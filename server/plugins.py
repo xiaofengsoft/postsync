@@ -3,7 +3,7 @@ from flask import jsonify, Blueprint, request
 from common import constant
 from common.result import Result
 from utils.load import get_path
-from utils.plugins import get_plugins
+from utils.plugins import get_plugins, plugin_uninstall
 plugins_api = Blueprint('plugins_api', __name__, url_prefix='/api/plugins')
 main_window = constant.main_window
 
@@ -12,3 +12,10 @@ main_window = constant.main_window
 def get():
     plugins = get_plugins()
     return Result.success(message='获取成功', data=plugins)
+
+
+@plugins_api.route('/uninstall', methods=['POST'])
+def uninstall():
+    name = request.get_json().get('name')
+    plugin_uninstall(name)
+    return Result.success(message='卸载成功')
