@@ -97,6 +97,12 @@ onMounted(() => {
             </template>
             上传文章
           </t-menu-item>
+          <t-menu-item value="plugins">
+            <template #icon>
+              <t-icon name="outbox" />
+            </template>
+            插件
+          </t-menu-item>
           <t-menu-item value="config">
             <template #icon>
               <t-icon name="setting" />

@@ -3,7 +3,7 @@ import re
 import typing as t
 from common.apis import StorageType, Post
 from utils.helper import wait_random_time
-from entity.community import Community
+from common.core import Community
 
 
 class Juejin(Community):

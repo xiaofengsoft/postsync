@@ -3,7 +3,7 @@ import re
 import typing as t
 from utils.helper import wait_random_time
 from common.constant import config
-from entity.community import Community
+from common.core import Community
 import json
 from playwright.async_api import Browser, BrowserContext
 from common.apis import Post, StorageType

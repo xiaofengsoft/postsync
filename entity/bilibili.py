@@ -2,7 +2,7 @@
 import time
 import typing as t
 from common.apis import StorageType, Post
-from entity.community import Community
+from common.core import Community
 import json
 import re
 from common.error import BrowserTimeoutError

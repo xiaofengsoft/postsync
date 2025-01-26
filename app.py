@@ -21,6 +21,8 @@ def flask_run():
     from server.window import window_api
     from server.post import post_api
     from server.setting import setting_api
+    from server.plugins import plugins_api
+    app.register_blueprint(plugins_api)
     app.register_blueprint(window_api)
     app.register_blueprint(post_api)
     app.register_blueprint(setting_api)

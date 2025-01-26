@@ -1,7 +1,7 @@
 import typing as t
 
 from common.apis import StorageType, Post
-from entity.community import Community
+from common.core import Community
 from bs4 import BeautifulSoup
 import json
 import re

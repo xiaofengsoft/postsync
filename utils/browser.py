@@ -6,7 +6,7 @@ import os
 import platform
 import typing as t
 from importlib import import_module
-from entity.community import Community
+from common.core import Community
 import yaml
 from playwright.async_api import async_playwright, Browser, BrowserContext, PlaywrightContextManager
 import nest_asyncio
