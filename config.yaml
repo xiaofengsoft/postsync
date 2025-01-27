@@ -28,16 +28,6 @@ default:
   columns:
   - Python
   community:
-    bilibili:
-      category: 科技
-      columns:
-      - Python
-      cover: null
-      desc: 哔哩哔哩
-      tags: []
-      timeout: 40000
-      topic: null
-      is_login: true
     cnblog:
       category: Python
       columns:
@@ -93,6 +83,17 @@ default:
       tags: []
       timeout: 20000
       topic: null
+      is_login: false
+    bilibili:
+      category: 科技
+      columns:
+      - Python
+      cover: null
+      tags:
+      - Python
+      timeout: 40000
+      topic: null
+      desc: B站
       is_login: false
   cover: static/imgs/default-cover.png
   desc: 默认设置

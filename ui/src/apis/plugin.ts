@@ -10,7 +10,12 @@ export const uninstallPlugins = (name: string) => {
   });
 }
 
+export const installPlugin = () => {
+  return request.get('plugins/install');
+}
+
 export default {
   getPlugins,
-  uninstallPlugins
+  uninstallPlugins,
+  installPlugin
 };

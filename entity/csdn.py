@@ -20,6 +20,16 @@ class Csdn(Community):
     login_url = "https://passport.csdn.net/login?code=applets"
     desc = 'CSDN官方插件'
 
+    conf = {
+        "category": "科技",
+        "columns": ["Python"],
+        "cover": None,
+        "tags": ["Python"],
+        "timeout": 40000,
+        "topic": None,
+
+    }
+
     async def upload(self, post: Post) -> t.AnyStr:
         await self.before_upload(post)
         # 打开发布页面

@@ -17,6 +17,15 @@ class Wechat(Community):
     login_url = "https://mp.weixin.qq.com/"
     desc = "微信公众号官方插件"
 
+    conf = {
+        "category": "科技",
+        "columns": ["Python"],
+        "cover": None,
+        "tags": ["Python"],
+        "timeout": 40000,
+        "topic": None
+    }
+
     def __init__(self, browser: "Browser", context: "BrowserContext", **kwargs):
         super().__init__(browser, context, **kwargs)
         self.origin_src = None

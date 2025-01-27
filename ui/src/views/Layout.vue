@@ -101,7 +101,7 @@ onMounted(() => {
             <template #icon>
               <t-icon name="outbox" />
             </template>
-            插件
+            插件列表
           </t-menu-item>
           <t-menu-item value="config">
             <template #icon>

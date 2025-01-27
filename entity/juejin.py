@@ -11,6 +11,16 @@ class Juejin(Community):
     Juejin Community
     """
 
+    conf = {
+        "category": "科技",
+        "columns": ["Python"],
+        "cover": None,
+        "tags": ["Python"],
+        "timeout": 40000,
+        "topic": None,
+
+    }
+
     site_name = "稀土掘金"
     site_alias = "juejin"
     url_post_new = "https://juejin.cn/editor/drafts/new"

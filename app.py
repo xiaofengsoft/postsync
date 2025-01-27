@@ -49,7 +49,7 @@ if __name__ == "__main__":
         width=c.config['view']['width'],
         height=c.config['view']['height'],
     )
-    webview.DRAG_REGION_SELECTOR = '#app > section > header'
+    webview.DRAG_REGION_SELECTOR = '#app > section > header > div > div > ul'
     c.main_window = main_window
     threading.Thread(target=flask_run, daemon=True).start()
 

@@ -18,6 +18,16 @@ class Zhihu(Community):
     url = "https://www.zhihu.com"
     desc = "知乎官方插件"
 
+    conf = {
+        "category": "科技",
+        "columns": ["Python"],
+        "cover": None,
+        "tags": ["Python"],
+        "timeout": 40000,
+        "topic": None,
+
+    }
+
     def __init__(self, browser: "Browser", context: "BrowserContext", **kwargs):
         super().__init__(browser, context, **kwargs)
         self.pic_nums = 0  # 正在处理的图片数量
