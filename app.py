@@ -1,8 +1,8 @@
 import threading
-# 加载配置
 from flask import Flask
 from common import constant as c
 import webview
+from utils.storage import setup_wizard
 from server.dashboard import dashboard_api
 from server.write import write_api
 
@@ -38,6 +38,11 @@ def flask_run():
 
 
 if __name__ == "__main__":
+    # 检测是否安装
+    if not c.config['app']['installed']:
+        if not setup_wizard():
+            exit(1)
+
     main_window = webview.create_window(
         "PostSync",
         url=f'{c.APP_HTTP}://{c.APP_HOST}:{c.APP_PORT}',

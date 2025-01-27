@@ -22,6 +22,7 @@ if __name__ == '__main__':
     config_backup = copy.deepcopy(c.config)
     c.config['default']['headless'] = True
     c.config['app']['debug'] = False
+    c.config['app']['installed'] = False
     if platform.system() == 'Windows':
         c.config['data']['path'] = r'C:\PostSync'
         c.config['data']['posts']['path'] = r'C:\PostSync\posts'

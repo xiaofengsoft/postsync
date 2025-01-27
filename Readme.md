@@ -1,5 +1,5 @@
 <div align="center">
-<img height="200" src="static/imgs/logo.png" width="200"/>
+<img height="200" src="D:\Python\Projects\MyGitProjects\PostSync\static/imgs/logo.png" width="200"/>
 <h3 align="center">
     PostSync
     </h3>
@@ -11,7 +11,7 @@
 ### 介绍📖
 
 PostSync是一款开源的跨平台文章同步工具，可以同步你的文章到多个平台。
-一次编写，多处同步，同时上传标签，分类，栏目，封面等参数。  
+一次编写，多处同步，同时上传标签，分    类，栏目，封面等参数。  
 
 ### 使用🎭
 
@@ -22,9 +22,9 @@ PostSync是一款开源的跨平台文章同步工具，可以同步你的文章
 
 #### GUI界面
 
-![新文章](static/imgs/screenshot-write.png?=200x150)
+![新文章](D:\Python\Projects\MyGitProjects\PostSync\static/imgs/screenshot-write.png?=200x150)
 
-![上传文章](static/imgs/screenshot-upload.png?=200x150)
+![上传文章](D:\Python\Projects\MyGitProjects\PostSync\static/imgs/screenshot-upload.png?=200x150)
 
 #### 注意事项
 
@@ -42,7 +42,7 @@ PostSync是一款开源的跨平台文章同步工具，可以同步你的文章
 python make.py
 ```
 
-> 打包时会自动将`config.yaml`中的相关参数设置为产品环境
+&gt; 打包时会自动将`config.yaml`中的相关参数设置为产品环境
 
 ### 功能📲
 
@@ -76,19 +76,20 @@ python make.py
 喜欢各种运动和各种音乐
 
 - 邮箱：<xiaofengs@yeah.net>
-- 网站: <https://xiaofengsoft.github.io>
+- 网站: <https: xiaofengsoft.github.io="">
 
 公众号:
 
-![云奕科软公众号二维码](static/imgs/official-account.jpg?=50x50)
+![云奕科软公众号二维码](D:\Python\Projects\MyGitProjects\PostSync\static/imgs/official-account.jpg?=50x50)
 
 ### 打赏💴
 
 如果觉得本软件对您有帮助，不如请我喝杯☕！
 
-![微信支付](static/imgs/reward-wechat.jpg?=50x50)
+![微信支付](D:\Python\Projects\MyGitProjects\PostSync\static/imgs/reward-wechat.jpg?=50x50)
 
 ### 鸣谢🍻
 
 - 感谢JetBrains公司提供的免费学生许可证
 - 感谢FittenCode AI智能代码辅助助手的大力相助
+</https:></xiaofengs@yeah.net>

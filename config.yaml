@@ -1,6 +1,7 @@
 app:
   debug: true
   desc: 软件设置
+  installed: true
 data:
   desc: 软件数据目录
   executable:
@@ -8,20 +9,20 @@ data:
     path: C:\Program Files\Google\Chrome\Application\chrome.exe
   log:
     desc: 日志文件目录
-    path: D:\Documents\PostSync\log
-  path: D:\Documents\PostSync
+    path: D:/Documents/PostSync\log
+  path: D:/Documents/PostSync
   posts:
     desc: 文章目录
-    path: D:\Documents\PostSync\posts
+    path: D:/Documents/PostSync\posts
   storage:
     desc: 软件数据存储文件
-    path: D:\Documents\PostSync\storage.json
+    path: D:/Documents/PostSync\storage.json
   temp:
     desc: 临时文件目录
-    path: D:\Documents\PostSync\temp
+    path: D:/Documents/PostSync\temp
   webview:
     desc: 软件视图存放目录
-    path: D:\Documents\PostSync\webview
+    path: D:/Documents/PostSync\webview
 default:
   author: 张一风
   category: Python
