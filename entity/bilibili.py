@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import time
 import typing as t
+from common.constant import config
 from common.apis import StorageType, Post
 from common.core import Community
 import json
@@ -36,6 +37,8 @@ class Bilibili(Community):
     }
 
     async def upload(self, post: Post) -> t.AnyStr:
+        if not config['default']['community'][self.site_alias] or not config['default']['community'][self.site_alias]['is_login']:
+            return ("未登录")
         await self.before_upload(post)
         # 打开发布页面
         await self.page.goto(self.url_post_new, wait_until='load')

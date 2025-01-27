@@ -4,6 +4,7 @@ import typing as t
 from common.apis import StorageType, Post
 from utils.helper import wait_random_time
 from common.core import Community
+from common.constant import config
 
 
 class Juejin(Community):
@@ -30,6 +31,8 @@ class Juejin(Community):
     desc = "稀土掘金官方插件"
 
     async def upload(self, post: Post) -> t.AnyStr:
+        if not config['default']['community'][self.site_alias] or not config['default']['community'][self.site_alias]['is_login']:
+            return "未登录"
         await self.before_upload(post)
         # 打开发布页面
         await self.page.goto(self.url_post_new)
@@ -51,10 +54,13 @@ class Juejin(Community):
 
         # 选择分类
         async def inner_upload_category(category: str):
+            if not category:
+                return "未选择分类"
+            category_str = str(category).strip()
             await (self.page.locator(".category-list")
                    .locator(
                 "div",
-                has_text=re.compile(category, re.IGNORECASE)
+                has_text=re.compile(str(category_str), re.IGNORECASE)
             ).click())
 
         await self.double_try_single_data(

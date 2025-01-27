@@ -74,6 +74,13 @@ const uploadPost = () => {
         }
       })
     }
+  }).catch((err) => {
+    DialogPlugin.confirm({
+      header: '提示',
+      body: err.message,
+      onConfirm: () => {
+      }
+    })
   });
 };
 

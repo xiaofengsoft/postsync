@@ -28,73 +28,75 @@ default:
   columns:
   - Python
   community:
+    bilibili:
+      category: 科技
+      columns:
+      - Python
+      cover: null
+      desc: B站
+      is_login: true
+      tags:
+      - Python
+      timeout: 40000
+      topic: null
     cnblog:
       category: Python
       columns:
       - Python
       cover: null
       desc: 博客园
+      is_login: true
       tags: []
       timeout: 20000
       topic: null
-      is_login: true
     csdn:
       category: Python
       columns:
       - 解决问题
       cover: null
       desc: CSDN
+      is_login: true
       tags: []
       timeout: 20000
       topic: null
-      is_login: true
     juejin:
-      category: null
-      columns: []
+      category: 后端
+      columns:
+      - Python
       cover: null
       desc: 掘金
-      tags: []
+      is_login: true
+      tags:
+      - Python
       timeout: 40000
       topic: null
-      is_login: false
-    wechat:
-      category: null
-      columns: []
-      cover: null
-      desc: 微信公众号
-      tags: []
-      timeout: 20000
-      topic: null
-      is_login: false
-    zhihu:
-      category: null
-      columns: []
-      cover: null
-      desc: 知乎
-      tags: []
-      timeout: 20000
-      topic: null
-      is_login: false
     test:
       category: null
       columns: []
       cover: null
       desc: 测试
+      is_login: false
       tags: []
       timeout: 20000
       topic: null
-      is_login: false
-    bilibili:
-      category: 科技
-      columns:
-      - Python
+    wechat:
+      category: null
+      columns: []
       cover: null
-      tags:
-      - Python
-      timeout: 40000
-      topic: null
-      desc: B站
+      desc: 微信公众号
       is_login: false
+      tags: []
+      timeout: 20000
+      topic: null
+    zhihu:
+      category: null
+      columns: []
+      cover: null
+      desc: 知乎
+      is_login: false
+      tags: []
+      timeout: 20000
+      topic: null
   cover: static/imgs/default-cover.png
   desc: 默认设置
   devtools: false

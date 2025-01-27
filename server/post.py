@@ -59,6 +59,7 @@ def upload_post():
     data = json.loads(request.get_data().decode('utf-8'))
     data: PostArguments
     # 允许嵌套协程
+    process_core = None
     try:
         nest_asyncio.apply()
         # 初始化
@@ -71,7 +72,7 @@ def upload_post():
             process_core.results.message
         )
     except BaseException as e:
-        if process_core.results.data is not None and len(process_core.results.data) > 0:
+        if process_core and process_core.results.data is not None and len(process_core.results.data) > 0:
             print(e)
             return Result.success(
                 [one_res for one_res in process_core.results.data],

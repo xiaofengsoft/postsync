@@ -9,6 +9,7 @@ from utils.helper import wait_random_time
 from common.error import BrowserTimeoutError
 from utils.file import get_path
 from utils.data import on_click_by_selector
+from common.constant import config
 
 
 class Csdn(Community):
@@ -31,6 +32,8 @@ class Csdn(Community):
     }
 
     async def upload(self, post: Post) -> t.AnyStr:
+        if not config['default']['community'][self.site_alias] or not config['default']['community'][self.site_alias]['is_login']:
+            return ("未登录")
         await self.before_upload(post)
         # 打开发布页面
         await self.page.goto(self.url_post_new)

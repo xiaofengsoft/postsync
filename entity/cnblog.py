@@ -7,6 +7,7 @@ from utils.helper import wait_random_time
 from utils.data import insert_html_content_to_frame
 import re
 import typing as t
+from common.constant import config
 
 
 class Cnblog(Community):
@@ -28,6 +29,8 @@ class Cnblog(Community):
     }
 
     async def upload(self, post: Post) -> t.AnyStr:
+        if not config['default']['community'][self.site_alias] or not config['default']['community'][self.site_alias]['is_login']:
+            return ("未登录")
         await self.before_upload(post)
         # 打开发布页面
         await self.page.goto(self.url_post_new, wait_until='domcontentloaded')

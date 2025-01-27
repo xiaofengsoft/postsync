@@ -237,7 +237,7 @@ class Community(object):
         self.post['category'] = self.post['category'] or config['default']["community"][self.site_alias]['category'] or config['default'][
             'category']
         self.post['cover'] = self.post['cover'] or config['default']["community"][self.site_alias]['cover'] or config['default']['cover']
-        await self._abort_assets_route(['image', 'font', 'media'])
+        await self._abort_assets_route(['font', 'media'])
 
     async def upload(self, post: Post) -> t.AnyStr:
         """

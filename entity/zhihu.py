@@ -7,6 +7,7 @@ from common.core import Community
 from bs4 import BeautifulSoup
 import json
 from playwright.async_api import Browser, BrowserContext
+from common.constant import config
 
 
 class Zhihu(Community):
@@ -34,6 +35,8 @@ class Zhihu(Community):
         self.origin_src = None
 
     async def upload(self, post: Post) -> t.AnyStr:
+        if not config['default']['community'][self.site_alias] or not config['default']['community'][self.site_alias]['is_login']:
+            return "未登录"
         await self.before_upload(post)
         await self.page.goto(self.url_post_new)
         # 上传图片

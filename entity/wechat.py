@@ -7,6 +7,7 @@ from common.core import Community
 import json
 from playwright.async_api import Browser, BrowserContext
 from common.apis import Post, StorageType
+from common.constant import config
 
 
 class Wechat(Community):
@@ -31,6 +32,8 @@ class Wechat(Community):
         self.origin_src = None
 
     async def upload(self, post: Post) -> t.AnyStr:
+        if not config['default']['community'][self.site_alias] or not config['default']['community'][self.site_alias]['is_login']:
+            return "未登录"
         await self.before_upload(post)
         await self.page.goto(Wechat.url_post_new)
         async with self.context.expect_page() as new_page:
