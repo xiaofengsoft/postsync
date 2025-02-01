@@ -13,7 +13,7 @@
 PostSync是一款开源的跨平台文章同步工具，可以同步你的文章到多个平台。
 一次编写，多处同步，同时上传标签，分    类，栏目，封面等参数。  
 
-[![](http://i2.hdslb.com/bfs/archive/da393fd721b3b958f88a4cb5d08df3af9528ec57.jpg)](https://player.bilibili.com/player.html?isOutside=true&aid=113923671982834&bvid=BV1P3FXejERT&cid=28166392648&p=1)
+[![](http://i2.hdslb.com/bfs/archive/da393fd721b3b958f88a4cb5d08df3af9528ec57.jpg)](https://www.bilibili.com/video/BV1P3FXejERT)
 
 ### 使用🎭
 
