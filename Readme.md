@@ -1,5 +1,5 @@
 <div align="center">
-<img height="200" src="D:\Python\Projects\MyGitProjects\PostSync\static/imgs/logo.png" width="200"/>
+<img height="200" src="./static/imgs/logo.png" width="200"/>
 <h3 align="center">
     PostSync
     </h3>
