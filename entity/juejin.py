@@ -1,4 +1,5 @@
 import json
+import os
 import re
 import typing as t
 from common.apis import StorageType, Post
@@ -50,9 +51,10 @@ class Juejin(Community):
                 await file_chooser.set_files(self.post['cover'])
 
         # 点击发布按钮
-        await self.page.locator("button", has_text="发布").first.click()
+        await self.page.get_by_role("button", name="发布").click()
 
         # 选择分类
+
         async def inner_upload_category(category: str):
             if not category:
                 return "未选择分类"
@@ -94,7 +96,8 @@ class Juejin(Community):
         await self.page.get_by_role("banner").locator("textarea").fill(self.post['digest'])
         wait_random_time()
         # 选择封面
-        await choose_cover()
+        if self.post['cover'] and os.path.exists(self.post['cover']):
+            await choose_cover()
         # 点击空白处防止遮挡
         # 选择专栏
         column_selector = self.page.locator(".byte-select-dropdown").last
@@ -122,11 +125,7 @@ class Juejin(Community):
         wait_random_time()
 
         async def inner_click_publish():
-            await self.page.locator(
-                "#juejin-web-editor > div.edit-draft > div > header > div.right-box > "
-                "div.publish-popup.publish-popup.with-padding.active > div > div.footer > div > "
-                "button.ui-btn.btn.primary.medium.default"
-            ).click()
+            await self.page.locator("#juejin-web-editor > div.edit-draft > div > header > div.right-box > div.publish-popup.publish-popup.with-padding.active > div > div.footer > div > button.ui-btn.btn.primary.medium.default").click()
 
         await self.double_try(
             inner_click_publish,

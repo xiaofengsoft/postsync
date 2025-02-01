@@ -9,14 +9,16 @@ from yaml import Dumper
 from utils.load import get_root_path
 from common import constant as c
 import platform
+import sys
 
 # 需要打包的spec文件
 specs = ['PostSync.spec']
 
 if __name__ == '__main__':
-    # 切换到UI目录打包前端
-    os.chdir(os.path.join(get_root_path(), 'ui'))
-    os.system('npm run build')
+    if sys.argv.__len__() > 1 and sys.argv[1] != 'no-ui':
+        # 切换到UI目录打包前端
+        os.chdir(os.path.join(get_root_path(), 'ui'))
+        os.system('npm run build')
     os.chdir(get_root_path())
     # 修改config.yaml中的参数
     config_backup = copy.deepcopy(c.config)

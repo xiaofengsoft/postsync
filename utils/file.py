@@ -144,6 +144,15 @@ def convert_md_content_to_html(md_content: str) -> str:
     return md_html_parser.convert(md_content)
 
 
+def clean_image_url(url: str) -> str:
+    """
+    清理图片URL，移除查询参数
+    :param url: 图片URL
+    :return: 清理后的URL
+    """
+    return url.split('?')[0] if '?' in url else url
+
+
 def convert_html_to_docx(html_file_path: str, docx_file_path: t.Optional[str] = None) -> str:
     """
     将HTML文件转换为DOCX
@@ -160,6 +169,22 @@ def convert_html_to_docx(html_file_path: str, docx_file_path: t.Optional[str] = 
             dst_file_path = replace_file_ext(html_file_path, 'docx')
     else:
         dst_file_path = docx_file_path
+
+    # 读取HTML内容
+    with open(html_file_path, 'r', encoding=FILE_ENCODING) as f:
+        html_content = f.read()
+
+    # 清理图片URL中的查询参数
+    import re
+    html_content = re.sub(r'(<img[^>]*src=[\'"])([^\'"]+)([\'"][^>]*>)',
+                          lambda m: m.group(
+                              1) + clean_image_url(m.group(2)) + m.group(3),
+                          html_content)
+
+    # 写回处理后的HTML
+    with open(html_file_path, 'w', encoding=FILE_ENCODING) as f:
+        f.write(html_content)
+
     # 转换图片路径为绝对路径
     convert_html_img_path_to_abs_path(html_file_path)
     html_docx_parser.parse_html_file(

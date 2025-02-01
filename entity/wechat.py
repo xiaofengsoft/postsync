@@ -37,8 +37,7 @@ class Wechat(Community):
         await self.before_upload(post)
         await self.page.goto(Wechat.url_post_new)
         async with self.context.expect_page() as new_page:
-            await self.page.locator("#app > div.main_bd_new > div:nth-child(3) > div.weui-desktop-panel__bd > div > "
-                                    "div:nth-child(3) > div").click()
+            await self.page.locator('.new-creation__menu > div:nth-child(4)').click()
         await self.page.close()
         self.page = await new_page.value
         await self.page.get_by_role("listitem", name="文档导入").click()
@@ -68,13 +67,10 @@ class Wechat(Community):
                 "#js_image_dialog_list_wrp > div > div:nth-child(2) > i > .image_dialog__checkbox").is_enabled():
             await self.page.locator("#js_image_dialog_list_wrp > div > div:nth-child(2)").click()
         await self.page.locator(
-            "#vue_app > div:nth-child(3) > div.weui-desktop-dialog__wrp.weui-desktop-dialog_img"
-            "-picker.weui-desktop-dialog_img-picker-with-crop > div > div.weui-desktop-dialog__ft "
-            "> div:nth-child(1) > button").click()
+            "#vue_app > div:nth-child(3) > div.weui-desktop-dialog__wrp.weui-desktop-dialog_img-picker > div > div.weui-desktop-dialog__ft > div:nth-child(1) > button").click()
         wait_random_time()
         await self.page.locator(
-            "#vue_app > div:nth-child(3) > div.weui-desktop-dialog__wrp.weui-desktop-dialog_img-picker.weui-desktop"
-            "-dialog_img-picker-with-crop > div > div.weui-desktop-dialog__ft > div:nth-child(2) > button").click()
+            "#vue_app > div:nth-child(3) > div.weui-desktop-dialog__wrp > div > div.weui-desktop-dialog__ft > div:nth-child(2) > button").click()
         wait_random_time()
         # 填写摘要
         await self.page.locator("#js_description").fill(self.post['digest'])

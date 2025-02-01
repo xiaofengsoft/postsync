@@ -61,6 +61,7 @@ async def login_once():
 async def login_confirm():
     site_alias = json.loads(request.get_data().decode('utf-8'))['name']
     c.is_confirmed.put(site_alias)
+    c.config['default']['community'][site_alias]['is_login'] = True
     return Result.success(message='登录成功')
 
 

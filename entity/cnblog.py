@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 from common.apis import StorageType, Post
 from common.core import Community
 from bs4 import BeautifulSoup
@@ -80,14 +81,15 @@ class Cnblog(Community):
         for column in self.post['columns']:
             await column_selector.locator("span", has_text=re.compile(column, re.IGNORECASE)).first.click()
         # 处理封面
-        await self.page.locator(
-            ".featured-image-input__actions > div").click()
-        async with self.page.expect_file_chooser() as fc_info:
-            await self.page.locator("#modal-upload-featured-image > div > div > div:nth-child(3) > button").click()
-            file_chooser = await fc_info.value
-            await file_chooser.set_files(self.post['cover'])
-        wait_random_time()
-        await self.page.get_by_role("button", name="取消").last.click()
+        if self.post['cover'] is not None and self.post['cover'] != '' and os.path.exists(self.post['cover']):
+            await self.page.locator(
+                ".featured-image-input__actions > div").click()
+            async with self.page.expect_file_chooser() as fc_info:
+                await self.page.locator("#modal-upload-featured-image > div > div > div:nth-child(3) > button").click()
+                file_chooser = await fc_info.value
+                await file_chooser.set_files(self.post['cover'])
+            wait_random_time()
+            await self.page.get_by_role("button", name="取消").last.click()
         # 处理摘要
         await self.page.locator("#summary").fill(self.post['digest'])
 

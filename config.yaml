@@ -63,7 +63,7 @@ default:
     juejin:
       category: 后端
       columns:
-      - Python
+      - Python文章
       cover: null
       desc: 掘金
       is_login: true
@@ -71,21 +71,12 @@ default:
       - Python
       timeout: 40000
       topic: null
-    test:
-      category: null
-      columns: []
-      cover: null
-      desc: 测试
-      is_login: false
-      tags: []
-      timeout: 20000
-      topic: null
     wechat:
       category: null
       columns: []
       cover: null
       desc: 微信公众号
-      is_login: false
+      is_login: true
       tags: []
       timeout: 20000
       topic: null
@@ -94,7 +85,7 @@ default:
       columns: []
       cover: null
       desc: 知乎
-      is_login: false
+      is_login: true
       tags: []
       timeout: 20000
       topic: null

@@ -28,7 +28,6 @@ class Csdn(Community):
         "tags": ["Python"],
         "timeout": 40000,
         "topic": None,
-
     }
 
     async def upload(self, post: Post) -> t.AnyStr:
