@@ -13,6 +13,8 @@
 PostSync是一款开源的跨平台文章同步工具，可以同步你的文章到多个平台。
 一次编写，多处同步，同时上传标签，分    类，栏目，封面等参数。  
 
+<iframe src="//player.bilibili.com/player.html?isOutside=true&aid=113923671982834&bvid=BV1P3FXejERT&cid=28166392648&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+
 ### 使用🎭
 
 1. 打开PostSyncGUI.exe文件
@@ -20,13 +22,7 @@ PostSync是一款开源的跨平台文章同步工具，可以同步你的文章
 3. 配置相关平台的默认参数
 4. 选择需要同步的文章上传
 
-#### GUI界面
-
-![新文章](D:\Python\Projects\MyGitProjects\PostSync\static/imgs/screenshot-write.png?=200x150)
-
-![上传文章](D:\Python\Projects\MyGitProjects\PostSync\static/imgs/screenshot-upload.png?=200x150)
-
-#### 注意事项
+### 注意事项
 
 - 使用标签分类等功能请确保您在相关平台上已经创建相应的标签分类
 
@@ -76,20 +72,19 @@ python make.py
 喜欢各种运动和各种音乐
 
 - 邮箱：<xiaofengs@yeah.net>
-- 网站: <https: xiaofengsoft.github.io="">
+- 网站: <https: xiaofengsoft.github.io>
 
 公众号:
 
-![云奕科软公众号二维码](D:\Python\Projects\MyGitProjects\PostSync\static/imgs/official-account.jpg?=50x50)
+![云奕科软公众号二维码](./static/imgs/official-account.jpg?=50x50)
 
 ### 打赏💴
 
 如果觉得本软件对您有帮助，不如请我喝杯☕！
 
-![微信支付](D:\Python\Projects\MyGitProjects\PostSync\static/imgs/reward-wechat.jpg?=50x50)
+![微信支付](./static/imgs/reward-wechat.jpg?=50x50)
 
 ### 鸣谢🍻
 
 - 感谢JetBrains公司提供的免费学生许可证
 - 感谢FittenCode AI智能代码辅助助手的大力相助
-</https:></xiaofengs@yeah.net>
