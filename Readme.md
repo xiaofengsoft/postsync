@@ -94,4 +94,4 @@ python make.py
 
 ### Star趋势📈
 
-![Star History](https://star-history.com/#xiaofengsoft/postsync&Timeline)
+[![Star History Chart](https://api.star-history.com/svg?repos=xiaofengsoft/postsync&type=Timeline)](https://star-history.com/#xiaofengsoft/postsync&Timeline)
