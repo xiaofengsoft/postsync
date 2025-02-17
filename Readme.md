@@ -71,11 +71,14 @@ python make.py
 作者本人目前就读于中原工学院，是一名超级热爱编程的本科生
 喜欢各种运动和各种音乐
 
+[网站](https:xiaofengsoft.github.io)
+
+### 联系方式📧
+
 - 邮箱：<xiaofengs@yeah.net>
-- 网站: <https: xiaofengsoft.github.io>
-
-公众号:
-
+- QQ：1365038232
+- 微信：zyf3164689822
+- 公众号
 ![云奕科软公众号二维码](./static/imgs/official-account.jpg?=50x50)
 
 ### 打赏💴
@@ -88,3 +91,5 @@ python make.py
 
 - 感谢JetBrains公司提供的免费学生许可证
 - 感谢FittenCode AI智能代码辅助助手的大力相助
+
+<iframe style="width:100%;height:auto;min-width:600px;min-height:400px;" src="https://star-history.com/embed?secret=Z2hwX3UwOTNMMDRURE5kdEJpaW9pRzh5dWl5bHl6d28yYzNTRjJiRA==#xiaofengsoft/postsync&Date" frameBorder="0"></iframe>
